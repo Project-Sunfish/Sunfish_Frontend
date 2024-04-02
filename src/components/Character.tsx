@@ -30,9 +30,9 @@ export default function Character() {
     position.addListener(({x}) => {
       if (x < prev) {
         setDirection('right');
-      } else if (x > prev) {
+      }
+      if (x > prev) {
         setDirection('left');
-      } else {
       }
     });
 
@@ -44,6 +44,7 @@ export default function Character() {
   return (
     <Animated.View
       style={{
+        position: 'absolute',
         transform: [{translateX: position.x}, {translateY: position.y}],
       }}>
       <Svg height="50" width="50">

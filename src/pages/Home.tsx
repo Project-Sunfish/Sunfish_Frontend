@@ -23,6 +23,16 @@ export default function Home() {
         }}>
         <Text style={{color: 'white'}}>Count: {cnt}</Text>
       </Pressable>
+      <Pressable
+        style={({pressed}) => [
+          styles.btn,
+          {backgroundColor: pressed ? 'gray' : 'black'},
+        ]}
+        onPress={() => {
+          setCnt(0);
+        }}>
+        <Text style={{color: 'white'}}>reset</Text>
+      </Pressable>
     </View>
   );
 }
