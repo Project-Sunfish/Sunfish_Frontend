@@ -1,20 +1,42 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
 import {useAppDispatch} from '../store';
-import userSlice from '../slices/user';
+import Character from '../components/Character';
+import {useState} from 'react';
 
 export default function Home() {
-  const dispatch = useAppDispatch();
+  const [cnt, setCnt] = useState(0);
+
   return (
-    <View>
-      <Text>Home</Text>
+    <View style={styles.entire}>
+      <View style={styles.gameContainer}>
+        {[...Array(cnt)].map((_, index) => (
+          <Character key={index} />
+        ))}
+      </View>
       <Pressable
+        style={({pressed}) => [
+          styles.btn,
+          {backgroundColor: pressed ? 'red' : 'blue'},
+        ]}
         onPress={() => {
-          dispatch(userSlice.actions.setToken({accessToken: ''}));
+          setCnt(cnt + 1);
         }}>
-        <Text>로그아웃</Text>
+        <Text style={{color: 'white'}}>Count: {cnt}</Text>
       </Pressable>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  entire: {
+    flex: 1,
+  },
+  gameContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  btn: {
+    padding: 20,
+    alignItems: 'center',
+  },
+});
