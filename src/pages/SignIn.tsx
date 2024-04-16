@@ -3,17 +3,21 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {Svg, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import TermModal from '../components/TermModal';
+import {useState} from 'react';
 
 export default function SignIn() {
   const dispatch = useAppDispatch();
+  const [showModal, setShowModal] = useState(true);
   return (
     <View style={styles.entire}>
-      {/* <Pressable
+      <Pressable
         onPress={() => {
-          dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+          // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+          setShowModal(true);
         }}>
         <Text>로그인</Text>
-      </Pressable> */}
+      </Pressable>
       <View style={styles.top}></View>
       <View style={styles.bottom}>
         <View style={styles.loginButtonView}>
@@ -29,13 +33,15 @@ export default function SignIn() {
         </View>
         <View style={styles.helperButtonView}>
           <Pressable style={styles.helperButton}>
-            <Text style={styles.helperButtonText}> 앱스토어 플레이스토어</Text>
+            <Text style={styles.helperButtonText}>앱스토어</Text>
+            <Text style={styles.helperButtonText}>플레이스토어</Text>
           </Pressable>
           <Pressable style={styles.helperButton}>
             <Text style={styles.helperButtonText}>제작사</Text>
           </Pressable>
         </View>
       </View>
+      <TermModal showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
 }
