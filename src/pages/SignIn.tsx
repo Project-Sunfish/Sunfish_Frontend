@@ -1,7 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
-import {Svg, SvgXml} from 'react-native-svg';
+import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import TermModal from '../components/TermModal';
 import {useState} from 'react';
@@ -24,7 +24,11 @@ export default function SignIn() {
           <Pressable style={styles.loginButton}>
             <SvgXml xml={svgList.socialLoginLogo.kakao} />
           </Pressable>
-          <Pressable style={styles.loginButton}>
+          <Pressable
+            style={styles.loginButton}
+            onPress={() => {
+              dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+            }}>
             <SvgXml xml={svgList.socialLoginLogo.google} />
           </Pressable>
           <Pressable style={styles.loginButton}>
