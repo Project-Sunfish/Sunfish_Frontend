@@ -226,7 +226,8 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               ]}
               onPress={() =>
                 dispatch(userSlice.actions.setToken({accessToken: '1234'}))
-              }>
+              }
+              disabled={!(name.trim() && birth.trim() && sex && calendar)}>
               <Text style={styles.checkBtnTxt}>확인</Text>
             </Pressable>
           </View>

@@ -1,20 +1,33 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {
+  Dimensions,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import TermModal from '../components/TermModal';
-import {useState} from 'react';
+import {useRef, useState} from 'react';
+import WebView from 'react-native-webview';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import Modal from 'react-native-modal';
 import {RootStackParamList} from '../../AppInner';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 
 export default function SignIn({navigation, route}: SignInScreenProps) {
   const dispatch = useAppDispatch();
   // const [showModal, setShowModal] = useState('no');
   const showModal = route.params.showModal;
   const setShowModal = route.params.setShowModal;
+  const [isWebView, setIsWebView] = useState(false);
   return (
     <View style={styles.entire}>
       {/* <Pressable
@@ -41,7 +54,9 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             }}>
             <SvgXml xml={svgList.socialLoginLogo.google} />
           </Pressable>
-          <Pressable style={styles.loginButton}>
+          <Pressable
+            style={styles.loginButton}
+            onPress={() => setIsWebView(!isWebView)}>
             <SvgXml xml={svgList.socialLoginLogo.naver} />
           </Pressable>
         </View>
@@ -55,6 +70,25 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
           </Pressable>
         </View>
       </View>
+      <Modal
+        isVisible={isWebView}
+        style={{flex: 1, justifyContent: 'center'}}
+        onBackButtonPress={() => setIsWebView(false)}
+        onBackdropPress={() => setIsWebView(false)}
+        hasBackdrop={true}>
+        <Pressable
+          style={{flex: 1, padding: 20}}
+          onPress={() => setIsWebView(false)}>
+          <Pressable
+            style={{flex: 1, backgroundColor: 'white'}}
+            onPress={e => e.stopPropagation()}>
+            <WebView
+              style={{width: '100%'}}
+              source={{uri: 'https://naver.com'}}
+            />
+          </Pressable>
+        </Pressable>
+      </Modal>
     </View>
   );
 }

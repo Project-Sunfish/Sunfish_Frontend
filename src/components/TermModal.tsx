@@ -126,6 +126,9 @@ export default function TermModal(props: TermModalProps) {
               <Pressable
                 style={styles.modalBtn}
                 onPress={() => {
+                  if (!usingTerm || !personalTerm) {
+                    return;
+                  }
                   setshowModal('no');
                   navigation.navigate('EnterInfo');
                 }}>
