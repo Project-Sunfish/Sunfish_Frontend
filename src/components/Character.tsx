@@ -1,5 +1,13 @@
 import {useEffect, useRef, useState} from 'react';
-import {View, Text, Animated, Easing, Dimensions} from 'react-native';
+import {
+  View,
+  Text,
+  Animated,
+  Easing,
+  Dimensions,
+  Pressable,
+  Vibration,
+} from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
 
 export default function Character() {
@@ -47,13 +55,15 @@ export default function Character() {
         position: 'absolute',
         transform: [{translateX: position.x}, {translateY: position.y}],
       }}>
-      <Svg height="50" width="50">
-        {direction === 'right' ? (
-          <Circle cx="10" cy="10" r="10" fill="red" />
-        ) : (
-          <Circle cx="10" cy="10" r="10" fill="green" />
-        )}
-      </Svg>
+      <Pressable onPress={() => Vibration.vibrate(200)}>
+        <Svg height="50" width="50">
+          {direction === 'right' ? (
+            <Circle cx="10" cy="10" r="10" fill="red" />
+          ) : (
+            <Circle cx="10" cy="10" r="10" fill="green" />
+          )}
+        </Svg>
+      </Pressable>
     </Animated.View>
   );
 }
