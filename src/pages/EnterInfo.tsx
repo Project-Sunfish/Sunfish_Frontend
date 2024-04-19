@@ -88,7 +88,9 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
   };
   return (
     <View style={styles.entire}>
-      <KeyboardAwareScrollView style={{flex: 1, width: '100%'}}>
+      <KeyboardAwareScrollView
+        // keyboardShouldPersistTaps={'always'}
+        style={{flex: 1, width: '100%'}}>
         <View style={styles.header}>
           <SvgXml xml={svgList.temp.imsiSunfish} />
           <View style={styles.headerView}>
@@ -143,11 +145,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                 maxLength={8}
                 onSubmitEditing={() => Keyboard.dismiss()}
                 ref={birthRef}
+                onBlur={() => {
+                  Keyboard.dismiss();
+                }}
               />
               <View style={styles.calendarButtonView}>
                 <Pressable
                   style={styles.calendarButton}
-                  onPress={() => setCalendar('solar')}>
+                  onTouchEnd={() => setCalendar('solar')}>
                   <Text
                     style={[
                       styles.calendarButtonText,
@@ -166,7 +171,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                 </View>
                 <Pressable
                   style={styles.calendarButton}
-                  onPress={() => setCalendar('lunar')}>
+                  onTouchEnd={() => setCalendar('lunar')}>
                   <Text
                     style={[
                       styles.calendarButtonText,
