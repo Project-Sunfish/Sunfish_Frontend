@@ -8,20 +8,24 @@ import {useState} from 'react';
 
 export default function SignIn() {
   const dispatch = useAppDispatch();
-  const [showModal, setShowModal] = useState(true);
+  const [showModal, setShowModal] = useState(false);
   return (
     <View style={styles.entire}>
-      <Pressable
+      {/* <Pressable
         onPress={() => {
           // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
           setShowModal(true);
         }}>
         <Text>로그인</Text>
-      </Pressable>
+      </Pressable> */}
       <View style={styles.top}></View>
       <View style={styles.bottom}>
         <View style={styles.loginButtonView}>
-          <Pressable style={styles.loginButton}>
+          <Pressable
+            style={styles.loginButton}
+            onPress={() => {
+              setShowModal(true);
+            }}>
             <SvgXml xml={svgList.socialLoginLogo.kakao} />
           </Pressable>
           <Pressable
