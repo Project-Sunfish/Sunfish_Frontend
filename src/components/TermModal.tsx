@@ -3,26 +3,33 @@ import {View, Text, StyleSheet, Pressable} from 'react-native';
 import Modal from 'react-native-modal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import {useNavigation} from '@react-navigation/native';
 
 type TermModalProps = {
-  showModal: boolean;
-  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+  showModal: string;
+  setShowModal: React.Dispatch<React.SetStateAction<string>>;
 };
 
 export default function TermModal(props: TermModalProps) {
   const showModal = props.showModal;
   const setshowModal = props.setShowModal;
+  const navigation = useNavigation();
+
+  const [usingTerm, setUsingTerm] = useState(false);
+  const [personalTerm, setPersonalTerm] = useState(false);
+  const [adTerm, setAdTerm] = useState(false);
+  const [allTerm, setAllTerm] = useState(false);
   return (
     <Modal
       style={styles.entire}
-      isVisible={showModal}
+      isVisible={showModal == 'show'}
       hasBackdrop={true}
-      onBackdropPress={() => setshowModal(false)}
-      onBackButtonPress={() => setshowModal(false)}>
+      onBackdropPress={() => setshowModal('no')}
+      onBackButtonPress={() => setshowModal('no')}>
       <Pressable
         style={styles.modalBGView}
         onPress={() => {
-          setshowModal(false);
+          setshowModal('no');
         }}>
         <Pressable style={styles.modalView} onPress={e => e.stopPropagation()}>
           <View style={styles.modalContent}>
@@ -34,31 +41,52 @@ export default function TermModal(props: TermModalProps) {
                 xml={svgList.termModal.separator}
                 style={styles.separator}
               />
-              <Pressable style={styles.eachTerm}>
+              <Pressable
+                style={styles.eachTerm}
+                onPress={() => {
+                  setAllTerm(!usingTerm);
+                  setUsingTerm(!usingTerm);
+                }}>
                 <View style={styles.eachTermContent}>
-                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {usingTerm && <SvgXml xml={svgList.termModal.checkEmpty} />}
                   <Text style={styles.modalBodyTxt}>
                     게임 이용약관 동의 (필수)
                   </Text>
                 </View>
-                <Pressable style={styles.eachTermBtn}>
+                <Pressable
+                  style={styles.eachTermBtn}
+                  onPress={e => e.stopPropagation()}>
                   <Text style={styles.eachTermBtnTxt}>보기</Text>
                 </Pressable>
               </Pressable>
-              <Pressable style={styles.eachTerm}>
+              <Pressable
+                style={styles.eachTerm}
+                onPress={() => {
+                  setAllTerm(!personalTerm);
+                  setPersonalTerm(!personalTerm);
+                }}>
                 <View style={styles.eachTermContent}>
-                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {personalTerm && (
+                    <SvgXml xml={svgList.termModal.checkEmpty} />
+                  )}
                   <Text style={styles.modalBodyTxt}>
                     게임정보 수집 / 이용동의 (필수)
                   </Text>
                 </View>
-                <Pressable style={styles.eachTermBtn}>
+                <Pressable
+                  style={styles.eachTermBtn}
+                  onPress={e => e.stopPropagation()}>
                   <Text style={styles.eachTermBtnTxt}>보기</Text>
                 </Pressable>
               </Pressable>
-              <Pressable style={styles.eachTerm}>
+              <Pressable
+                style={styles.eachTerm}
+                onPress={() => {
+                  setAllTerm(!adTerm);
+                  setAdTerm(!adTerm);
+                }}>
                 <View style={styles.eachTermContent}>
-                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {adTerm && <SvgXml xml={svgList.termModal.checkEmpty} />}
                   <Text style={styles.modalBodyTxt}>
                     광고성 알림 수신 동의 (선택)
                   </Text>
@@ -71,9 +99,22 @@ export default function TermModal(props: TermModalProps) {
                 xml={svgList.termModal.separator}
                 style={styles.separator}
               />
-              <Pressable style={[styles.eachTerm, {marginTop: 30}]}>
+              <Pressable
+                style={[styles.eachTerm, {marginTop: 30}]}
+                onPress={() => {
+                  if (!usingTerm || !personalTerm || !adTerm) {
+                    setUsingTerm(true);
+                    setPersonalTerm(true);
+                    setAdTerm(true);
+                    setAllTerm(true);
+                  } else {
+                    setAllTerm(!allTerm);
+                  }
+                }}>
                 <View style={styles.eachTermContent}>
-                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {usingTerm && personalTerm && adTerm && allTerm && (
+                    <SvgXml xml={svgList.termModal.checkEmpty} />
+                  )}
                   <Text style={styles.modalBodyTxt}>모두 동의</Text>
                 </View>
               </Pressable>
@@ -82,7 +123,12 @@ export default function TermModal(props: TermModalProps) {
               </Text>
             </View>
             <View style={styles.modalBtnView}>
-              <Pressable style={styles.modalBtn}>
+              <Pressable
+                style={styles.modalBtn}
+                onPress={() => {
+                  setshowModal('no');
+                  navigation.navigate('EnterInfo');
+                }}>
                 <Text style={styles.modalBtnTxt}>확인</Text>
               </Pressable>
             </View>

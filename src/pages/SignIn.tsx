@@ -5,10 +5,16 @@ import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import TermModal from '../components/TermModal';
 import {useState} from 'react';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {RootStackParamList} from '../../AppInner';
 
-export default function SignIn() {
+type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
+
+export default function SignIn({navigation, route}: SignInScreenProps) {
   const dispatch = useAppDispatch();
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState('no');
+  const showModal = route.params.showModal;
+  const setShowModal = route.params.setShowModal;
   return (
     <View style={styles.entire}>
       {/* <Pressable
@@ -24,7 +30,7 @@ export default function SignIn() {
           <Pressable
             style={styles.loginButton}
             onPress={() => {
-              setShowModal(true);
+              setShowModal('show');
             }}>
             <SvgXml xml={svgList.socialLoginLogo.kakao} />
           </Pressable>
@@ -49,7 +55,6 @@ export default function SignIn() {
           </Pressable>
         </View>
       </View>
-      <TermModal showModal={showModal} setShowModal={setShowModal} />
     </View>
   );
 }
