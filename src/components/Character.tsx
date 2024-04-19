@@ -17,19 +17,30 @@ export default function Character() {
 
   useEffect(() => {
     const moveCharacter = () => {
-      const randomX = Math.floor(
-        Math.random() * Dimensions.get('window').width - 20,
-      );
+      const randomX =
+        Math.floor(Math.random() * Dimensions.get('window').width - 20) + 10;
       const randomY = Math.floor(Math.random() * 300);
       prev = randomX;
 
+      const distance = Math.sqrt(
+        Math.pow(randomX - position.x._value, 2) +
+          Math.pow(randomY - position.y._value, 2),
+      );
+
+      const speed = 100;
+      const duration = (distance / speed) * 1000;
+      const stopTime = 3000;
+
       Animated.timing(position, {
         toValue: {x: randomX, y: randomY},
-        duration: 2000,
-        easing: Easing.linear,
+        duration: duration,
+        easing: Easing.ease,
         useNativeDriver: false,
       }).start(() => {
-        moveCharacter();
+        setTimeout(() => {
+          moveCharacter();
+        }, stopTime);
+        // moveCharacter();
       });
     };
 
