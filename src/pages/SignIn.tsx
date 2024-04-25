@@ -16,6 +16,7 @@ import WebView from 'react-native-webview';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Modal from 'react-native-modal';
 import {RootStackParamList} from '../../AppInner';
+import Config from 'react-native-config';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -56,7 +57,10 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
           </Pressable>
           <Pressable
             style={styles.loginButton}
-            onPress={() => setIsWebView(!isWebView)}>
+            onPress={() => {
+              setIsWebView(!isWebView);
+              console.log(Config.API_URL);
+            }}>
             <SvgXml xml={svgList.socialLoginLogo.naver} />
           </Pressable>
         </View>
@@ -84,7 +88,12 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             onPress={e => e.stopPropagation()}>
             <WebView
               style={{width: '100%'}}
-              source={{uri: 'https://naver.com'}}
+              source={{
+                uri: `${Config.API_URL}:8080/oauth2/authorization/kakao`,
+                // uri: `https://www.naver.com`,
+              }}
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
             />
           </Pressable>
         </Pressable>
