@@ -1,5 +1,6 @@
 import {
   Dimensions,
+  Image,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -11,12 +12,14 @@ import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import TermModal from '../components/TermModal';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import WebView from 'react-native-webview';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Modal from 'react-native-modal';
 import {RootStackParamList} from '../../AppInner';
 import Config from 'react-native-config';
+import {Temp} from '../components/animations';
+import FastImage from 'react-native-fast-image';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -29,6 +32,21 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   const showModal = route.params.showModal;
   const setShowModal = route.params.setShowModal;
   const [isWebView, setIsWebView] = useState(false);
+
+  // const [progress, setProgress] = useState(0);
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setProgress(prevProgress => {
+  //       if (prevProgress === 100) {
+  //         return 0;
+  //       }
+  //       return prevProgress + 1;
+  //     });
+  //   }, 10);
+  //   return () => clearInterval(interval);
+  // }, []);
+
   return (
     <View style={styles.entire}>
       {/* <Pressable
@@ -38,7 +56,17 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         }}>
         <Text>로그인</Text>
       </Pressable> */}
-      <View style={styles.top}></View>
+      <View style={styles.top}>
+        {/* <Temp /> */}
+        <Image
+          source={require('../assets/temp.gif')}
+          style={{width: 500, height: 500}}
+        />
+        {/* <FastImage
+          source={{uri: '../assets/temp.gif'}}
+          style={{width: 100, height: 100}}
+        /> */}
+      </View>
       <View style={styles.bottom}>
         <View style={styles.loginButtonView}>
           <Pressable
@@ -74,7 +102,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
           </Pressable>
         </View>
       </View>
-      <Modal
+      {/* <Modal
         isVisible={isWebView}
         style={{flex: 1, justifyContent: 'center'}}
         onBackButtonPress={() => setIsWebView(false)}
@@ -97,7 +125,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             />
           </Pressable>
         </Pressable>
-      </Modal>
+      </Modal> */}
     </View>
   );
 }
