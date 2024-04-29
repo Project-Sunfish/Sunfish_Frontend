@@ -1,6 +1,7 @@
 import {
   Dimensions,
   Image,
+  ImageBackground,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -13,12 +14,12 @@ import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import TermModal from '../components/TermModal';
 import {useEffect, useRef, useState} from 'react';
-import WebView from 'react-native-webview';
+// import WebView from 'react-native-webview';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import Modal from 'react-native-modal';
 import {RootStackParamList} from '../../AppInner';
 import Config from 'react-native-config';
-import {Temp} from '../components/animations';
+// import {Temp} from '../components/animations';
 import FastImage from 'react-native-fast-image';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
@@ -49,60 +50,58 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
 
   return (
     <View style={styles.entire}>
-      {/* <Pressable
+      <ImageBackground
+        source={require('../assets/pictures/SignIn.png')}
+        style={{flex: 1}}>
+        {/* <Pressable
         onPress={() => {
           // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
           setShowModal(true);
         }}>
         <Text>로그인</Text>
       </Pressable> */}
-      <View style={styles.top}>
-        {/* <Temp /> */}
-        <Image
+        <View style={styles.top}>
+          {/* <Image
           source={require('../assets/temp.gif')}
           style={{width: 500, height: 500}}
-        />
-        {/* <FastImage
-          source={{uri: '../assets/temp.gif'}}
-          style={{width: 100, height: 100}}
         /> */}
-      </View>
-      <View style={styles.bottom}>
-        <View style={styles.loginButtonView}>
-          <Pressable
-            style={styles.loginButton}
-            onPress={() => {
-              setShowModal('show');
-            }}>
-            <SvgXml xml={svgList.socialLoginLogo.kakao} />
-          </Pressable>
-          <Pressable
-            style={styles.loginButton}
-            onPress={() => {
-              dispatch(userSlice.actions.setToken({accessToken: '1234'}));
-            }}>
-            <SvgXml xml={svgList.socialLoginLogo.google} />
-          </Pressable>
-          <Pressable
-            style={styles.loginButton}
-            onPress={() => {
-              setIsWebView(!isWebView);
-              console.log(Config.API_URL);
-            }}>
-            <SvgXml xml={svgList.socialLoginLogo.naver} />
-          </Pressable>
         </View>
-        <View style={styles.helperButtonView}>
-          <Pressable style={styles.helperButton}>
-            <Text style={styles.helperButtonText}>앱스토어</Text>
-            <Text style={styles.helperButtonText}>플레이스토어</Text>
-          </Pressable>
-          <Pressable style={styles.helperButton}>
-            <Text style={styles.helperButtonText}>제작사</Text>
-          </Pressable>
+        <View style={styles.bottom}>
+          <View style={styles.loginButtonView}>
+            <Pressable
+              style={styles.loginButton}
+              onPress={() => {
+                setShowModal('show');
+              }}>
+              <SvgXml xml={svgList.socialLoginLogo.kakao} />
+            </Pressable>
+            <Pressable
+              style={styles.loginButton}
+              onPress={() => {
+                dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+              }}>
+              <SvgXml xml={svgList.socialLoginLogo.google} />
+            </Pressable>
+            <Pressable
+              style={styles.loginButton}
+              onPress={() => {
+                setIsWebView(!isWebView);
+                console.log(Config.API_URL);
+              }}>
+              <SvgXml xml={svgList.socialLoginLogo.naver} />
+            </Pressable>
+          </View>
+          <View style={styles.helperButtonView}>
+            <Pressable style={styles.helperButton}>
+              <Text style={styles.helperButtonText}>앱스토어</Text>
+              <Text style={styles.helperButtonText}>플레이스토어</Text>
+            </Pressable>
+            <Pressable style={styles.helperButton}>
+              <SvgXml xml={svgList.socialLoginLogo.us} />
+            </Pressable>
+          </View>
         </View>
-      </View>
-      {/* <Modal
+        {/* <Modal
         isVisible={isWebView}
         style={{flex: 1, justifyContent: 'center'}}
         onBackButtonPress={() => setIsWebView(false)}
@@ -126,6 +125,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
           </Pressable>
         </Pressable>
       </Modal> */}
+      </ImageBackground>
     </View>
   );
 }
@@ -140,10 +140,9 @@ const styles = StyleSheet.create({
   },
   bottom: {
     flex: 1,
-    paddingHorizontal: 20,
+    paddingHorizontal: 22,
     paddingBottom: 44,
     alignItems: 'center',
-    backgroundColor: 'yellow',
   },
   loginButtonView: {
     flex: 1,
@@ -151,7 +150,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'red',
   },
   loginButton: {
     width: 80,
@@ -169,17 +167,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'blue',
+    // backgroundColor: 'blue',
   },
   helperButton: {
     width: 73,
     height: 28,
-    backgroundColor: 'transparent',
+    // backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#FFFFFF',
-    borderWidth: 0.7,
-    borderRadius: 3,
+    // borderColor: '#FFFFFF',
+    // borderWidth: 0.7,
+    // borderRadius: 3,
   },
   helperButtonText: {
     fontSize: 9,

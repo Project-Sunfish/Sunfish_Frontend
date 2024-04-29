@@ -48,7 +48,13 @@ export default function TermModal(props: TermModalProps) {
                   setUsingTerm(!usingTerm);
                 }}>
                 <View style={styles.eachTermContent}>
-                  {usingTerm && <SvgXml xml={svgList.termModal.checkEmpty} />}
+                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {usingTerm && (
+                    <SvgXml
+                      xml={svgList.termModal.checkFilled}
+                      style={{position: 'absolute', bottom: 3, left: 0}}
+                    />
+                  )}
                   <Text style={styles.modalBodyTxt}>
                     게임 이용약관 동의 (필수)
                   </Text>
@@ -66,8 +72,12 @@ export default function TermModal(props: TermModalProps) {
                   setPersonalTerm(!personalTerm);
                 }}>
                 <View style={styles.eachTermContent}>
+                  <SvgXml xml={svgList.termModal.checkEmpty} />
                   {personalTerm && (
-                    <SvgXml xml={svgList.termModal.checkEmpty} />
+                    <SvgXml
+                      xml={svgList.termModal.checkFilled}
+                      style={{position: 'absolute', bottom: 3, left: 0}}
+                    />
                   )}
                   <Text style={styles.modalBodyTxt}>
                     게임정보 수집 / 이용동의 (필수)
@@ -86,7 +96,13 @@ export default function TermModal(props: TermModalProps) {
                   setAdTerm(!adTerm);
                 }}>
                 <View style={styles.eachTermContent}>
-                  {adTerm && <SvgXml xml={svgList.termModal.checkEmpty} />}
+                  <SvgXml xml={svgList.termModal.checkEmpty} />
+                  {adTerm && (
+                    <SvgXml
+                      xml={svgList.termModal.checkFilled}
+                      style={{position: 'absolute', bottom: 3, left: 0}}
+                    />
+                  )}
                   <Text style={styles.modalBodyTxt}>
                     광고성 알림 수신 동의 (선택)
                   </Text>
@@ -112,8 +128,12 @@ export default function TermModal(props: TermModalProps) {
                   }
                 }}>
                 <View style={styles.eachTermContent}>
+                  <SvgXml xml={svgList.termModal.checkEmpty} />
                   {usingTerm && personalTerm && adTerm && allTerm && (
-                    <SvgXml xml={svgList.termModal.checkEmpty} />
+                    <SvgXml
+                      xml={svgList.termModal.checkFilled}
+                      style={{position: 'absolute', bottom: 3, left: 0}}
+                    />
                   )}
                   <Text style={styles.modalBodyTxt}>모두 동의</Text>
                 </View>
@@ -124,7 +144,12 @@ export default function TermModal(props: TermModalProps) {
             </View>
             <View style={styles.modalBtnView}>
               <Pressable
-                style={styles.modalBtn}
+                style={[
+                  styles.modalBtn,
+                  usingTerm && personalTerm
+                    ? {backgroundColor: '#4162AD'}
+                    : {backgroundColor: '#4F85C54D'},
+                ]}
                 onPress={() => {
                   if (!usingTerm || !personalTerm) {
                     return;
@@ -132,7 +157,15 @@ export default function TermModal(props: TermModalProps) {
                   setshowModal('no');
                   navigation.navigate('EnterInfo');
                 }}>
-                <Text style={styles.modalBtnTxt}>확인</Text>
+                <Text
+                  style={[
+                    styles.modalBtnTxt,
+                    usingTerm && personalTerm
+                      ? {color: '#FFFFFF'}
+                      : {color: '#002B5D'},
+                  ]}>
+                  확인
+                </Text>
               </Pressable>
             </View>
           </View>
@@ -169,6 +202,7 @@ const styles = StyleSheet.create({
   modalHeaderTxt: {
     color: '#002B5D',
     fontWeight: '400',
+    fontSize: 25,
   },
   separator: {
     marginVertical: 10,
@@ -196,29 +230,33 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     textDecorationLine: 'underline',
     paddingBottom: 2,
+    marginTop: 1,
+    fontSize: 12,
   },
   modalBodyTxt: {
     marginLeft: 10,
     color: '#002B5D',
     fontWeight: '400',
+    fontSize: 12,
   },
   description: {
-    paddingLeft: 12,
+    paddingHorizontal: 25,
     marginBottom: 5,
     color: 'rgba(0, 43, 93, 0.55)',
     fontWeight: '400',
+    fontSize: 8,
+    width: '100%',
   },
   modalBtnView: {
     paddingTop: 15,
   },
   modalBtn: {
-    backgroundColor: 'rgba(79, 133, 197, 0.30)',
+    // backgroundColor: 'rgba(79, 133, 197, 0.30)',
     borderRadius: 20,
     paddingVertical: 10,
     paddingHorizontal: 70,
   },
   modalBtnTxt: {
-    color: '#002B5D',
     fontSize: 16,
     fontWeight: '400',
   },

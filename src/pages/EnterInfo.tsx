@@ -6,10 +6,9 @@ import {
   Pressable,
   BackHandler,
   TextInput,
-  KeyboardAvoidingView,
   Keyboard,
+  ImageBackground,
 } from 'react-native';
-import Modal from 'react-native-modal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -87,169 +86,193 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     );
   };
   return (
-    <View style={styles.entire}>
-      <KeyboardAwareScrollView
-        // keyboardShouldPersistTaps={'always'}
-        style={{flex: 1, width: '100%'}}>
-        <View style={styles.header}>
-          <SvgXml xml={svgList.temp.imsiSunfish} />
-          <View style={styles.headerView}>
-            <Text style={styles.headerText}>너에 대한 정보를 알고싶복복</Text>
-          </View>
-        </View>
-        <View style={styles.body}>
-          <View style={styles.eachQuestion}>
-            <View style={styles.questionContent}>
-              <SvgXml xml={svgList.enterInfo.fishHead} />
-              <Text style={styles.questionText}>당신의 이름은?</Text>
-              {name.trim() && <SvgXml xml={svgList.enterInfo.check} />}
-            </View>
-            <View style={styles.answerContent}>
-              <TextInput
-                style={[
-                  styles.answerTextInput,
-                  name.trim()
-                    ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
-                    : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
-                ]}
-                placeholder="이름"
-                placeholderTextColor="rgba(255, 255, 255, 0.70)"
-                value={name}
-                onChangeText={txt => setName(txt.trim())}
-                ref={nameRef}
-                onSubmitEditing={() => birthRef.current?.focus()}
-              />
+    <ImageBackground
+      source={require('../assets/pictures/EnterInfo.png')}
+      style={{flex: 1}}>
+      <View style={styles.entire}>
+        <KeyboardAwareScrollView
+          // keyboardShouldPersistTaps={'always'}
+          style={{flex: 1, width: '100%'}}>
+          <View style={styles.header}>
+            <SvgXml xml={svgList.temp.imsiSunfish} />
+            <View style={styles.headerView}>
+              <Text style={styles.headerText}>너에 대한 정보를 알고싶복복</Text>
             </View>
           </View>
-          <View style={styles.eachQuestion}>
-            <View style={styles.questionContent}>
-              <SvgXml xml={svgList.enterInfo.fishHead} />
-              <Text style={styles.questionText}>당신의 생년월일은?</Text>
-              {isValidDate(birth) && calendar && (
-                <SvgXml xml={svgList.enterInfo.check} />
-              )}
+          <View style={styles.body}>
+            <View style={styles.eachQuestion}>
+              <View style={styles.questionContent}>
+                <SvgXml xml={svgList.enterInfo.fishHead} />
+                <Text style={styles.questionText}>당신의 이름은?</Text>
+                {name.trim() && <SvgXml xml={svgList.enterInfo.check} />}
+              </View>
+              <View style={styles.answerContent}>
+                <TextInput
+                  style={[
+                    styles.answerTextInput,
+                    name.trim()
+                      ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
+                      : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
+                  ]}
+                  placeholder="이름"
+                  placeholderTextColor="rgba(255, 255, 255, 0.70)"
+                  value={name}
+                  onChangeText={txt => setName(txt.trim())}
+                  ref={nameRef}
+                  onSubmitEditing={() => birthRef.current?.focus()}
+                />
+              </View>
             </View>
-            <View style={styles.answerContent}>
-              <TextInput
-                style={[
-                  styles.answerTextInput,
-                  birth.trim()
-                    ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
-                    : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
-                ]}
-                placeholder="20030218"
-                placeholderTextColor="rgba(255, 255, 255, 0.70)"
-                value={birth}
-                onChangeText={txt => setBirth(txt.trim())}
-                keyboardType="number-pad"
-                maxLength={8}
-                onSubmitEditing={() => Keyboard.dismiss()}
-                ref={birthRef}
-                onBlur={() => {
-                  Keyboard.dismiss();
-                }}
-              />
-              <View style={styles.calendarButtonView}>
+            <View style={styles.eachQuestion}>
+              <View style={styles.questionContent}>
+                <SvgXml xml={svgList.enterInfo.fishHead} />
+                <Text style={styles.questionText}>당신의 생년월일은?</Text>
+                {isValidDate(birth) && calendar && (
+                  <SvgXml xml={svgList.enterInfo.check} />
+                )}
+              </View>
+              <View style={styles.answerContent}>
+                <TextInput
+                  style={[
+                    styles.answerTextInput,
+                    birth.trim()
+                      ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
+                      : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
+                  ]}
+                  placeholder="20030218"
+                  placeholderTextColor="rgba(255, 255, 255, 0.70)"
+                  value={birth}
+                  onChangeText={txt => setBirth(txt.trim())}
+                  keyboardType="number-pad"
+                  maxLength={8}
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                  ref={birthRef}
+                  onBlur={() => {
+                    Keyboard.dismiss();
+                  }}
+                />
+                <View style={styles.calendarButtonView}>
+                  <Pressable
+                    style={styles.calendarButton}
+                    onTouchEnd={() => setCalendar('solar')}>
+                    <Text
+                      style={[
+                        styles.calendarButtonText,
+                        calendar == 'solar'
+                          ? {color: 'white'}
+                          : {color: '#FFFFFFB2'},
+                      ]}>
+                      양력
+                    </Text>
+                  </Pressable>
+                  <View>
+                    <Text
+                      style={[styles.calendarButtonText, {color: '#FFFFFFB2'}]}>
+                      |
+                    </Text>
+                  </View>
+                  <Pressable
+                    style={styles.calendarButton}
+                    onTouchEnd={() => setCalendar('lunar')}>
+                    <Text
+                      style={[
+                        styles.calendarButtonText,
+                        calendar == 'lunar'
+                          ? {color: 'white'}
+                          : {color: '#FFFFFFB2'},
+                      ]}>
+                      음력
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            </View>
+            <View style={styles.eachQuestion}>
+              <View style={styles.questionContent}>
+                <SvgXml xml={svgList.enterInfo.fishHead} />
+                <Text style={styles.questionText}>당신의 성별은?</Text>
+                {sex && <SvgXml xml={svgList.enterInfo.check} />}
+              </View>
+              <View style={styles.answerContent}>
                 <Pressable
-                  style={styles.calendarButton}
-                  onTouchEnd={() => setCalendar('solar')}>
+                  style={[
+                    styles.answerButton,
+                    sex == 'M' && {
+                      backgroundColor: 'rgba(255, 255, 255, 0.50)',
+                    },
+                  ]}
+                  onPress={() => setSex('M')}>
                   <Text
-                    style={[
-                      styles.calendarButtonText,
-                      calendar == 'solar'
-                        ? {color: 'white'}
-                        : {color: '#FFFFFFB2'},
-                    ]}>
-                    양력
+                    style={
+                      sex == 'M' ? styles.answerText : styles.answerButtonText
+                    }>
+                    남자
                   </Text>
                 </Pressable>
-                <View>
-                  <Text
-                    style={[styles.calendarButtonText, {color: '#FFFFFFB2'}]}>
-                    |
-                  </Text>
-                </View>
+                <View style={{width: 15}}></View>
                 <Pressable
-                  style={styles.calendarButton}
-                  onTouchEnd={() => setCalendar('lunar')}>
+                  style={[
+                    styles.answerButton,
+                    sex == 'F' && {
+                      backgroundColor: 'rgba(255, 255, 255, 0.50)',
+                    },
+                  ]}
+                  onPress={() => setSex('F')}>
                   <Text
-                    style={[
-                      styles.calendarButtonText,
-                      calendar == 'lunar'
-                        ? {color: 'white'}
-                        : {color: '#FFFFFFB2'},
-                    ]}>
-                    음력
+                    style={
+                      sex == 'F' ? styles.answerText : styles.answerButtonText
+                    }>
+                    여자
+                  </Text>
+                </Pressable>
+                <View style={{width: 15}}></View>
+                <Pressable
+                  style={[
+                    styles.answerButton,
+                    sex == 'N' && {
+                      backgroundColor: 'rgba(255, 255, 255, 0.50)',
+                    },
+                  ]}
+                  onPress={() => setSex('N')}>
+                  <Text
+                    style={
+                      sex == 'N' ? styles.answerText : styles.answerButtonText
+                    }>
+                    논바이너리
                   </Text>
                 </Pressable>
               </View>
             </View>
-          </View>
-          <View style={styles.eachQuestion}>
-            <View style={styles.questionContent}>
-              <SvgXml xml={svgList.enterInfo.fishHead} />
-              <Text style={styles.questionText}>당신의 성별은?</Text>
-              {sex && <SvgXml xml={svgList.enterInfo.check} />}
-            </View>
-            <View style={styles.answerContent}>
+            <View style={styles.checkBtnView}>
               <Pressable
                 style={[
-                  styles.answerButton,
-                  sex == 'M' && {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
+                  styles.checkBtn,
+                  name.trim() && birth.trim() && sex && calendar
+                    ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
+                    : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
-                onPress={() => setSex('M')}>
-                <Text
-                  style={
-                    sex == 'M' ? styles.answerText : styles.answerButtonText
-                  }>
-                  남자예요.
-                </Text>
-              </Pressable>
-              <View style={{width: 30}}></View>
-              <Pressable
-                style={[
-                  styles.answerButton,
-                  sex == 'F' && {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
-                ]}
-                onPress={() => setSex('F')}>
-                <Text
-                  style={
-                    sex == 'F' ? styles.answerText : styles.answerButtonText
-                  }>
-                  여자예요.
-                </Text>
+                onPress={() =>
+                  dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+                }
+                disabled={!(name.trim() && birth.trim() && sex && calendar)}>
+                <Text style={styles.checkBtnTxt}>확인</Text>
               </Pressable>
             </View>
           </View>
-          <View style={styles.checkBtnView}>
-            <Pressable
-              style={[
-                styles.checkBtn,
-                name.trim() && birth.trim() && sex && calendar
-                  ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
-                  : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
-              ]}
-              onPress={() =>
-                dispatch(userSlice.actions.setToken({accessToken: '1234'}))
-              }
-              disabled={!(name.trim() && birth.trim() && sex && calendar)}>
-              <Text style={styles.checkBtnTxt}>확인</Text>
+        </KeyboardAwareScrollView>
+        {!keyboard && (
+          <View style={styles.helperButtonView}>
+            <Pressable style={styles.helperButton}>
+              <Text style={styles.helperButtonText}>앱스토어</Text>
+              <Text style={styles.helperButtonText}>플레이스토어</Text>
+            </Pressable>
+            <Pressable style={styles.helperButton}>
+              <SvgXml xml={svgList.socialLoginLogo.usTransparent} />
             </Pressable>
           </View>
-        </View>
-      </KeyboardAwareScrollView>
-      {!keyboard && (
-        <View style={styles.helperButtonView}>
-          <Pressable style={styles.helperButton}>
-            <Text style={styles.helperButtonText}>앱스토어</Text>
-            <Text style={styles.helperButtonText}>플레이스토어</Text>
-          </Pressable>
-          <Pressable style={styles.helperButton}>
-            <Text style={styles.helperButtonText}>제작사</Text>
-          </Pressable>
-        </View>
-      )}
-    </View>
+        )}
+      </View>
+    </ImageBackground>
   );
 }
 
@@ -260,7 +283,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 44,
     alignItems: 'center',
-    backgroundColor: 'blue',
+    // backgroundColor: '#00000080',
   },
   header: {
     flex: 1,
@@ -283,6 +306,7 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#FFFFFF',
     fontWeight: '400',
+    fontSize: 16,
   },
   body: {
     flex: 1,
@@ -301,6 +325,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '400',
     marginHorizontal: 8,
+    fontSize: 12,
   },
   answerContent: {
     flexDirection: 'row',
@@ -320,6 +345,7 @@ const styles = StyleSheet.create({
   answerButtonText: {
     color: 'rgba(255, 255, 255, 0.70)',
     fontWeight: '400',
+    fontSize: 12,
   },
   answerTextInput: {
     flex: 1,
@@ -331,10 +357,12 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     paddingHorizontal: 15,
     textAlign: 'center',
+    fontSize: 12,
   },
   answerText: {
     color: '#FFFFFF',
     fontWeight: '400',
+    fontSize: 12,
   },
   calendarButtonView: {
     flexDirection: 'row',
@@ -363,13 +391,13 @@ const styles = StyleSheet.create({
   checkBtnTxt: {
     color: '#002B5DCC',
     fontWeight: '400',
+    fontSize: 12,
   },
   helperButtonView: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: 'blue',
   },
   helperButton: {
     width: 73,
@@ -377,9 +405,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#FFFFFF',
-    borderWidth: 0.7,
-    borderRadius: 3,
   },
   helperButtonText: {
     fontSize: 9,
