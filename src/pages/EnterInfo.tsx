@@ -128,7 +128,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
             </LinearGradient>
           </View>
           <View style={styles.body}>
-            <View style={styles.eachQuestion}>
+            <View style={[styles.eachQuestion, {marginTop: 0}]}>
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 이름은?</Text>
@@ -275,7 +275,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <Pressable
                 style={[
                   styles.checkBtn,
-                  name.trim() && birth.trim() && sex && calendar
+                  name.trim() && isValidDate(birth) && sex && calendar
                     ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
                     : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
@@ -283,7 +283,9 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                   // SignUp();
                   dispatch(userSlice.actions.setToken({accessToken: '1234'}));
                 }}
-                disabled={!(name.trim() && birth.trim() && sex && calendar)}>
+                disabled={
+                  !(name.trim() && isValidDate(birth) && sex && calendar)
+                }>
                 <Text style={styles.checkBtnTxt}>확인</Text>
               </Pressable>
             </View>
