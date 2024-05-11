@@ -29,6 +29,7 @@ import React, {useEffect, useState} from 'react';
 import TermModal from './src/components/TermModal';
 import Text from './src/components/Text';
 import {LinearGradient} from 'react-native-linear-gradient';
+import MyPageNav from './src/navigations/MyPageNav';
 
 export type RootStackParamList = {
   SignIn: {
@@ -170,13 +171,7 @@ function AppInner() {
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={43}
-                    height={43}
-                    xml={
-                      props.focused ? svgList.tabbar.home : svgList.tabbar.home
-                    }
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.home} />
                 ),
               }}
             />
@@ -202,20 +197,14 @@ function AppInner() {
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={43}
-                    height={43}
-                    xml={
-                      props.focused ? svgList.tabbar.book : svgList.tabbar.book
-                    }
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.book} />
                 ),
               }}
             />
 
             <Tab.Screen
-              name="MyPage"
-              component={MyPage}
+              name="MyPageNav"
+              component={MyPageNav}
               options={{
                 headerShown: false,
                 tabBarLabel: '마이페이지',
@@ -224,15 +213,7 @@ function AppInner() {
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={43}
-                    height={43}
-                    xml={
-                      props.focused
-                        ? svgList.tabbar.mypage
-                        : svgList.tabbar.mypage
-                    }
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.mypage} />
                 ),
               }}
             />
@@ -270,8 +251,10 @@ export default AppInner;
 const styles = StyleSheet.create({
   tabbarEntire: {
     height: 123,
+    width: '100%',
     backgroundColor: 'transparent',
-    position: 'relative',
+    position: 'absolute',
+    bottom: 0,
   },
   tabbarView: {
     flexDirection: 'row',
