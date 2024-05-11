@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
   ImageBackground,
+  Text as RNText,
 } from 'react-native';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -20,6 +21,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
+import {LinearGradient} from 'react-native-linear-gradient';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -119,9 +121,11 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
           style={{flex: 1, width: '100%'}}>
           <View style={styles.header}>
             <SvgXml xml={svgList.enterInfo.sunfish} width={100} height={100} />
-            <View style={styles.headerView}>
+            <LinearGradient
+              colors={['#BFFFFB99', '#FFFFFF59']}
+              style={styles.headerView}>
               <Text style={styles.headerText}>너에 대한 정보를 알고싶복복</Text>
-            </View>
+            </LinearGradient>
           </View>
           <View style={styles.body}>
             <View style={styles.eachQuestion}>
@@ -325,8 +329,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 45,
     paddingVertical: 10,
-    backgroundColor:
-      'linear-gradient(180deg, rgba(191, 255, 251, 0.52) 0%, rgba(255, 255, 255, 0.35) 100%)',
+    backgroundColor: 'transparent',
+    // 'linear-gradient(180deg, rgba(191, 255, 251, 0.52) 0%, rgba(255, 255, 255, 0.35) 100%)',
     borderRadius: 45,
     borderWidth: 1,
     borderColor: '#73CDFF',

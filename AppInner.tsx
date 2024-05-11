@@ -28,6 +28,7 @@ import EnterInfo from './src/pages/EnterInfo';
 import React, {useEffect, useState} from 'react';
 import TermModal from './src/components/TermModal';
 import Text from './src/components/Text';
+import {LinearGradient} from 'react-native-linear-gradient';
 
 export type RootStackParamList = {
   SignIn: {
@@ -94,20 +95,38 @@ const CustomTabbarWithCustomIndexingIcon = ({
         accessibilityLabel={options.tabBarAccessibilityLabel}
         testID={options.tabBarTestID}
         onPress={onPress}
-        style={{flex: 1, alignItems: 'center'}}>
-        {options.tabBarIcon({
-          focused: isFocused,
-          color: isFocused ? 'blue' : 'skyblue',
-          size: 28,
-        })}
-        <Text
-          style={{
+        style={[
+          {flex: 1, alignItems: 'center'},
+          !isFocused && {marginTop: 24},
+        ]}>
+        <View
+          style={[
+            styles.tabbarEachButton,
+            isFocused
+              ? {backgroundColor: '#FFFFFF'}
+              : {backgroundColor: '#FFFFFF50'},
+          ]}>
+          {options.tabBarIcon({
+            focused: isFocused,
             color: isFocused ? 'blue' : 'skyblue',
-            fontSize: 11,
-            paddingBottom: 10,
-          }}>
-          {label}
-        </Text>
+            size: 28,
+          })}
+        </View>
+        <View
+          style={[
+            styles.tabbarEachTextView,
+            isFocused
+              ? {backgroundColor: '#ffffff'}
+              : {backgroundColor: '#6EA5FFA3'},
+          ]}>
+          <Text
+            style={[
+              styles.tabbarEachText,
+              isFocused ? {color: '#6EA5FF'} : {color: '#ffffff'},
+            ]}>
+            {label}
+          </Text>
+        </View>
       </TouchableOpacity>,
     );
   });
@@ -117,14 +136,11 @@ const CustomTabbarWithCustomIndexingIcon = ({
     beforeChangingIndex[2],
   );
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        paddingTop: 10,
-      }}>
-      {afterChangingIndex}
+    <View style={styles.tabbarEntire}>
+      <View style={styles.tabbarView}>{afterChangingIndex}</View>
+      <LinearGradient
+        colors={['#80D1FF80', '#6EA5FF80']}
+        style={styles.tabbarFooter}></LinearGradient>
     </View>
   );
 };
@@ -138,7 +154,7 @@ function AppInner() {
   return (
     <NavigationContainer>
       {isLoggedIn ? (
-        <Safe color="#202020">
+        <Safe color="#ffffff">
           <Tab.Navigator
             initialRouteName="Home"
             screenOptions={screenoptions}
@@ -148,16 +164,18 @@ function AppInner() {
               component={Home}
               options={{
                 headerShown: false,
-                tabBarLabel: 'Home',
+                tabBarLabel: '플레이',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
                   <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
+                    width={43}
+                    height={43}
+                    xml={
+                      props.focused ? svgList.tabbar.home : svgList.tabbar.home
+                    }
                   />
                 ),
               }}
@@ -178,16 +196,18 @@ function AppInner() {
                   backgroundColor: '#202020',
                 },
                 headerShadowVisible: false,
-                tabBarLabel: 'Book',
+                tabBarLabel: '도  감',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
                   <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
+                    width={43}
+                    height={43}
+                    xml={
+                      props.focused ? svgList.tabbar.book : svgList.tabbar.book
+                    }
                   />
                 ),
               }}
@@ -198,16 +218,20 @@ function AppInner() {
               component={MyPage}
               options={{
                 headerShown: false,
-                tabBarLabel: 'MyPage',
+                tabBarLabel: '마이페이지',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
                   <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
+                    width={43}
+                    height={43}
+                    xml={
+                      props.focused
+                        ? svgList.tabbar.mypage
+                        : svgList.tabbar.mypage
+                    }
                   />
                 ),
               }}
@@ -243,4 +267,52 @@ function AppInner() {
 
 export default AppInner;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  tabbarEntire: {
+    height: 123,
+    backgroundColor: 'transparent',
+    position: 'relative',
+  },
+  tabbarView: {
+    flexDirection: 'row',
+    backgroundColor: 'transparent',
+  },
+  tabbarEachButton: {
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#FFFFFF',
+  },
+  tabbarEachText: {
+    fontSize: 11,
+    fontWeight: '400',
+  },
+  tabbarEachTextView: {
+    position: 'absolute',
+    bottom: -7,
+    width: 74,
+    height: 23,
+    // paddingVertical: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 8,
+    borderWidth: 0.5,
+    borderColor: '#CCEDFF',
+  },
+  tabbarFooter: {
+    position: 'absolute',
+    bottom: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
+    borderTopRightRadius: 30,
+    borderTopLeftRadius: 30,
+    paddingTop: 10,
+    height: 66,
+    width: '100%',
+    zIndex: -1,
+  },
+});

@@ -123,7 +123,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               <View style={{height: 4}}></View>
               <SvgXml xml={svgList.socialLoginLogo.appStore} />
             </Pressable>
-            <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
+            <Pressable
+              style={[styles.helperButton, {paddingTop: 10}]}
+              onPress={() =>
+                dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+              }>
               <SvgXml xml={svgList.socialLoginLogo.us} />
             </Pressable>
           </View>
