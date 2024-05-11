@@ -1,5 +1,6 @@
-import {Pressable, StyleSheet, Text, Vibration, View} from 'react-native';
+import {Pressable, StyleSheet, Vibration, View} from 'react-native';
 import {Ex} from '../components/animations';
+import Text from '../components/Text';
 
 export default function Book() {
   return (

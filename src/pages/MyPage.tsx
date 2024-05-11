@@ -1,6 +1,7 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
 import userSlice from '../slices/user';
 import {useAppDispatch} from '../store';
+import Text from '../components/Text';
 
 export default function MyPage() {
   const dispatch = useAppDispatch();

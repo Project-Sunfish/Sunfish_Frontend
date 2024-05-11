@@ -7,7 +7,6 @@ import {
   BackHandler,
   Platform,
   StyleSheet,
-  Text,
   TouchableHighlight,
   TouchableOpacity,
   View,
@@ -28,6 +27,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import EnterInfo from './src/pages/EnterInfo';
 import React, {useEffect, useState} from 'react';
 import TermModal from './src/components/TermModal';
+import Text from './src/components/Text';
 
 export type RootStackParamList = {
   SignIn: {

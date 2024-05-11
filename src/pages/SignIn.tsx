@@ -5,7 +5,6 @@ import {
   Pressable,
   SafeAreaView,
   StyleSheet,
-  Text,
   View,
 } from 'react-native';
 import {useAppDispatch} from '../store';
@@ -21,6 +20,7 @@ import {RootStackParamList} from '../../AppInner';
 import Config from 'react-native-config';
 // import {Temp} from '../components/animations';
 import FastImage from 'react-native-fast-image';
+import Text from '../components/Text';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -69,32 +69,47 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         <View style={styles.bottom}>
           <View style={styles.loginButtonView}>
             <Pressable
-              style={styles.loginButton}
+              style={styles.eachLoginButton}
               onPress={() => {
                 setShowModal('show');
               }}>
-              <SvgXml xml={svgList.socialLoginLogo.kakao} />
+              <View style={styles.loginButton}>
+                <SvgXml xml={svgList.socialLoginLogo.kakao} />
+              </View>
+              <View style={styles.loginButtonTxtView}>
+                <Text style={styles.loginButtonTxt}>카카오톡</Text>
+              </View>
             </Pressable>
             <Pressable
-              style={styles.loginButton}
+              style={styles.eachLoginButton}
               onPress={() => {
-                dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+                setShowModal('show');
               }}>
-              <SvgXml xml={svgList.socialLoginLogo.google} />
+              <View style={styles.loginButton}>
+                <SvgXml xml={svgList.socialLoginLogo.google} />
+              </View>
+              <View style={styles.loginButtonTxtView}>
+                <Text style={styles.loginButtonTxt}>구글</Text>
+              </View>
             </Pressable>
             <Pressable
-              style={styles.loginButton}
+              style={styles.eachLoginButton}
               onPress={() => {
-                setIsWebView(!isWebView);
-                console.log(Config.API_URL);
+                setShowModal('show');
               }}>
-              <SvgXml xml={svgList.socialLoginLogo.naver} />
+              <View style={styles.loginButton}>
+                <SvgXml xml={svgList.socialLoginLogo.naver} />
+              </View>
+              <View style={styles.loginButtonTxtView}>
+                <Text style={styles.loginButtonTxt}>네이버</Text>
+              </View>
             </Pressable>
           </View>
           <View style={styles.helperButtonView}>
             <Pressable style={styles.helperButton}>
-              <Text style={styles.helperButtonText}>앱스토어</Text>
-              <Text style={styles.helperButtonText}>플레이스토어</Text>
+              {/* <Text style={styles.helperButtonText}>앱스토어</Text>
+              <Text style={styles.helperButtonText}>플레이스토어</Text> */}
+              <SvgXml xml={svgList.socialLoginLogo.store} />
             </Pressable>
             <Pressable style={styles.helperButton}>
               <SvgXml xml={svgList.socialLoginLogo.us} />
@@ -151,6 +166,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+  eachLoginButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   loginButton: {
     width: 80,
     height: 80,
@@ -161,6 +180,19 @@ const styles = StyleSheet.create({
     borderColor: '#FFFFFF',
     borderWidth: 1,
     margin: 6,
+  },
+  loginButtonTxtView: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderColor: '#FFFFFF',
+    borderWidth: 1,
+    borderRadius: 12,
+    marginTop: 6,
+  },
+  loginButtonTxt: {
+    fontSize: 9,
+    fontWeight: '400',
+    color: '#FFFFFF',
   },
   helperButtonView: {
     width: '100%',

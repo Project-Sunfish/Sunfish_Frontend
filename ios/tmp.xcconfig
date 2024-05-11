@@ -1,1 +1,1 @@
-API_URL=http:/$()/ec2-3-35-14-219.ap-northeast-2.compute.amazonaws.com
+API_URL=http:/$()/13.125.217.117:8080

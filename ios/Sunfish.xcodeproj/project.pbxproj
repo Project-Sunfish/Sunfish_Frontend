@@ -15,6 +15,7 @@
 		52554CF92BD8C9AA0030F1C6 /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 52554CF82BD8C9AA0030F1C6 /* Config.xcconfig */; };
 		7699B88040F8A987B510C191 /* libPods-Sunfish-SunfishTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-Sunfish-SunfishTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		69472245FF394326964A4625 /* DNFBitBitv2.otf in Resources */ = {isa = PBXBuildFile; fileRef = ED27CC01CBA94FA58C04879C /* DNFBitBitv2.otf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Sunfish/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-Sunfish-SunfishTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Sunfish-SunfishTests.release.xcconfig"; path = "Target Support Files/Pods-Sunfish-SunfishTests/Pods-Sunfish-SunfishTests.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		ED27CC01CBA94FA58C04879C /* DNFBitBitv2.otf */ = {isa = PBXFileReference; name = "DNFBitBitv2.otf"; path = "../src/assets/fonts/DNFBitBitv2.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -125,6 +127,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				E4C98859D4AA4BEBAA4691CE /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -150,6 +153,15 @@
 			);
 			path = Pods;
 			sourceTree = "<group>";
+		};
+		E4C98859D4AA4BEBAA4691CE /* Resources */ = {
+			isa = "PBXGroup";
+			children = (
+				ED27CC01CBA94FA58C04879C /* DNFBitBitv2.otf */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+			path = "";
 		};
 /* End PBXGroup section */
 
@@ -247,6 +259,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				52554CF92BD8C9AA0030F1C6 /* Config.xcconfig in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
+				69472245FF394326964A4625 /* DNFBitBitv2.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

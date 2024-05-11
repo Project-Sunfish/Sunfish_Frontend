@@ -1,7 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
   View,
-  Text,
   StyleSheet,
   Pressable,
   BackHandler,
@@ -16,6 +15,7 @@ import {RootStackParamList} from '../../AppInner';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
+import Text from '../components/Text';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -94,7 +94,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
           // keyboardShouldPersistTaps={'always'}
           style={{flex: 1, width: '100%'}}>
           <View style={styles.header}>
-            <SvgXml xml={svgList.temp.imsiSunfish} />
+            <SvgXml xml={svgList.enterInfo.sunfish} width={100} height={100} />
             <View style={styles.headerView}>
               <Text style={styles.headerText}>너에 대한 정보를 알고싶복복</Text>
             </View>
@@ -139,7 +139,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                       ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
                       : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
                   ]}
-                  placeholder="20030218"
+                  placeholder="8자리 ex) 20010203"
                   placeholderTextColor="rgba(255, 255, 255, 0.70)"
                   value={birth}
                   onChangeText={txt => setBirth(txt.trim())}
@@ -263,8 +263,9 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         {!keyboard && (
           <View style={styles.helperButtonView}>
             <Pressable style={styles.helperButton}>
-              <Text style={styles.helperButtonText}>앱스토어</Text>
-              <Text style={styles.helperButtonText}>플레이스토어</Text>
+              {/* <Text style={styles.helperButtonText}>앱스토어</Text>
+              <Text style={styles.helperButtonText}>플레이스토어</Text> */}
+              <SvgXml xml={svgList.socialLoginLogo.storeTransparent} />
             </Pressable>
             <Pressable style={styles.helperButton}>
               <SvgXml xml={svgList.socialLoginLogo.usTransparent} />
@@ -289,11 +290,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 40,
+    marginVertical: 40,
   },
   headerView: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 30,
     paddingHorizontal: 45,
     paddingVertical: 10,
     backgroundColor:
@@ -358,6 +360,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     textAlign: 'center',
     fontSize: 12,
+    fontFamily: 'DNFBitBitv2',
   },
   answerText: {
     color: '#FFFFFF',

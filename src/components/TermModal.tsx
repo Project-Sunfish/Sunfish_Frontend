@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, Text, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable} from 'react-native';
 import Modal from 'react-native-modal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {useNavigation} from '@react-navigation/native';
+import Text from './Text';
 
 type TermModalProps = {
   showModal: string;
@@ -113,7 +114,7 @@ export default function TermModal(props: TermModalProps) {
               </Text>
               <SvgXml
                 xml={svgList.termModal.separator}
-                style={styles.separator}
+                style={[styles.separator, {marginTop: 20}]}
               />
               <Pressable
                 style={[styles.eachTerm, {marginTop: 30}]}
@@ -205,7 +206,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
   },
   separator: {
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom: 20,
   },
   modalBody: {
     flexDirection: 'column',
