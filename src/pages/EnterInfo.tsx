@@ -16,6 +16,10 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import Text from '../components/Text';
+import axios from 'axios';
+import Config from 'react-native-config';
+import {useSelector} from 'react-redux';
+import {RootState} from '../store/reducer';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -23,6 +27,9 @@ type EnterInfoScreenProps = NativeStackScreenProps<
 >;
 
 export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
+  const tempName = useSelector((state: RootState) => state.user.username);
+  const tempPassword = useSelector((state: RootState) => state.user.password);
+
   useEffect(() => {
     const backButtonPressHandler = () => {
       navigation.pop();
@@ -58,6 +65,10 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
 
   const nameRef = useRef<TextInput>(null);
   const birthRef = useRef<TextInput>(null);
+  useEffect(() => {
+    nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+  });
 
   const isValidDate = (date: string) => {
     const year = date.slice(0, 4);
@@ -84,6 +95,19 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     return (
       newDate instanceof Date && !isNaN(newDate.getTime()) && date.length == 8
     );
+  };
+  const SignUp = async () => {
+    console.log(tempName, tempPassword);
+    try {
+      const response = await axios.post(`${Config.API_URL}/join`, {
+        username: tempName,
+        password: tempPassword,
+      });
+      console.log(response.status);
+    } catch (error) {
+      const errorResponse = error.response;
+      console.log(errorResponse.status);
+    }
   };
   return (
     <ImageBackground
@@ -251,9 +275,10 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                     ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
                     : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
-                onPress={() =>
-                  dispatch(userSlice.actions.setToken({accessToken: '1234'}))
-                }
+                onPress={() => {
+                  // SignUp();
+                  dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+                }}
                 disabled={!(name.trim() && birth.trim() && sex && calendar)}>
                 <Text style={styles.checkBtnTxt}>확인</Text>
               </Pressable>
@@ -262,12 +287,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         </KeyboardAwareScrollView>
         {!keyboard && (
           <View style={styles.helperButtonView}>
-            <Pressable style={styles.helperButton}>
+            <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
               {/* <Text style={styles.helperButtonText}>앱스토어</Text>
               <Text style={styles.helperButtonText}>플레이스토어</Text> */}
-              <SvgXml xml={svgList.socialLoginLogo.storeTransparent} />
+              <SvgXml xml={svgList.socialLoginLogo.playStore} opacity={0.5} />
+              <View style={{height: 4}}></View>
+              <SvgXml xml={svgList.socialLoginLogo.appStore} opacity={0.5} />
             </Pressable>
-            <Pressable style={styles.helperButton}>
+            <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
               <SvgXml xml={svgList.socialLoginLogo.usTransparent} />
             </Pressable>
           </View>
@@ -290,7 +317,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginVertical: 40,
+    marginVertical: 50,
   },
   headerView: {
     justifyContent: 'center',
@@ -360,7 +387,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     textAlign: 'center',
     fontSize: 12,
-    fontFamily: 'DNFBitBitv2',
   },
   answerText: {
     color: '#FFFFFF',

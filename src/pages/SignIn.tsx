@@ -7,6 +7,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import axios from 'axios';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
@@ -34,19 +35,25 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   const setShowModal = route.params.setShowModal;
   const [isWebView, setIsWebView] = useState(false);
 
-  // const [progress, setProgress] = useState(0);
-
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     setProgress(prevProgress => {
-  //       if (prevProgress === 100) {
-  //         return 0;
-  //       }
-  //       return prevProgress + 1;
-  //     });
-  //   }, 10);
-  //   return () => clearInterval(interval);
-  // }, []);
+  const Login = async () => {
+    console.log('axios');
+    try {
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        username: 'ys',
+        password: '1234',
+      });
+      console.log(response.headers);
+    } catch (error) {
+      const errorResponse = error.response;
+      console.log(errorResponse);
+      if (errorResponse.status === 401) {
+        dispatch(
+          userSlice.actions.setPerson({username: 'ys', password: '1234'}),
+        );
+        setShowModal('show');
+      }
+    }
+  };
 
   return (
     <View style={styles.entire}>
@@ -72,6 +79,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 setShowModal('show');
+                // Login();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.kakao} />
@@ -83,7 +91,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             <Pressable
               style={styles.eachLoginButton}
               onPress={() => {
-                setShowModal('show');
+                // setShowModal('show');
+                Login();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.google} />
@@ -95,7 +104,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             <Pressable
               style={styles.eachLoginButton}
               onPress={() => {
-                setShowModal('show');
+                // setShowModal('show');
+                Login();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.naver} />
@@ -106,12 +116,14 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             </Pressable>
           </View>
           <View style={styles.helperButtonView}>
-            <Pressable style={styles.helperButton}>
+            <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
               {/* <Text style={styles.helperButtonText}>앱스토어</Text>
               <Text style={styles.helperButtonText}>플레이스토어</Text> */}
-              <SvgXml xml={svgList.socialLoginLogo.store} />
+              <SvgXml xml={svgList.socialLoginLogo.playStore} />
+              <View style={{height: 4}}></View>
+              <SvgXml xml={svgList.socialLoginLogo.appStore} />
             </Pressable>
-            <Pressable style={styles.helperButton}>
+            <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
               <SvgXml xml={svgList.socialLoginLogo.us} />
             </Pressable>
           </View>
