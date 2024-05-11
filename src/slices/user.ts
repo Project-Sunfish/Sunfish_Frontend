@@ -2,6 +2,8 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   accessToken: '',
+  username: '',
+  password: '',
 };
 
 const userSlice = createSlice({
@@ -10,6 +12,10 @@ const userSlice = createSlice({
   reducers: {
     setToken(state, action) {
       state.accessToken = action.payload.accessToken;
+    },
+    setPerson(state, action) {
+      state.username = action.payload.username;
+      state.password = action.payload.password;
     },
   },
   extraReducers: builder => {},

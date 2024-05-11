@@ -1,11 +1,9 @@
 import {FlatList, Pressable, StyleSheet, Text, View} from 'react-native';
-import {useAppDispatch} from '../store';
 import Character from '../components/Character';
 import {useState} from 'react';
 
 export default function Home() {
   const [cnt, setCnt] = useState(0);
-
   return (
     <View style={styles.entire}>
       <View style={styles.gameContainer}>
