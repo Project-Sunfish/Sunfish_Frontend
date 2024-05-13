@@ -32,6 +32,7 @@ export default function MyPage() {
             <Text style={styles.editText}>수정하기</Text>
           </Pressable>
         </View>
+
         <View style={styles.menuButtonView}>
           <Pressable
             style={styles.menuButtonBG}
@@ -114,6 +115,18 @@ export default function MyPage() {
             </LinearGradient>
           </Pressable>
         </View>
+        <View style={styles.footerBtnView}>
+          <Pressable
+            style={styles.logoutBtn}
+            onPress={() => {
+              dispatch(userSlice.actions.setToken({accessToken: ''}));
+            }}>
+            <Text style={styles.logoutBtnTxt}>로그아웃</Text>
+          </Pressable>
+          <Pressable style={styles.quitBtn}>
+            <Text style={styles.quitBtnTxt}>계정 탈퇴</Text>
+          </Pressable>
+        </View>
       </View>
     </ImageBackground>
   );
@@ -150,7 +163,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   editText: {
-    color: '#454545',
+    color: '#002B5DE5',
     fontSize: 11,
     fontWeight: '400',
   },
@@ -175,5 +188,34 @@ const styles = StyleSheet.create({
   },
   menuButtonArrow: {
     flexShrink: 1,
+  },
+  footerBtnView: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoutBtn: {
+    marginVertical: 10,
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 5,
+    borderWidth: 0.5,
+    borderColor: '#6EA5FF',
+    backgroundColor: '#FFFFFF',
+  },
+  logoutBtnTxt: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: '#002B5DCC',
+    textAlign: 'center',
+  },
+  quitBtn: {
+    marginVertical: 3,
+  },
+  quitBtnTxt: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: '#002B5D99',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
   },
 });
