@@ -1,5 +1,5 @@
 import {
-  ImageBackground,
+  Dimensions,
   Keyboard,
   Pressable,
   StyleSheet,
@@ -15,13 +15,15 @@ import {Svg, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {useNavigation} from '@react-navigation/native';
 import MyPageModal from '../components/MyPageModal';
+import ImageBackgroundSrollViewRegardingHeight from '../components/ImageBackgroundSrollViewRegardingHeight';
 
 export default function MyPage() {
+  const windowHeight = Dimensions.get('window').height;
+
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+
   const [showModal, setShowModal] = useState('no');
-  const nameRef = useRef<TextInput>(null);
-  const birthRef = useRef<TextInput>(null);
 
   const [name, setName] = useState('');
   const [birth, setBirth] = useState('');
@@ -32,6 +34,9 @@ export default function MyPage() {
   const [birthVal, setBirthVal] = useState('');
   const [calendarVal, setCalendarVal] = useState('');
   const [sexVal, setSexVal] = useState('');
+
+  const nameRef = useRef<TextInput>(null);
+  const birthRef = useRef<TextInput>(null);
 
   useEffect(() => {
     nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
@@ -65,127 +70,121 @@ export default function MyPage() {
     );
   };
   return (
-    <ImageBackground
-      source={require('../assets/pictures/Base.png')}
-      style={{flex: 1}}>
-      <View style={styles.entire}>
-        {/* <Text>MyPage</Text>
+    <ImageBackgroundSrollViewRegardingHeight
+      critertiaWindowHeight={670}
+      smallerScreenPaddingTop={20}
+      smallerScreenPaddingBottom={110}
+      largerScreenPaddingTop={0}
+      largerScreenPaddingBottom={66}>
+      <View style={styles.profileView}>
+        <View style={styles.profileImgView}>
+          <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
+        </View>
+        <Text style={styles.nameText}>복어펑펑이</Text>
         <Pressable
+          style={styles.editButton}
+          onPress={() => setShowModal('edit')}>
+          <Text style={styles.editText}>수정하기</Text>
+        </Pressable>
+      </View>
+
+      <View style={styles.menuButtonView}>
+        <Pressable
+          style={styles.menuButtonBG}
+          onPress={() => {
+            navigation.navigate('FAQs');
+          }}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#6EA5FFE5', '#5390F4E5']}
+            style={styles.menuButton}>
+            <View style={styles.menuButtonContent}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                자주 묻는 질문
+              </Text>
+            </View>
+            <View style={styles.menuButtonArrow}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                {'>'}
+              </Text>
+            </View>
+          </LinearGradient>
+        </Pressable>
+        <Pressable
+          style={styles.menuButtonBG}
+          onPress={() => {
+            navigation.navigate('Contact');
+          }}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#FFFFFFE5', '#F3F3F3E5']}
+            style={styles.menuButton}>
+            <View style={styles.menuButtonContent}>
+              <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
+                문의하기
+              </Text>
+            </View>
+            <View style={styles.menuButtonArrow}>
+              <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
+                {'>'}
+              </Text>
+            </View>
+          </LinearGradient>
+        </Pressable>
+        <Pressable style={styles.menuButtonBG}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#6EA5FFE5', '#5390F4E5']}
+            style={styles.menuButton}>
+            <View style={styles.menuButtonContent}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                업데이트 노트
+              </Text>
+            </View>
+            <View style={styles.menuButtonArrow}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                {'>'}
+              </Text>
+            </View>
+          </LinearGradient>
+        </Pressable>
+        <Pressable style={styles.menuButtonBG}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#FFFFFFE5', '#F3F3F3E5']}
+            style={styles.menuButton}>
+            <View style={styles.menuButtonContent}>
+              <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
+                복어펑 이야기
+              </Text>
+            </View>
+            <View style={styles.menuButtonArrow}>
+              <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
+                {'>'}
+              </Text>
+            </View>
+          </LinearGradient>
+        </Pressable>
+      </View>
+      <View style={styles.footerBtnView}>
+        <Pressable
+          style={styles.logoutBtn}
           onPress={() => {
             dispatch(userSlice.actions.setToken({accessToken: ''}));
           }}>
-          <Text>로그아웃</Text>
-        </Pressable> */}
-        <View style={styles.profileView}>
-          <View style={styles.profileImgView}>
-            <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
-          </View>
-          <Text style={styles.nameText}>복어펑펑이</Text>
-          <Pressable
-            style={styles.editButton}
-            onPress={() => setShowModal('edit')}>
-            <Text style={styles.editText}>수정하기</Text>
-          </Pressable>
-        </View>
-
-        <View style={styles.menuButtonView}>
-          <Pressable
-            style={styles.menuButtonBG}
-            onPress={() => {
-              navigation.navigate('FAQs');
-            }}>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={['#6EA5FFE5', '#5390F4E5']}
-              style={styles.menuButton}>
-              <View style={styles.menuButtonContent}>
-                <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
-                  자주 묻는 질문
-                </Text>
-              </View>
-              <View style={styles.menuButtonArrow}>
-                <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
-                  {'>'}
-                </Text>
-              </View>
-            </LinearGradient>
-          </Pressable>
-          <Pressable
-            style={styles.menuButtonBG}
-            onPress={() => {
-              navigation.navigate('Contact');
-            }}>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={['#FFFFFFE5', '#F3F3F3E5']}
-              style={styles.menuButton}>
-              <View style={styles.menuButtonContent}>
-                <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
-                  문의하기
-                </Text>
-              </View>
-              <View style={styles.menuButtonArrow}>
-                <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
-                  {'>'}
-                </Text>
-              </View>
-            </LinearGradient>
-          </Pressable>
-          <Pressable style={styles.menuButtonBG}>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={['#6EA5FFE5', '#5390F4E5']}
-              style={styles.menuButton}>
-              <View style={styles.menuButtonContent}>
-                <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
-                  업데이트 노트
-                </Text>
-              </View>
-              <View style={styles.menuButtonArrow}>
-                <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
-                  {'>'}
-                </Text>
-              </View>
-            </LinearGradient>
-          </Pressable>
-          <Pressable style={styles.menuButtonBG}>
-            <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              colors={['#FFFFFFE5', '#F3F3F3E5']}
-              style={styles.menuButton}>
-              <View style={styles.menuButtonContent}>
-                <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
-                  복어펑 이야기
-                </Text>
-              </View>
-              <View style={styles.menuButtonArrow}>
-                <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
-                  {'>'}
-                </Text>
-              </View>
-            </LinearGradient>
-          </Pressable>
-        </View>
-        <View style={styles.footerBtnView}>
-          <Pressable
-            style={styles.logoutBtn}
-            onPress={() => {
-              dispatch(userSlice.actions.setToken({accessToken: ''}));
-            }}>
-            <Text style={styles.logoutBtnTxt}>로그아웃</Text>
-          </Pressable>
-          <Pressable
-            style={styles.quitBtn}
-            onPress={() => {
-              setShowModal('quit');
-            }}>
-            <Text style={styles.quitBtnTxt}>계정 탈퇴</Text>
-          </Pressable>
-        </View>
+          <Text style={styles.logoutBtnTxt}>로그아웃</Text>
+        </Pressable>
+        <Pressable
+          style={styles.quitBtn}
+          onPress={() => {
+            setShowModal('quit');
+          }}>
+          <Text style={styles.quitBtnTxt}>계정 탈퇴</Text>
+        </Pressable>
       </View>
       <MyPageModal
         showModal={showModal}
@@ -307,18 +306,11 @@ export default function MyPage() {
           </Pressable>
         </View>
       </MyPageModal>
-    </ImageBackground>
+    </ImageBackgroundSrollViewRegardingHeight>
   );
 }
 
 const styles = StyleSheet.create({
-  entire: {
-    flex: 1,
-    backgroundColor: '#E5F2FFCC',
-    paddingBottom: 66,
-    paddingHorizontal: 22,
-    justifyContent: 'center',
-  },
   profileView: {
     alignItems: 'center',
     justifyContent: 'center',
