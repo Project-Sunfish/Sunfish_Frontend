@@ -1,16 +1,69 @@
-import {ImageBackground, Pressable, StyleSheet, View} from 'react-native';
+import {
+  ImageBackground,
+  Keyboard,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
 import userSlice from '../slices/user';
 import {useAppDispatch} from '../store';
 import Text from '../components/Text';
-import {useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {LinearGradient} from 'react-native-linear-gradient';
-import {SvgXml} from 'react-native-svg';
+import {Svg, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {useNavigation} from '@react-navigation/native';
+import MyPageModal from '../components/MyPageModal';
 
 export default function MyPage() {
   const dispatch = useAppDispatch();
   const navigation = useNavigation();
+  const [showModal, setShowModal] = useState('no');
+  const nameRef = useRef<TextInput>(null);
+  const birthRef = useRef<TextInput>(null);
+
+  const [name, setName] = useState('');
+  const [birth, setBirth] = useState('');
+  const [calendar, setCalendar] = useState('');
+  const [sex, setSex] = useState('');
+
+  const [nameVal, setNameVal] = useState('');
+  const [birthVal, setBirthVal] = useState('');
+  const [calendarVal, setCalendarVal] = useState('');
+  const [sexVal, setSexVal] = useState('');
+
+  useEffect(() => {
+    nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+  });
+
+  const isValidDate = (date: string) => {
+    const year = date.slice(0, 4);
+    if (year < '1900' || year > `${new Date().getFullYear()}`) {
+      return false;
+    }
+    const month = date.slice(4, 6);
+    if (month < '01' || month > '12') {
+      return false;
+    }
+    const day = date.slice(6, 8);
+    if (month == '02' && (day < '01' || day > '29')) {
+      return false;
+    }
+    if (month == '04' || month == '06' || month == '09' || month == '11') {
+      if (day < '01' || day > '30') {
+        return false;
+      }
+    }
+    if (day < '01' || day > '31') {
+      return false;
+    }
+    const newDate = new Date(`${year}-${month}-${day}`);
+    return (
+      newDate instanceof Date && !isNaN(newDate.getTime()) && date.length == 8
+    );
+  };
   return (
     <ImageBackground
       source={require('../assets/pictures/Base.png')}
@@ -28,7 +81,9 @@ export default function MyPage() {
             <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
           </View>
           <Text style={styles.nameText}>복어펑펑이</Text>
-          <Pressable style={styles.editButton}>
+          <Pressable
+            style={styles.editButton}
+            onPress={() => setShowModal('edit')}>
             <Text style={styles.editText}>수정하기</Text>
           </Pressable>
         </View>
@@ -123,11 +178,135 @@ export default function MyPage() {
             }}>
             <Text style={styles.logoutBtnTxt}>로그아웃</Text>
           </Pressable>
-          <Pressable style={styles.quitBtn}>
+          <Pressable
+            style={styles.quitBtn}
+            onPress={() => {
+              setShowModal('quit');
+            }}>
             <Text style={styles.quitBtnTxt}>계정 탈퇴</Text>
           </Pressable>
         </View>
       </View>
+      <MyPageModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        condition={'quit'}
+        headerTxt={'탈퇴할까요?'}>
+        <View style={styles.quitingContent}>
+          <Text style={styles.quiitingContentTxt}>
+            {'계정 탈퇴 시 모든 데이터와\n기록은 사라집니다.'}
+          </Text>
+        </View>
+        <View style={[styles.modalBtnView, {marginBottom: 10}]}>
+          <Pressable style={[styles.modalBtn, {width: 96}]}>
+            <Text style={styles.modalBtnTransTxt}>취소</Text>
+          </Pressable>
+          <Pressable style={[styles.modalBtn, {width: 96}]}>
+            <Text style={styles.modalBtnTxt}>탈퇴하기</Text>
+          </Pressable>
+        </View>
+      </MyPageModal>
+      <MyPageModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        condition={'edit'}
+        headerTxt={'정보 수정하기'}>
+        <View style={styles.editingContent}>
+          <View style={styles.eachQuestion}>
+            <View style={styles.eachQuestionContent}>
+              <SvgXml
+                xml={svgList.mypage.fishHead}
+                width={19}
+                height={16}
+                style={{marginRight: 6, marginBottom: 1}}
+              />
+              <Text style={styles.eachQuestionTxt}>당신의 이름은?</Text>
+            </View>
+            <View style={styles.eachAnswerContent}>
+              <TextInput
+                style={styles.eachAnswerInput}
+                placeholder={'이름'}
+                placeholderTextColor={'#002B5D80'}
+                onSubmitEditing={() => birthRef.current?.focus()}
+                value={nameVal}
+                onChangeText={text => setNameVal(text.trim())}
+                ref={nameRef}
+              />
+            </View>
+          </View>
+          <View style={{height: 26}} />
+          <View style={styles.eachQuestion}>
+            <View style={styles.eachQuestionContent}>
+              <SvgXml
+                xml={svgList.mypage.fishHead}
+                width={19}
+                height={16}
+                style={{marginRight: 6, marginBottom: 1}}
+              />
+              <Text style={styles.eachQuestionTxt}>당신의 생년월일은?</Text>
+            </View>
+            <View style={styles.eachAnswerContent}>
+              <TextInput
+                style={styles.eachAnswerInput}
+                placeholder={'8자리 ex) 20010203'}
+                placeholderTextColor={'#002B5D80'}
+                onSubmitEditing={() => Keyboard.dismiss()}
+                ref={birthRef}
+                onBlur={() => {
+                  Keyboard.dismiss();
+                }}
+                keyboardType="number-pad"
+                maxLength={8}
+                value={birthVal}
+                onChangeText={text => setBirthVal(text.trim())}
+              />
+              <View style={styles.eachAnswerCalendarView}>
+                <Pressable style={styles.calendarBtn}>
+                  <Text style={styles.calendarBtnTxt}>양력</Text>
+                </Pressable>
+                <View>
+                  <Text style={[styles.calendarBtnTxt, {marginHorizontal: 10}]}>
+                    |
+                  </Text>
+                </View>
+                <Pressable style={styles.calendarBtn}>
+                  <Text style={styles.calendarBtnTxt}>음력</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+          <View style={{height: 26}} />
+          <View style={styles.eachQuestion}>
+            <View style={styles.eachQuestionContent}>
+              <SvgXml
+                xml={svgList.mypage.fishHead}
+                width={19}
+                height={16}
+                style={{marginRight: 6, marginBottom: 1}}
+              />
+              <Text style={styles.eachQuestionTxt}>당신의 성별은?</Text>
+            </View>
+            <View style={styles.eachAnswerContent}>
+              <Pressable style={[styles.eachAnswerBtn, {flex: 2}]}>
+                <Text style={styles.eachAnswerBtnTxt}>남자</Text>
+              </Pressable>
+              <View style={{width: 4}} />
+              <Pressable style={[styles.eachAnswerBtn, {flex: 2}]}>
+                <Text style={styles.eachAnswerBtnTxt}>여자</Text>
+              </Pressable>
+              <View style={{width: 4}} />
+              <Pressable style={[styles.eachAnswerBtn, {flex: 3}]}>
+                <Text style={styles.eachAnswerBtnTxt}>논바이너리</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+        <View style={styles.modalBtnView}>
+          <Pressable style={[styles.modalBtn, {flex: 1, marginHorizontal: 14}]}>
+            <Text style={styles.modalBtnTxt}>확인</Text>
+          </Pressable>
+        </View>
+      </MyPageModal>
     </ImageBackground>
   );
 }
@@ -217,5 +396,93 @@ const styles = StyleSheet.create({
     color: '#002B5D99',
     textAlign: 'center',
     textDecorationLine: 'underline',
+  },
+  quitingContent: {
+    marginVertical: 20,
+  },
+  quiitingContentTxt: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#002B5D66',
+    textAlign: 'center',
+  },
+  modalBtnView: {
+    flexDirection: 'row',
+  },
+  modalBtn: {
+    backgroundColor: '#4F85C54D',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 10,
+    marginHorizontal: 6,
+    borderRadius: 20,
+  },
+  modalBtnTransTxt: {
+    color: '#002B5D80',
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  modalBtnTxt: {
+    color: '#002B5D',
+    fontSize: 12,
+    fontWeight: '400',
+  },
+  editingContent: {
+    marginVertical: 26,
+    width: '100%',
+  },
+  eachQuestion: {},
+  eachQuestionContent: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  eachQuestionTxt: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: '#6EA5FFE5',
+  },
+  eachAnswerContent: {
+    marginTop: 10,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  eachAnswerInput: {
+    // width: '100%',
+    flex: 1,
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 2,
+    textAlign: 'center',
+    backgroundColor: '#EAEAEA4D',
+    borderWidth: 1,
+    borderColor: '#6EA5FFE5',
+    fontFamily: 'DNFBitBitv2',
+    fontSize: 10,
+    fontWeight: '400',
+  },
+  eachAnswerBtn: {
+    borderRadius: 12,
+    padding: 4,
+    backgroundColor: '#EAEAEA4D',
+    borderWidth: 1,
+    borderColor: '#6EA5FFE5',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  eachAnswerBtnTxt: {
+    fontSize: 10,
+    fontWeight: '400',
+    color: '#002B5D80',
+  },
+  eachAnswerCalendarView: {
+    marginLeft: 10,
+    flexDirection: 'row',
+  },
+  calendarBtn: {},
+  calendarBtnTxt: {
+    fontSize: 10,
+    fontWeight: '400',
+    color: '#002B5D80',
   },
 });
