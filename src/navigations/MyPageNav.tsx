@@ -12,14 +12,14 @@ export type MyPageStackParamList = {
   FAQs: undefined;
 };
 
-export type RootStackNavigationProp =
+export type MyPageStackNavigationProp =
   NativeStackNavigationProp<MyPageStackParamList>;
 
 const Stack = createNativeStackNavigator<MyPageStackParamList>();
 
 export default function MyPageNav() {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{animation: 'none'}}>
       <Stack.Screen
         name="MyPage"
         component={MyPage}

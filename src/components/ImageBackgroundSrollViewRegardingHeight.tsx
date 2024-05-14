@@ -11,8 +11,10 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
   critertiaWindowHeight: number;
   smallerScreenPaddingTop: number;
   smallerScreenPaddingBottom: number;
+  smallerScreenMarginBottom: number;
   largerScreenPaddingTop: number;
   largerScreenPaddingBottom: number;
+  largerScreenMarginBottom: number;
 }) {
   const windowHeight = Dimensions.get('window').height;
   return (
@@ -28,7 +30,15 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
               paddingBottom: props.smallerScreenPaddingBottom,
             },
           ]}>
-          <ScrollView>{props.children}</ScrollView>
+          <ScrollView>
+            {props.children}
+
+            <View
+              style={{
+                height: props.smallerScreenMarginBottom,
+              }}
+            />
+          </ScrollView>
         </View>
       ) : (
         <View
@@ -40,6 +50,11 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
             },
           ]}>
           {props.children}
+          <View
+            style={{
+              height: props.largerScreenMarginBottom,
+            }}
+          />
         </View>
       )}
     </ImageBackground>

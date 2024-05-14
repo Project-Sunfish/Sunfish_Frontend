@@ -92,6 +92,7 @@ export default function FAQs() {
           <FlatList
             style={styles.FAQs}
             data={faqs[tab]}
+            ListFooterComponent={<View style={{height: 120}} />}
             renderItem={({item, index}: itemProps) => (
               <View style={styles.eachQuestion}>
                 <Pressable
@@ -142,7 +143,8 @@ const styles = StyleSheet.create({
   entire: {
     flex: 1,
     backgroundColor: '#E5F2FFCC',
-    paddingBottom: 66,
+    // backgroundColor: 'red',
+    // paddingBottom: 66,
     paddingHorizontal: 33,
     position: 'relative',
   },
@@ -159,7 +161,7 @@ const styles = StyleSheet.create({
   },
   Content: {
     marginTop: 102,
-    marginBottom: 66,
+    // marginBottom: 66
     flex: 1,
   },
   titleView: {},

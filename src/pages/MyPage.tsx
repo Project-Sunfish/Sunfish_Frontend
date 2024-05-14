@@ -1,27 +1,33 @@
 import {
-  Dimensions,
   Keyboard,
   Pressable,
+  ScrollView,
   StyleSheet,
   TextInput,
   View,
 } from 'react-native';
 import userSlice from '../slices/user';
-import {useAppDispatch} from '../store';
+import {RootState, useAppDispatch} from '../store';
 import Text from '../components/Text';
 import {useEffect, useRef, useState} from 'react';
 import {LinearGradient} from 'react-native-linear-gradient';
-import {Svg, SvgXml} from 'react-native-svg';
+import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import {useNavigation} from '@react-navigation/native';
 import MyPageModal from '../components/MyPageModal';
 import ImageBackgroundSrollViewRegardingHeight from '../components/ImageBackgroundSrollViewRegardingHeight';
+import {NativeStackNavigationProp} from '@react-navigation/native-stack';
+import {MyPageStackParamList} from '../navigations/MyPageNav';
+import {useSelector} from 'react-redux';
 
-export default function MyPage() {
-  const windowHeight = Dimensions.get('window').height;
-
+type MyPageScreenNavigationProp = NativeStackNavigationProp<
+  MyPageStackParamList,
+  'MyPage'
+>;
+type MyPageProps = {
+  navigation: MyPageScreenNavigationProp;
+};
+export default function MyPage(props: MyPageProps) {
   const dispatch = useAppDispatch();
-  const navigation = useNavigation();
 
   const [showModal, setShowModal] = useState('no');
 
@@ -73,9 +79,11 @@ export default function MyPage() {
     <ImageBackgroundSrollViewRegardingHeight
       critertiaWindowHeight={670}
       smallerScreenPaddingTop={20}
-      smallerScreenPaddingBottom={110}
+      smallerScreenPaddingBottom={0}
+      smallerScreenMarginBottom={120}
       largerScreenPaddingTop={0}
-      largerScreenPaddingBottom={66}>
+      largerScreenPaddingBottom={0}
+      largerScreenMarginBottom={66}>
       <View style={styles.profileView}>
         <View style={styles.profileImgView}>
           <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
@@ -92,7 +100,7 @@ export default function MyPage() {
         <Pressable
           style={styles.menuButtonBG}
           onPress={() => {
-            navigation.navigate('FAQs');
+            props.navigation.navigate('FAQs');
           }}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -114,7 +122,7 @@ export default function MyPage() {
         <Pressable
           style={styles.menuButtonBG}
           onPress={() => {
-            navigation.navigate('Contact');
+            props.navigation.navigate('Contact');
           }}>
           <LinearGradient
             start={{x: 0, y: 0}}
@@ -268,7 +276,7 @@ export default function MyPage() {
               <View style={styles.eachAnswerCalendarView}>
                 <Pressable
                   style={styles.calendarBtn}
-                  onPress={() => setCalendarVal('solar')}>
+                  onTouchEnd={() => setCalendarVal('solar')}>
                   <Text
                     style={[
                       styles.calendarBtnTxt,
@@ -280,13 +288,17 @@ export default function MyPage() {
                   </Text>
                 </Pressable>
                 <View>
-                  <Text style={[styles.calendarBtnTxt, {marginHorizontal: 10}]}>
+                  <Text
+                    style={[
+                      styles.calendarBtnTxt,
+                      {marginHorizontal: 10, paddingTop: 2},
+                    ]}>
                     |
                   </Text>
                 </View>
                 <Pressable
                   style={styles.calendarBtn}
-                  onPress={() => setCalendarVal('lunar')}>
+                  onTouchEnd={() => setCalendarVal('lunar')}>
                   <Text
                     style={[
                       styles.calendarBtnTxt,
@@ -557,7 +569,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     flexDirection: 'row',
   },
-  calendarBtn: {},
+  calendarBtn: {
+    padding: 2,
+  },
   calendarBtnTxt: {
     fontSize: 10,
     fontWeight: '400',
