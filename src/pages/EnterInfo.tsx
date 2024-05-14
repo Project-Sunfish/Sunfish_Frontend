@@ -132,7 +132,11 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 이름은?</Text>
-                {name.trim() && <SvgXml xml={svgList.enterInfo.check} />}
+                {name.trim() ? (
+                  <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
+                )}
               </View>
               <View style={styles.answerContent}>
                 <TextInput
@@ -155,8 +159,10 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 생년월일은?</Text>
-                {isValidDate(birth) && calendar && (
+                {isValidDate(birth) && calendar ? (
                   <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
                 )}
               </View>
               <View style={styles.answerContent}>
@@ -219,7 +225,11 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 성별은?</Text>
-                {sex && <SvgXml xml={svgList.enterInfo.check} />}
+                {sex ? (
+                  <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
+                )}
               </View>
               <View style={styles.answerContent}>
                 <Pressable

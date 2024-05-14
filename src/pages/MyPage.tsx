@@ -223,7 +223,10 @@ export default function MyPage() {
             </View>
             <View style={styles.eachAnswerContent}>
               <TextInput
-                style={styles.eachAnswerInput}
+                style={[
+                  styles.eachAnswerInput,
+                  nameVal ? {color: '#002B5D'} : {color: '#002B5D80'},
+                ]}
                 placeholder={'이름'}
                 placeholderTextColor={'#002B5D80'}
                 onSubmitEditing={() => birthRef.current?.focus()}
@@ -246,7 +249,10 @@ export default function MyPage() {
             </View>
             <View style={styles.eachAnswerContent}>
               <TextInput
-                style={styles.eachAnswerInput}
+                style={[
+                  styles.eachAnswerInput,
+                  birthVal ? {color: '#002B5D'} : {color: '#002B5D80'},
+                ]}
                 placeholder={'8자리 ex) 20010203'}
                 placeholderTextColor={'#002B5D80'}
                 onSubmitEditing={() => Keyboard.dismiss()}
@@ -260,16 +266,36 @@ export default function MyPage() {
                 onChangeText={text => setBirthVal(text.trim())}
               />
               <View style={styles.eachAnswerCalendarView}>
-                <Pressable style={styles.calendarBtn}>
-                  <Text style={styles.calendarBtnTxt}>양력</Text>
+                <Pressable
+                  style={styles.calendarBtn}
+                  onPress={() => setCalendarVal('solar')}>
+                  <Text
+                    style={[
+                      styles.calendarBtnTxt,
+                      calendarVal == 'solar'
+                        ? {color: '#002B5D'}
+                        : {color: '#002B5D80'},
+                    ]}>
+                    양력
+                  </Text>
                 </Pressable>
                 <View>
                   <Text style={[styles.calendarBtnTxt, {marginHorizontal: 10}]}>
                     |
                   </Text>
                 </View>
-                <Pressable style={styles.calendarBtn}>
-                  <Text style={styles.calendarBtnTxt}>음력</Text>
+                <Pressable
+                  style={styles.calendarBtn}
+                  onPress={() => setCalendarVal('lunar')}>
+                  <Text
+                    style={[
+                      styles.calendarBtnTxt,
+                      calendarVal == 'lunar'
+                        ? {color: '#002B5D'}
+                        : {color: '#002B5D80'},
+                    ]}>
+                    음력
+                  </Text>
                 </Pressable>
               </View>
             </View>
@@ -286,22 +312,84 @@ export default function MyPage() {
               <Text style={styles.eachQuestionTxt}>당신의 성별은?</Text>
             </View>
             <View style={styles.eachAnswerContent}>
-              <Pressable style={[styles.eachAnswerBtn, {flex: 2}]}>
-                <Text style={styles.eachAnswerBtnTxt}>남자</Text>
+              <Pressable
+                onPress={() => setSexVal('M')}
+                style={[
+                  styles.eachAnswerBtn,
+                  {flex: 2},
+                  sexVal == 'M'
+                    ? {backgroundColor: '#6EA5FFE5'}
+                    : {backgroundColor: '#EAEAEA4D'},
+                ]}>
+                <Text
+                  style={[
+                    styles.eachAnswerBtnTxt,
+                    sexVal == 'M' ? {color: '#FFFFFFBD'} : {color: '#002B5D80'},
+                  ]}>
+                  남자
+                </Text>
               </Pressable>
               <View style={{width: 4}} />
-              <Pressable style={[styles.eachAnswerBtn, {flex: 2}]}>
-                <Text style={styles.eachAnswerBtnTxt}>여자</Text>
+              <Pressable
+                onPress={() => setSexVal('F')}
+                style={[
+                  styles.eachAnswerBtn,
+                  {flex: 2},
+                  sexVal == 'F'
+                    ? {backgroundColor: '#6EA5FFE5'}
+                    : {backgroundColor: '#EAEAEA4D'},
+                ]}>
+                <Text
+                  style={[
+                    styles.eachAnswerBtnTxt,
+                    sexVal == 'F' ? {color: '#FFFFFFBD'} : {color: '#002B5D80'},
+                  ]}>
+                  여자
+                </Text>
               </Pressable>
               <View style={{width: 4}} />
-              <Pressable style={[styles.eachAnswerBtn, {flex: 3}]}>
-                <Text style={styles.eachAnswerBtnTxt}>논바이너리</Text>
+              <Pressable
+                onPress={() => setSexVal('N')}
+                style={[
+                  styles.eachAnswerBtn,
+                  {flex: 3},
+                  sexVal == 'N'
+                    ? {backgroundColor: '#6EA5FFE5'}
+                    : {backgroundColor: '#EAEAEA4D'},
+                ]}>
+                <Text
+                  style={[
+                    styles.eachAnswerBtnTxt,
+                    sexVal == 'N' ? {color: '#FFFFFFBD'} : {color: '#002B5D80'},
+                  ]}>
+                  논바이너리
+                </Text>
               </Pressable>
             </View>
           </View>
         </View>
         <View style={styles.modalBtnView}>
-          <Pressable style={[styles.modalBtn, {flex: 1, marginHorizontal: 14}]}>
+          <Pressable
+            disabled={
+              !(
+                nameVal &&
+                birthVal &&
+                isValidDate(birthVal) &&
+                calendarVal &&
+                sexVal
+              )
+            }
+            style={[
+              styles.modalBtn,
+              {flex: 1, marginHorizontal: 14},
+              nameVal &&
+              birthVal &&
+              isValidDate(birthVal) &&
+              calendarVal &&
+              sexVal
+                ? {backgroundColor: '#6EA5FFE5'}
+                : {},
+            ]}>
             <Text style={styles.modalBtnTxt}>확인</Text>
           </Pressable>
         </View>
@@ -456,7 +544,6 @@ const styles = StyleSheet.create({
   eachAnswerBtn: {
     borderRadius: 12,
     padding: 4,
-    backgroundColor: '#EAEAEA4D',
     borderWidth: 1,
     borderColor: '#6EA5FFE5',
     justifyContent: 'center',
@@ -465,7 +552,6 @@ const styles = StyleSheet.create({
   eachAnswerBtnTxt: {
     fontSize: 10,
     fontWeight: '400',
-    color: '#002B5D80',
   },
   eachAnswerCalendarView: {
     marginLeft: 10,

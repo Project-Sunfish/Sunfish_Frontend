@@ -95,7 +95,10 @@ export default function FAQs() {
             renderItem={({item, index}: itemProps) => (
               <View style={styles.eachQuestion}>
                 <Pressable
-                  style={styles.eachQuestionToggle}
+                  style={[
+                    styles.eachQuestionToggle,
+                    push_toggle[index] && {paddingBottom: 8},
+                  ]}
                   onPress={() => {
                     setPush_toggle(prev => {
                       const newPush = [...prev];
@@ -107,9 +110,15 @@ export default function FAQs() {
                     {'Q. ' + item.Q}
                   </Text>
                   {push_toggle[index] ? (
-                    <SvgXml xml={svgList.mypage.faqToggleUp} />
+                    <SvgXml
+                      xml={svgList.mypage.faqToggleUp}
+                      style={{margin: 4}}
+                    />
                   ) : (
-                    <SvgXml xml={svgList.mypage.faqToggleDown} />
+                    <SvgXml
+                      xml={svgList.mypage.faqToggleDown}
+                      style={{margin: 4}}
+                    />
                   )}
                 </Pressable>
                 {push_toggle[index] && (
@@ -179,19 +188,28 @@ const styles = StyleSheet.create({
   eachQuestion: {
     borderRadius: 12,
     marginBottom: 16,
-    padding: 13,
+    // padding: 12
     backgroundColor: '#FFFFFF',
   },
   eachQuestionToggle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    padding: 12,
   },
   eachQuestionToggleTxt: {
     fontSize: 13,
     fontWeight: '400',
     color: '#6EA5FF',
   },
-  eachAnswerView: {},
-  eachAnswerViewTxt: {},
+  eachAnswerView: {
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    paddingTop: 0,
+  },
+  eachAnswerViewTxt: {
+    fontSize: 11,
+    fontWeight: '400',
+    color: '#002B5D',
+  },
 });
