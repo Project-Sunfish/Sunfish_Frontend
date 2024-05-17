@@ -266,4 +266,15 @@ export const svgList = {
     </svg>
     `,
   },
+  bookDetail: {
+    arrowLeft: `
+    <svg width="29" height="88" viewBox="0 0 29 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M27.7002 1.14478L1.53198 44.9597L26.4735 87.0674" stroke="white" stroke-linecap="round"/>
+    </svg>
+    `,
+    arrowRight: `<svg width="28" height="88" viewBox="0 0 28 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M0.700195 1.14478L26.8684 44.9597L1.92686 87.0674" stroke="white" stroke-linecap="round"/>
+    </svg>
+    `,
+  },
 };

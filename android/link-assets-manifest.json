@@ -4,6 +4,10 @@
     {
       "path": "src/assets/fonts/DNFBitBitv2.otf",
       "sha1": "80ab10c217b23a2efd5e19f7c654729202254bd4"
+    },
+    {
+      "path": "src/assets/fonts/handWriting.ttf",
+      "sha1": "ec1277656eae863df33384ad5bc141e8ddf61607"
     }
   ]
 }
