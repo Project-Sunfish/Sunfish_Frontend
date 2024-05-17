@@ -1,8 +1,8 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {Pressable, StyleSheet, TouchableOpacity, View} from 'react-native';
 import Text from './Text';
 import {LinearGradient} from 'react-native-linear-gradient';
 import {BlurView} from '@react-native-community/blur';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from '../store';
 import userSlice from '../slices/user';
@@ -12,6 +12,7 @@ export default function CustomTabbarWithCustomIndexingIcon({
   descriptors,
   navigation,
 }: any) {
+  const tabBar = useSelector((state: RootState) => state.user.tabBar);
   let beforeChangingIndex: any[] = [];
   let afterChangingIndex: any[] = [];
   state.routes.map((route: any, index: any) => {
@@ -85,6 +86,7 @@ export default function CustomTabbarWithCustomIndexingIcon({
     beforeChangingIndex[0],
     beforeChangingIndex[2],
   );
+  if (tabBar === '' || tabBar === undefined) return <></>;
   return (
     <View style={styles.tabbarEntire}>
       <BlurView

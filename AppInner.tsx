@@ -1,35 +1,30 @@
+import React, {useState} from 'react';
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
 } from '@react-navigation/native-stack';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {
-  BackHandler,
-  Platform,
-  StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+  BottomTabNavigationProp,
+  createBottomTabNavigator,
+} from '@react-navigation/bottom-tabs';
+import {Platform, StyleSheet} from 'react-native';
 
 import {useSelector} from 'react-redux';
 import {RootState} from './src/store';
-import {Safe} from './src/components/Safe';
 
 import {svgList} from './src/assets/svgList';
 import {SvgXml} from 'react-native-svg';
 
-import SignIn from './src/pages/SignIn';
-import Book from './src/pages/Book';
-import Home from './src/pages/Home';
-import MyPage from './src/pages/MyPage';
 import {NavigationContainer} from '@react-navigation/native';
+import SignIn from './src/pages/SignIn';
+import Home from './src/pages/Home';
 import EnterInfo from './src/pages/EnterInfo';
-import React, {useEffect, useState} from 'react';
 import TermModal from './src/components/TermModal';
-import Text from './src/components/Text';
-
 import MyPageNav from './src/navigations/MyPageNav';
+import BookNav from './src/navigations/BookNav';
+
+import {Safe} from './src/components/Safe';
+import Text from './src/components/Text';
 import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
 
 export type RootStackParamList = {
@@ -38,12 +33,18 @@ export type RootStackParamList = {
     setShowModal: React.Dispatch<React.SetStateAction<string>>;
   };
   EnterInfo: {setShowModal: React.Dispatch<React.SetStateAction<string>>};
-  Home: undefined;
-  MyPageNav: undefined;
 };
 
 export type RootStackNavigationProp =
   NativeStackNavigationProp<RootStackParamList>;
+
+export type RootTabParamList = {
+  Home: undefined;
+  BookNav: undefined;
+  MyPageNav: undefined;
+};
+
+export type RootTabNavigationProp = BottomTabNavigationProp<RootTabParamList>;
 
 const screenoptions = () => {
   return {
@@ -58,14 +59,13 @@ const screenoptions = () => {
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function AppInner() {
   const isLoggedIn = useSelector(
     (state: RootState) => !!state.user.accessToken,
   );
   const [showModal, setShowModal] = useState('no');
-
   return (
     <NavigationContainer>
       {isLoggedIn ? (
@@ -90,8 +90,8 @@ function AppInner() {
               }}
             />
             <Tab.Screen
-              name="Book"
-              component={Book}
+              name="BookNav"
+              component={BookNav}
               options={{
                 title: 'Book',
                 headerShown: false,
