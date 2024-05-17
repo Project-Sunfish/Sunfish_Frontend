@@ -13,6 +13,7 @@ type BookDetailScreenNavigationProp = NativeStackNavigationProp<
 >;
 type BookDetailProps = {
   navigation: BookDetailScreenNavigationProp;
+  route: {params: {id: number}};
 };
 
 export default function BookDetail(props: BookDetailProps) {
@@ -34,9 +35,11 @@ export default function BookDetail(props: BookDetailProps) {
     };
   }, []);
   const tabBar = useSelector((state: RootState) => state.user.tabBar);
+  const id = props.route.params.id;
   return (
     <View style={{flex: 1}}>
       <Text>BookDetail</Text>
+      <Text>{id}</Text>
     </View>
   );
 }
