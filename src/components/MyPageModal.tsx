@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
     color: '#002B5D',
     fontWeight: '400',
     fontSize: 25,
+    textAlign: 'center',
   },
   modalBody: {
     flexDirection: 'column',
