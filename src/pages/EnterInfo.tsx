@@ -7,6 +7,7 @@ import {
   TextInput,
   Keyboard,
   ImageBackground,
+  Text as RNText,
 } from 'react-native';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -20,6 +21,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
+import {LinearGradient} from 'react-native-linear-gradient';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -119,16 +121,22 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
           style={{flex: 1, width: '100%'}}>
           <View style={styles.header}>
             <SvgXml xml={svgList.enterInfo.sunfish} width={100} height={100} />
-            <View style={styles.headerView}>
+            <LinearGradient
+              colors={['#BFFFFB99', '#FFFFFF59']}
+              style={styles.headerView}>
               <Text style={styles.headerText}>너에 대한 정보를 알고싶복복</Text>
-            </View>
+            </LinearGradient>
           </View>
           <View style={styles.body}>
-            <View style={styles.eachQuestion}>
+            <View style={[styles.eachQuestion, {marginTop: 0}]}>
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 이름은?</Text>
-                {name.trim() && <SvgXml xml={svgList.enterInfo.check} />}
+                {name.trim() ? (
+                  <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
+                )}
               </View>
               <View style={styles.answerContent}>
                 <TextInput
@@ -151,8 +159,10 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 생년월일은?</Text>
-                {isValidDate(birth) && calendar && (
+                {isValidDate(birth) && calendar ? (
                   <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
                 )}
               </View>
               <View style={styles.answerContent}>
@@ -215,7 +225,11 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
                 <Text style={styles.questionText}>당신의 성별은?</Text>
-                {sex && <SvgXml xml={svgList.enterInfo.check} />}
+                {sex ? (
+                  <SvgXml xml={svgList.enterInfo.check} />
+                ) : (
+                  <SvgXml xml={svgList.enterInfo.checkTransparent} />
+                )}
               </View>
               <View style={styles.answerContent}>
                 <Pressable
@@ -271,7 +285,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <Pressable
                 style={[
                   styles.checkBtn,
-                  name.trim() && birth.trim() && sex && calendar
+                  name.trim() && isValidDate(birth) && sex && calendar
                     ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
                     : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
@@ -279,7 +293,9 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                   // SignUp();
                   dispatch(userSlice.actions.setToken({accessToken: '1234'}));
                 }}
-                disabled={!(name.trim() && birth.trim() && sex && calendar)}>
+                disabled={
+                  !(name.trim() && isValidDate(birth) && sex && calendar)
+                }>
                 <Text style={styles.checkBtnTxt}>확인</Text>
               </Pressable>
             </View>
@@ -325,8 +341,8 @@ const styles = StyleSheet.create({
     marginTop: 30,
     paddingHorizontal: 45,
     paddingVertical: 10,
-    backgroundColor:
-      'linear-gradient(180deg, rgba(191, 255, 251, 0.52) 0%, rgba(255, 255, 255, 0.35) 100%)',
+    backgroundColor: 'transparent',
+    // 'linear-gradient(180deg, rgba(191, 255, 251, 0.52) 0%, rgba(255, 255, 255, 0.35) 100%)',
     borderRadius: 45,
     borderWidth: 1,
     borderColor: '#73CDFF',

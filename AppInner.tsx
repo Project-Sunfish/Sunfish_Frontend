@@ -29,6 +29,9 @@ import React, {useEffect, useState} from 'react';
 import TermModal from './src/components/TermModal';
 import Text from './src/components/Text';
 
+import MyPageNav from './src/navigations/MyPageNav';
+import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
+
 export type RootStackParamList = {
   SignIn: {
     showModal: string;
@@ -36,7 +39,7 @@ export type RootStackParamList = {
   };
   EnterInfo: {setShowModal: React.Dispatch<React.SetStateAction<string>>};
   Home: undefined;
-  MyPage: undefined;
+  MyPageNav: undefined;
 };
 
 export type RootStackNavigationProp =
@@ -50,84 +53,12 @@ const screenoptions = () => {
     tabBarLabelStyle: {fontSize: 11, paddingBottom: 10},
     tabBarShadowVisible: false,
     tabBarShowLabel: true,
+    animation: 'none',
   };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
-
-const CustomTabbarWithCustomIndexingIcon = ({
-  state,
-  descriptors,
-  navigation,
-}: any) => {
-  let beforeChangingIndex: any[] = [];
-  let afterChangingIndex: any[] = [];
-  state.routes.map((route: any, index: any) => {
-    const {options} = descriptors[route.key];
-    const label =
-      options.tabBarLabel !== undefined
-        ? options.tabBarLabel
-        : options.title !== undefined
-        ? options.title
-        : route.name;
-
-    const isFocused = state.index === index;
-
-    const onPress = () => {
-      const event = navigation.emit({
-        type: 'tabPress',
-        target: route.key,
-        canPreventDefault: true,
-      });
-
-      if (!isFocused && !event.defaultPrevented) {
-        navigation.navigate(route.name);
-      }
-    };
-
-    beforeChangingIndex.push(
-      <TouchableOpacity
-        key={index}
-        accessibilityRole="button"
-        accessibilityState={isFocused ? {selected: true} : {}}
-        accessibilityLabel={options.tabBarAccessibilityLabel}
-        testID={options.tabBarTestID}
-        onPress={onPress}
-        style={{flex: 1, alignItems: 'center'}}>
-        {options.tabBarIcon({
-          focused: isFocused,
-          color: isFocused ? 'blue' : 'skyblue',
-          size: 28,
-        })}
-        <Text
-          style={{
-            color: isFocused ? 'blue' : 'skyblue',
-            fontSize: 11,
-            paddingBottom: 10,
-          }}>
-          {label}
-        </Text>
-      </TouchableOpacity>,
-    );
-  });
-  afterChangingIndex.push(
-    beforeChangingIndex[1],
-    beforeChangingIndex[0],
-    beforeChangingIndex[2],
-  );
-  return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        backgroundColor: 'white',
-        paddingTop: 10,
-      }}>
-      {afterChangingIndex}
-    </View>
-  );
-};
 
 function AppInner() {
   const isLoggedIn = useSelector(
@@ -138,7 +69,7 @@ function AppInner() {
   return (
     <NavigationContainer>
       {isLoggedIn ? (
-        <Safe color="#202020">
+        <Safe color="#ffffff">
           <Tab.Navigator
             initialRouteName="Home"
             screenOptions={screenoptions}
@@ -148,17 +79,13 @@ function AppInner() {
               component={Home}
               options={{
                 headerShown: false,
-                tabBarLabel: 'Home',
+                tabBarLabel: '플레이',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.home} />
                 ),
               }}
             />
@@ -178,37 +105,29 @@ function AppInner() {
                   backgroundColor: '#202020',
                 },
                 headerShadowVisible: false,
-                tabBarLabel: 'Book',
+                tabBarLabel: '도  감',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.book} />
                 ),
               }}
             />
 
             <Tab.Screen
-              name="MyPage"
-              component={MyPage}
+              name="MyPageNav"
+              component={MyPageNav}
               options={{
                 headerShown: false,
-                tabBarLabel: 'MyPage',
+                tabBarLabel: '마이페이지',
                 tabBarIcon: (props: {
                   focused: boolean;
                   color: string;
                   size: number;
                 }) => (
-                  <SvgXml
-                    width={28}
-                    height={28}
-                    xml={props.focused ? svgList.temp.imsi : svgList.temp.imsi}
-                  />
+                  <SvgXml width={43} height={43} xml={svgList.tabbar.mypage} />
                 ),
               }}
             />
