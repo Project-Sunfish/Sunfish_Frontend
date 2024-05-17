@@ -20,6 +20,10 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [worry, setWorry] = useState('');
 
+  const ref = useRef<TextInput>(null);
+  useEffect(() => {
+    ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
+  });
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
@@ -30,11 +34,6 @@ export default function Home() {
     return `${year}.${month}.${day}(${dayOfWeek})`;
   };
 
-  const ref = useRef<TextInput>(null);
-  useEffect(() => {
-    ref.current?.setNativeProps({style: {fontFamily: 'handWriting'}});
-  });
-
   return (
     <ImageBackground
       source={require('../assets/pictures/Base.png')}
@@ -42,19 +41,9 @@ export default function Home() {
       <View style={styles.entire}>
         <View style={styles.gameContainer}>
           {[...Array(cnt)].map((_, index) => (
-            <Character key={index} />
+            <Character key={index} setModal={setModal} />
           ))}
         </View>
-        <Pressable
-          style={({pressed}) => [
-            styles.btn,
-            {backgroundColor: pressed ? 'red' : 'blue'},
-          ]}
-          onPress={() => {
-            setCnt(cnt + 1);
-          }}>
-          <Text style={{color: 'white'}}>Count: {cnt}</Text>
-        </Pressable>
         <Pressable
           style={({pressed}) => [
             styles.btn,
@@ -68,7 +57,7 @@ export default function Home() {
         <Pressable
           onPress={() => {
             if (newBogus) {
-              setModal('selectCategory');
+              setCnt(cnt + 1);
             } else {
               setModal('cannotCreate');
             }
@@ -179,7 +168,12 @@ export default function Home() {
           <View style={{width: 16}}></View>
           <Pressable
             disabled={selectedCategory.length < 1}
-            onPress={() => setModal('worry')}
+            onPress={() => {
+              setModal('no');
+              setTimeout(() => {
+                setModal('worry');
+              }, 400);
+            }}
             style={[
               styles.selectCategoryBtn,
               selectedCategory.length >= 1 && {backgroundColor: '#6EA5FF'},
@@ -197,35 +191,40 @@ export default function Home() {
       <MyPageModal
         showModal={modal}
         setShowModal={setModal}
-        condition="worry"
+        condition={'worry'}
         headerTxt="어떤 걱정인가요?">
         <View style={styles.worryContent}>
           <Text style={styles.date}>{formatDate(new Date())}</Text>
           <TextInput
+            ref={ref}
             style={[
               styles.worryInput,
-              worry.trim().length >= 1 && {paddingBottom: 30},
+              worry.length >= 1 && {paddingBottom: 30},
             ]}
             placeholder="오늘 하루를 기록해보세요."
             placeholderTextColor={'#002B5D80'}
             value={worry}
             onChangeText={text => setWorry(text)}
             multiline={true}
-            ref={ref}
           />
-          {worry.trim().length >= 1 && (
+          {worry.length >= 1 && (
             <Text style={styles.quantity}>{`${worry.length}/1000`}</Text>
           )}
         </View>
         <View style={styles.selectCategoryBtnView}>
           <Pressable
             style={styles.selectCategoryBtn}
-            onPress={() => setModal('selectCategory')}>
+            onPress={() => {
+              setModal('no');
+              setTimeout(() => {
+                setModal('selectCategory');
+              }, 400);
+            }}>
             <Text style={styles.cannotCreateBtnTxt}>취소</Text>
           </Pressable>
           <View style={{width: 16}}></View>
           <Pressable
-            disabled={worry.trim().length < 1}
+            disabled={worry.length < 1}
             // onPress={() => setModal('worry')}
             style={[
               styles.selectCategoryBtn,
@@ -361,6 +360,10 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     textAlign: 'center',
     maxHeight: 220,
+    fontFamily: 'KCCDodamdodam',
+    color: '#002B5D',
+    fontWeight: '400',
+    fontSize: 16,
   },
   quantity: {
     color: '#002B5D80',

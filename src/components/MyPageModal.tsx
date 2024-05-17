@@ -1,5 +1,5 @@
 import React, {Children, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable, TextInput} from 'react-native';
 import Modal from 'react-native-modal';
 import Text from './Text';
 
@@ -21,7 +21,8 @@ export default function MyPageModal(props: MyPageModalProps) {
       isVisible={showModal == props.condition}
       hasBackdrop={true}
       onBackdropPress={() => setshowModal('no')}
-      onBackButtonPress={() => setshowModal('no')}>
+      onBackButtonPress={() => setshowModal('no')}
+      avoidKeyboard={true}>
       <Pressable
         style={styles.modalBGView}
         onPress={() => {

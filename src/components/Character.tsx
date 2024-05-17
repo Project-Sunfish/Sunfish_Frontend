@@ -10,7 +10,11 @@ import {
 } from 'react-native';
 import Svg, {Circle} from 'react-native-svg';
 
-export default function Character() {
+type CharacterProps = {
+  setModal: React.Dispatch<React.SetStateAction<string>>;
+};
+
+export default function Character(props: CharacterProps) {
   const [direction, setDirection] = useState('right');
   let prev = 0;
   const position = useRef(new Animated.ValueXY()).current;
@@ -66,7 +70,7 @@ export default function Character() {
         position: 'absolute',
         transform: [{translateX: position.x}, {translateY: position.y}],
       }}>
-      <Pressable onPress={() => Vibration.vibrate(200)}>
+      <Pressable onPress={() => props.setModal('selectCategory')}>
         <Svg height="50" width="50">
           {direction === 'right' ? (
             <Circle cx="10" cy="10" r="10" fill="red" />
