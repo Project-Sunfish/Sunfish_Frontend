@@ -36,14 +36,19 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   const [isWebView, setIsWebView] = useState(false);
 
   const Login = async () => {
-    console.log('axios');
+    console.log(Config.API_URL);
     try {
       const response = await axios.post(`${Config.API_URL}/login`, {
         username: 'ys',
         password: '1234',
       });
-      console.log(response.headers);
-    } catch (error) {
+      console.log(response.status);
+      dispatch(
+        userSlice.actions.setToken({
+          accessToken: response.headers['authorization'].replace('Bearer ', ''),
+        }),
+      );
+    } catch (error: any) {
       const errorResponse = error.response;
       console.log(errorResponse);
       if (errorResponse.status === 401) {
@@ -78,8 +83,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             <Pressable
               style={styles.eachLoginButton}
               onPress={() => {
-                setShowModal('show');
-                // Login();
+                // setShowModal('show');
+                Login();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.kakao} />

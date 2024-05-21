@@ -105,10 +105,30 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         username: tempName,
         password: tempPassword,
       });
-      console.log(response.status);
+      if (response.status == 201) {
+        Login();
+      }
     } catch (error) {
       const errorResponse = error.response;
       console.log(errorResponse.status);
+    }
+  };
+  const Login = async () => {
+    console.log(Config.API_URL);
+    try {
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        username: 'ys',
+        password: '1234',
+      });
+      console.log(response.headers);
+      dispatch(
+        userSlice.actions.setToken({
+          accessToken: response.headers['authorization'].replace('Bearer ', ''),
+        }),
+      );
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log(errorResponse);
     }
   };
   return (
@@ -290,8 +310,8 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                     : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
                 onPress={() => {
-                  // SignUp();
-                  dispatch(userSlice.actions.setToken({accessToken: '1234'}));
+                  SignUp();
+                  // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
                 }}
                 disabled={
                   !(name.trim() && isValidDate(birth) && sex && calendar)
