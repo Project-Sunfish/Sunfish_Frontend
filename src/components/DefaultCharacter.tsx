@@ -9,30 +9,25 @@ import {
   Vibration,
   Image,
 } from 'react-native';
-import Svg, {Circle} from 'react-native-svg';
+import Svg, {Circle, SvgXml} from 'react-native-svg';
+import {svgList} from '../assets/svgList';
 
-type CharacterProps = {
+type DefaultCharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
   id: number;
-  level: number;
-  selectedCategory: string;
-  variation: number;
-  name: string;
-  status: number;
-  problem: string;
+  tutorial: boolean;
   setFocusedBoguId: React.Dispatch<React.SetStateAction<number>>;
 };
 
-export default function Character(props: CharacterProps) {
+export default function DefaultCharacter(props: DefaultCharacterProps) {
   const [direction, setDirection] = useState('right');
   let prev = 0;
   const position = useRef(new Animated.ValueXY()).current;
 
   useEffect(() => {
     const moveCharacter = () => {
-      // set randomX to a random number between -100 to Dimesions.get('window').width - 150]
       const randomX =
-        Math.floor(Math.random() * (Dimensions.get('window').width - 50)) - 100;
+        Math.floor(Math.random() * Dimensions.get('window').width - 80) + 40;
       const randomY = Math.floor(Math.random() * 300);
       prev = randomX;
 
@@ -82,12 +77,22 @@ export default function Character(props: CharacterProps) {
       }}>
       <Pressable
         onPress={() => {
+          props.setModal('selectCategory');
           props.setFocusedBoguId(props.id);
-          props.setModal('pop');
         }}>
+        {props.tutorial && (
+          <Svg height="50" width="50">
+            {direction === 'right' ? (
+              <Circle cx="10" cy="10" r="10" fill="red" />
+            ) : (
+              <Circle cx="10" cy="10" r="10" fill="green" />
+            )}
+          </Svg>
+        )}
+        {/* {<SvgXml xml={svgList.temp.defaultBogu} />} */}
         <Image
           source={require('../assets/temp.gif')}
-          style={{width: 200, height: 200}}
+          style={{width: 88, height: 88}}
         />
       </Pressable>
     </Animated.View>

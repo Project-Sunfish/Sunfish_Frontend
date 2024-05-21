@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   FlatList,
   ImageBackground,
   Pressable,
@@ -12,19 +13,106 @@ import {useEffect, useRef, useState} from 'react';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import {Ex, FocusHand} from '../components/animations';
+import {Ex, FocusHand, TempPoint} from '../components/animations';
+import axios from 'axios';
+import Config from 'react-native-config';
+import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
+import DefaultCharacter from '../components/DefaultCharacter';
+
+type defaultBogu = {
+  id: number;
+};
+
+type evolvedBogu = {
+  id: number;
+  level: number;
+  categories: string[];
+  selected_category: string;
+  variation: number;
+  name: string;
+  status: number;
+  count: number;
+  problem: string;
+};
 
 export default function Home() {
-  const [cnt, setCnt] = useState(0);
-  const [newBogus, setNewBogus] = useState(true);
+  useAxiosInterceptor();
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [worry, setWorry] = useState('');
+
+  const [cnt, setCnt] = useState(0);
+  const [newBogus, setNewBogus] = useState(false);
+  const [tutorial, setTutorial] = useState(false);
+  const [defaultBogu, setDefaultBogu] = useState<defaultBogu[]>([]);
+  const [evolvedBogu, setEvolvedBogu] = useState<evolvedBogu[]>([]);
+
+  const [focusedBoguId, setFocusedBoguId] = useState(-1);
+  const [focusedBoguName, setFocusedBoguName] = useState('');
+  const [focusedBoguProblem, setFocusedBoguProblem] = useState('');
 
   const ref = useRef<TextInput>(null);
   useEffect(() => {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
   });
+  useEffect(() => {
+    getBasicInfo();
+    console.log('getBasicInfo');
+  }, []);
+  useEffect(() => {
+    if (modal === 'pop') {
+      getEvolvedBoguInfo();
+    }
+  }, [modal]);
+  const getBasicInfo = async () => {
+    try {
+      const response = await axios.get(`${Config.API_URL}/api/bogu`);
+      setNewBogus(response.data.todayQuota >= 1);
+      setDefaultBogu(response.data.defaultBogus);
+      setEvolvedBogu(response.data.evolvedBogus);
+      console.log(response.data);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log(errorResponse.status);
+    }
+  };
+  const createDefaultBogu = async () => {
+    try {
+      const response = await axios.post(`${Config.API_URL}/api/bogu`);
+      console.log(response.data);
+      getBasicInfo();
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot create', errorResponse);
+    }
+  };
+  const evolveDefaultBogu = async () => {
+    try {
+      const response = await axios.post(
+        `${Config.API_URL}/api/bogu/evolution`,
+        {
+          evolvedBoguId: focusedBoguId,
+        },
+      );
+      console.log(response.data);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot evolve', errorResponse);
+    }
+  };
+  const getEvolvedBoguInfo = async () => {
+    try {
+      const response = await axios.get(
+        `${Config.API_URL}/api/bogu/${focusedBoguId}`,
+      );
+      console.log(response.data);
+      setFocusedBoguName(response.data.name);
+      setFocusedBoguProblem(response.data.problem);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot get evolved bogu info', errorResponse);
+    }
+  };
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
@@ -40,25 +128,41 @@ export default function Home() {
       source={require('../assets/pictures/Base.png')}
       style={{flex: 1}}>
       <View style={styles.entire}>
-        <View style={styles.gameContainer}>
-          {[...Array(cnt)].map((_, index) => (
-            <Character key={index} setModal={setModal} />
+        <View
+          style={[
+            styles.gameContainer,
+            {width: Dimensions.get('window').width - 40, height: 300},
+          ]}>
+          {defaultBogu.map((_, index) => (
+            <DefaultCharacter
+              key={index}
+              setModal={setModal}
+              id={defaultBogu[index].id}
+              tutorial={tutorial}
+              setFocusedBoguId={setFocusedBoguId}
+            />
           ))}
+          {evolvedBogu.map((_, index) =>
+            [...Array(evolvedBogu[index].count)].map((_, index) => (
+              <Character
+                key={index}
+                setModal={setModal}
+                id={evolvedBogu[index].id}
+                level={evolvedBogu[index].level}
+                selectedCategory={evolvedBogu[index].selected_category}
+                variation={evolvedBogu[index].variation}
+                name={evolvedBogu[index].name}
+                status={evolvedBogu[index].status}
+                problem={evolvedBogu[index].problem}
+                setFocusedBoguId={setFocusedBoguId}
+              />
+            )),
+          )}
         </View>
-        <Pressable
-          style={({pressed}) => [
-            styles.btn,
-            {backgroundColor: pressed ? 'gray' : 'black'},
-          ]}
-          onPress={() => {
-            setCnt(0);
-          }}>
-          <Text style={{color: 'white'}}>reset</Text>
-        </Pressable>
         <Pressable
           onPress={() => {
             if (newBogus) {
-              setCnt(cnt + 1);
+              createDefaultBogu();
             } else {
               setModal('cannotCreate');
             }
@@ -76,9 +180,10 @@ export default function Home() {
             ]}>
             생성하기
           </Text>
-          {/* <View style={{position: 'absolute', backgroundColor: 'red'}}>
-            <FocusHand style={{}} />
-          </View> */}
+          <View style={{position: 'absolute', right: -50, top: 30}}>
+            {/* <TempPoint style={{width: 400, height: 400}} /> */}
+            {<SvgXml xml={svgList.temp.tempPoint} />}
+          </View>
         </Pressable>
       </View>
       <MyPageModal
@@ -224,12 +329,14 @@ export default function Home() {
                 setModal('selectCategory');
               }, 400);
             }}>
-            <Text style={styles.cannotCreateBtnTxt}>취소</Text>
+            <Text style={styles.cannotCreateBtnTxt}>이전</Text>
           </Pressable>
           <View style={{width: 16}}></View>
           <Pressable
             disabled={worry.length < 1}
-            // onPress={() => setModal('worry')}
+            onPress={() => {
+              evolveDefaultBogu();
+            }}
             style={[
               styles.selectCategoryBtn,
               worry.trim().length >= 1 && {backgroundColor: '#6EA5FF'},
@@ -239,9 +346,25 @@ export default function Home() {
                 styles.cannotCreateBtnTxt,
                 worry.trim().length >= 1 && {color: '#FFFFFF'},
               ]}>
-              다음
+              진화
             </Text>
           </Pressable>
+        </View>
+      </MyPageModal>
+      <MyPageModal
+        showModal={modal}
+        setShowModal={setModal}
+        condition="pop"
+        headerTxt="진화 복어 기본 정보">
+        <View
+          style={{
+            width: '100%',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Text>{`복어 id:${focusedBoguId}`}</Text>
+          <Text>{`복어 이름:${focusedBoguName}`}</Text>
+          <Text>{`복어 고민:${focusedBoguProblem}`}</Text>
         </View>
       </MyPageModal>
     </ImageBackground>
@@ -259,8 +382,6 @@ const styles = StyleSheet.create({
   //temp from here
   gameContainer: {
     backgroundColor: 'white',
-    width: 400,
-    height: 400,
   },
   btn: {
     padding: 20,
