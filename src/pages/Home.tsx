@@ -12,6 +12,7 @@ import {useEffect, useRef, useState} from 'react';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import {Ex, FocusHand} from '../components/animations';
 
 export default function Home() {
   const [cnt, setCnt] = useState(0);
@@ -75,6 +76,9 @@ export default function Home() {
             ]}>
             생성하기
           </Text>
+          {/* <View style={{position: 'absolute', backgroundColor: 'red'}}>
+            <FocusHand style={{}} />
+          </View> */}
         </Pressable>
       </View>
       <MyPageModal
@@ -265,7 +269,8 @@ const styles = StyleSheet.create({
   //temp to here
   newBogu: {
     // position: 'absolute',
-    // bottom: 150,
+    // bottom: 150
+    position: 'relative',
     marginBottom: 90,
     paddingHorizontal: 26,
     paddingVertical: 4,
