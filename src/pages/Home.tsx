@@ -54,7 +54,7 @@ export default function Home() {
   const [defaultBogu, setDefaultBogu] = useState<defaultBogu[]>([]);
   const [evolvedBogu, setEvolvedBogu] = useState<evolvedBogu[]>([]);
 
-  const [focusedBoguId, setFocusedBoguId] = useState(-1);
+  const [focusedBoguId, setFocusedBoguId] = useState('-1');
   const [focusedBoguName, setFocusedBoguName] = useState('');
   const [focusedBoguProblem, setFocusedBoguProblem] = useState('');
 
@@ -98,10 +98,13 @@ export default function Home() {
       const response = await axios.post(
         `${Config.API_URL}/api/bogu/evolution`,
         {
-          evolvedBoguId: focusedBoguId,
+          defaultBoguId: focusedBoguId.replace('d', ''),
+          categories: selectedCategory,
+          problem: worry,
         },
       );
       console.log(response.data);
+      setModal('no');
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot evolve', errorResponse);
@@ -110,7 +113,9 @@ export default function Home() {
   const getEvolvedBoguInfo = async () => {
     try {
       const response = await axios.get(
-        `${Config.API_URL}/api/bogu/${focusedBoguId}`,
+        `${Config.API_URL}/api/bogu/${focusedBoguId
+          .split('-')[0]
+          .replace('e', '')}`,
       );
       console.log(response.data);
       setFocusedBoguName(response.data.name);
@@ -144,23 +149,25 @@ export default function Home() {
             <DefaultCharacter
               key={index}
               setModal={setModal}
-              id={defaultBogu[index].id}
+              id={`d${defaultBogu[index].id}`}
               tutorial={tutorial}
+              focusedBoguId={focusedBoguId}
               setFocusedBoguId={setFocusedBoguId}
             />
           ))}
-          {evolvedBogu.map((_, index) =>
-            [...Array(evolvedBogu[index].count)].map((_, index) => (
+          {evolvedBogu.map((item, index) =>
+            [...Array(item.count)].map((_, idx) => (
               <Character
                 key={index}
                 setModal={setModal}
-                id={evolvedBogu[index].id}
-                level={evolvedBogu[index].level}
-                selectedCategory={evolvedBogu[index].selected_category}
-                variation={evolvedBogu[index].variation}
-                name={evolvedBogu[index].name}
-                status={evolvedBogu[index].status}
-                problem={evolvedBogu[index].problem}
+                id={`e${item.id}-${idx}`}
+                level={item.level}
+                selectedCategory={item.selected_category}
+                variation={item.variation}
+                name={item.name}
+                status={item.status}
+                problem={item.problem}
+                focusedBoguId={focusedBoguId}
                 setFocusedBoguId={setFocusedBoguId}
               />
             )),
@@ -187,9 +194,11 @@ export default function Home() {
             ]}>
             생성하기
           </Text>
-          <View style={{position: 'absolute', left: 40, bottom: -90}}>
-            <Cursor />
-          </View>
+          {tutorial && (
+            <View style={{position: 'absolute', left: 40, bottom: -90}}>
+              <Cursor />
+            </View>
+          )}
         </Pressable>
       </View>
       <MyPageModal
@@ -361,16 +370,18 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition="pop"
-        headerTxt="진화 복어 기본 정보">
+        headerTxt="진화 복어 기본 정보"
+        onClosed={() => setFocusedBoguId('-1')}>
         <View
           style={{
             width: '100%',
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Text>{`복어 id:${focusedBoguId}`}</Text>
-          <Text>{`복어 이름:${focusedBoguName}`}</Text>
-          <Text>{`복어 고민:${focusedBoguProblem}`}</Text>
+          <Text style={{color: 'black'}}>{`복어 id:${focusedBoguId}`}</Text>
+          <Text style={{color: 'black'}}>{`복어 이름:${focusedBoguName}`}</Text>
+          <Text
+            style={{color: 'black'}}>{`복어 고민:${focusedBoguProblem}`}</Text>
         </View>
       </MyPageModal>
     </ImageBackground>
