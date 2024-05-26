@@ -13,7 +13,14 @@ import {useEffect, useRef, useState} from 'react';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import {Ex, FocusHand, TempPoint} from '../components/animations';
+import {
+  Cursor,
+  Evolution,
+  Ex,
+  FocusHand,
+  Loading,
+  TempPoint,
+} from '../components/animations';
 import axios from 'axios';
 import Config from 'react-native-config';
 import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
@@ -180,9 +187,8 @@ export default function Home() {
             ]}>
             생성하기
           </Text>
-          <View style={{position: 'absolute', right: -50, top: 30}}>
-            {/* <TempPoint style={{width: 400, height: 400}} /> */}
-            {<SvgXml xml={svgList.temp.tempPoint} />}
+          <View style={{position: 'absolute', left: 40, bottom: -90}}>
+            <Cursor />
           </View>
         </Pressable>
       </View>
