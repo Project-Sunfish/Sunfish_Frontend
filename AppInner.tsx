@@ -27,7 +27,7 @@ import {Safe} from './src/components/Safe';
 import Text from './src/components/Text';
 import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
 import Splash from './src/components/Splash';
-import SplashScreen from 'react-native-splash-screen';
+import BootSplash from 'react-native-bootsplash';
 
 export type RootStackParamList = {
   SignIn: {
@@ -66,13 +66,13 @@ const Tab = createBottomTabNavigator<RootTabParamList>();
 function AppInner() {
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    SplashScreen.hide();
+    BootSplash.hide();
   }, []);
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     // setIsLoading(false);
-  //   }, 2000);
-  // }, []);
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 2000);
+  }, []);
   const isLoggedIn = useSelector(
     (state: RootState) => !!state.user.accessToken,
   );
