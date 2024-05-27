@@ -29,6 +29,8 @@ type MyPageProps = {
 export default function MyPage(props: MyPageProps) {
   const dispatch = useAppDispatch();
 
+  const [pushNotification, setPushNotification] = useState(true);
+
   const [showModal, setShowModal] = useState('no');
 
   const [name, setName] = useState('');
@@ -84,6 +86,17 @@ export default function MyPage(props: MyPageProps) {
       largerScreenPaddingTop={0}
       largerScreenPaddingBottom={0}
       largerScreenMarginBottom={66}>
+      <Pressable
+        style={{position: 'absolute', top: 46, right: 21}}
+        onPress={() => setPushNotification(!pushNotification)}>
+        <SvgXml
+          xml={
+            pushNotification ? svgList.mypage.pushOn : svgList.mypage.pushOff
+          }
+          width={27}
+          height={27}
+        />
+      </Pressable>
       <View style={styles.profileView}>
         <View style={styles.profileImgView}>
           <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
