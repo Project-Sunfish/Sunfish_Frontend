@@ -12,11 +12,13 @@ import {
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import {Cursor} from './animations';
 
 type DefaultCharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
   id: string;
-  tutorial: boolean;
+  tutorial: string;
+  setTutorial: React.Dispatch<React.SetStateAction<string>>;
   focusedBoguId: string;
   setFocusedBoguId: React.Dispatch<React.SetStateAction<string>>;
 };
@@ -107,6 +109,7 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
         onPress={() => {
           props.setModal('selectCategory');
           props.setFocusedBoguId(id);
+          props.setTutorial('4');
         }}
         style={
           direction === 'right' ? styles.characterRight : styles.characterLeft
@@ -118,14 +121,10 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
           />
         ) : (
         )} */}
-        {props.tutorial && (
-          <Svg height="50" width="50">
-            {direction === 'right' ? (
-              <Circle cx="10" cy="10" r="10" fill="red" />
-            ) : (
-              <Circle cx="10" cy="10" r="10" fill="green" />
-            )}
-          </Svg>
+        {props.tutorial === '3' && (
+          <Cursor
+            style={{position: 'absolute', bottom: -65, left: -25, zIndex: 1}}
+          />
         )}
         {direction === 'right' ? (
           <Image

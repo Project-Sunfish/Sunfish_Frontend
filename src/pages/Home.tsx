@@ -5,6 +5,7 @@ import {
   Pressable,
   StyleSheet,
   TextInput,
+  TurboModuleRegistry,
   View,
 } from 'react-native';
 import Text from '../components/Text';
@@ -49,8 +50,8 @@ export default function Home() {
   const [worry, setWorry] = useState('');
 
   const [cnt, setCnt] = useState(0);
-  const [newBogus, setNewBogus] = useState(false);
-  const [tutorial, setTutorial] = useState(false);
+  const [newBogus, setNewBogus] = useState(true);
+  const [tutorial, setTutorial] = useState('0');
   const [defaultBogu, setDefaultBogu] = useState<defaultBogu[]>([]);
   const [evolvedBogu, setEvolvedBogu] = useState<evolvedBogu[]>([]);
 
@@ -135,11 +136,35 @@ export default function Home() {
     return `${year}.${month}.${day}(${dayOfWeek})`;
   };
 
+  useEffect(() => {
+    if (tutorial === '2') {
+      setTimeout(() => {
+        setTutorial('3');
+      }, 1500);
+    }
+  }, [tutorial]);
   return (
     <ImageBackground
       source={require('../assets/pictures/Game.png')}
       style={{flex: 1}}>
       <View style={styles.entire}>
+        {tutorial !== '0' && (
+          <View style={styles.tutorialViewTop}>
+            {tutorial === '1' && (
+              <Text style={styles.tutorialTxt}>
+                생성하기 버튼을 눌러주세요!
+              </Text>
+            )}
+            {tutorial === '2' && (
+              <Text style={styles.tutorialTxt}>
+                {'기본 복어 한 마리가\n생성되었습니다!'}
+              </Text>
+            )}
+            {tutorial === '3' && (
+              <Text style={styles.tutorialTxt}>복어를 터치해보세요!</Text>
+            )}
+          </View>
+        )}
         <View
           style={[
             styles.gameContainer,
@@ -151,6 +176,7 @@ export default function Home() {
               setModal={setModal}
               id={`d${defaultBogu[index].id}`}
               tutorial={tutorial}
+              setTutorial={setTutorial}
               focusedBoguId={focusedBoguId}
               setFocusedBoguId={setFocusedBoguId}
             />
@@ -176,7 +202,10 @@ export default function Home() {
         <Pressable
           onPress={() => {
             if (newBogus) {
-              createDefaultBogu();
+              if (tutorial === '1') {
+                setTutorial('2');
+              }
+              // createDefaultBogu();
             } else {
               setModal('cannotCreate');
             }
@@ -194,7 +223,7 @@ export default function Home() {
             ]}>
             생성하기
           </Text>
-          {tutorial && (
+          {tutorial === '1' && (
             <View style={{position: 'absolute', left: 40, bottom: -90}}>
               <Cursor />
             </View>
@@ -224,6 +253,11 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition="selectCategory"
+        onClosed={() => {
+          if (tutorial === '4') {
+            setTutorial('3');
+          }
+        }}
         headerTxt={`걱정의 종류를\n‘최대 3개’\n선택해주세요`}>
         <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
         <View
@@ -316,6 +350,11 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition={'worry'}
+        onClosed={() => {
+          if (tutorial === '4') {
+            setTutorial('3');
+          }
+        }}
         headerTxt="어떤 걱정인가요?">
         <View style={styles.worryContent}>
           <Text style={styles.date}>{formatDate(new Date())}</Text>
@@ -396,7 +435,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  //temp from here
+  tutorialViewTop: {
+    marginTop: 102,
+  },
+  tutorialTxt: {
+    color: 'white',
+    fontSize: 25,
+    fontWeight: '400',
+    textAlign: 'center',
+  },
   gameContainer: {
     // backgroundColor: 'white',
   },
