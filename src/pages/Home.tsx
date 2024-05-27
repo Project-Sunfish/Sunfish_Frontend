@@ -1,6 +1,7 @@
 import {
   Dimensions,
   FlatList,
+  Image,
   ImageBackground,
   Pressable,
   StyleSheet,
@@ -11,17 +12,11 @@ import {
 import Text from '../components/Text';
 import Character from '../components/Character';
 import {useEffect, useRef, useState} from 'react';
+import Modal from 'react-native-modal';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import {
-  Cursor,
-  Evolution,
-  Ex,
-  FocusHand,
-  Loading,
-  TempPoint,
-} from '../components/animations';
+import {Cursor, Evolution} from '../components/animations';
 import axios from 'axios';
 import Config from 'react-native-config';
 import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
@@ -49,8 +44,9 @@ type evolvedBogu = {
 export default function Home() {
   const dispatch = useAppDispatch();
   useAxiosInterceptor();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
+    setIsLoading(true);
     dispatch(userSlice.actions.setTabBar(''));
     setTimeout(() => {
       setIsLoading(false);
@@ -62,8 +58,16 @@ export default function Home() {
   const [worry, setWorry] = useState('');
 
   const [cnt, setCnt] = useState(0);
-  const [newBogus, setNewBogus] = useState(true);
   const [tutorial, setTutorial] = useState('0');
+  const [animationType, setAnimationType] = useState('no');
+  const [evolvedBoguId, setEvolvedBoguId] = useState('-1');
+  const [evolvedBoguStatus, setEvolvedBoguStatus] = useState(0);
+  const [evolvedBoguSelectedCategory, setEvolvedBoguSelectedCategory] =
+    useState('');
+  const [evolvedBoguVariation, setEvolvedBoguVariation] = useState(0);
+  const [evolvedBoguName, setEvolvedBoguName] = useState('');
+
+  const [newBogus, setNewBogus] = useState(true);
   const [defaultBogu, setDefaultBogu] = useState<defaultBogu[]>([]);
   const [evolvedBogu, setEvolvedBogu] = useState<evolvedBogu[]>([]);
 
@@ -81,7 +85,13 @@ export default function Home() {
   }, []);
   useEffect(() => {
     if (modal === 'pop') {
-      getEvolvedBoguInfo();
+      let id = focusedBoguId.split('-')[0].replace('e', '');
+      for (let i = 0; i < evolvedBogu.length; i++) {
+        if (evolvedBogu[i].id === Number(id)) {
+          setFocusedBoguName(evolvedBogu[i].name);
+          setFocusedBoguProblem(evolvedBogu[i].problem);
+        }
+      }
     }
   }, [modal]);
   const getBasicInfo = async () => {
@@ -116,8 +126,17 @@ export default function Home() {
           problem: worry,
         },
       );
-      console.log(response.data);
       setModal('no');
+      setAnimationType('making');
+      console.log(response.data);
+      setEvolvedBoguId(response.data.evolvedBoguid);
+      // setEvolvedBoguName(response.data.name);
+      // setEvolvedBoguStatus(response.data.status);
+      // setEvolvedBoguSelectedCategory(response.data.selected_category);
+      // setEvolvedBoguVariation(response.data.variation);
+      setSelectedCategory([]);
+      setWorry('');
+      getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot evolve', errorResponse);
@@ -221,7 +240,7 @@ export default function Home() {
               if (tutorial === '1') {
                 setTutorial('2');
               }
-              // createDefaultBogu();
+              createDefaultBogu();
             } else {
               setModal('cannotCreate');
             }
@@ -246,6 +265,67 @@ export default function Home() {
           )}
         </Pressable>
       </View>
+
+      <Modal
+        style={styles.animationBG}
+        onModalShow={() => {
+          if (animationType === 'making') {
+            setTimeout(() => {
+              setAnimationType('both');
+              setTimeout(() => {
+                setAnimationType('pop');
+              }, 1000);
+            }, 3000);
+          }
+        }}
+        isVisible={
+          animationType === 'making' ||
+          animationType === 'both' ||
+          animationType === 'pop'
+        }
+        hasBackdrop={false}
+        backdropOpacity={0}
+        avoidKeyboard={true}>
+        <View style={styles.animationContainer}>
+          {animationType === 'making' || animationType === 'both' ? (
+            <Text style={styles.animationText}>복어 생성 중..</Text>
+          ) : (
+            <Text style={styles.animationText}>축하합니다!!</Text>
+          )}
+          {(animationType === 'making' || animationType === 'both') && (
+            <Evolution
+              style={{
+                width: 420,
+                height: 420,
+                position: 'absolute',
+                top: -68,
+                zIndex: 1,
+              }}
+            />
+          )}
+          {(animationType === 'pop' || animationType === 'both') && (
+            <Image
+              source={require('../assets/gifs/high_right.gif')}
+              style={{width: 200, height: 200}}
+            />
+          )}
+
+          {animationType === 'pop' && (
+            <Text
+              style={styles.animationText}>{`${evolvedBoguName} 획득!`}</Text>
+          )}
+          {animationType === 'pop' && (
+            <Pressable
+              style={styles.animationBtn}
+              onPress={() => {
+                setAnimationType('no');
+              }}>
+              <Text style={styles.animationBtnTxt}>확인</Text>
+            </Pressable>
+          )}
+        </View>
+      </Modal>
+
       <MyPageModal
         showModal={modal}
         setShowModal={setModal}
@@ -578,5 +658,36 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 20,
     right: 7,
+  },
+  animationBG: {
+    margin: 0,
+    backgroundColor: '#000000B2',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
+  },
+  animationText: {
+    color: 'white',
+    fontSize: 31,
+    fontWeight: '400',
+  },
+  animationContainer: {
+    position: 'relative',
+    marginTop: 150,
+    alignItems: 'center',
+  },
+
+  animationBtn: {
+    marginTop: 20,
+    paddingVertical: 12,
+    paddingHorizontal: 80,
+    backgroundColor: 'white',
+    borderRadius: 50,
+  },
+  animationBtnTxt: {
+    color: '#002B5DCC',
+    fontSize: 16,
+    fontWeight: '400',
   },
 });

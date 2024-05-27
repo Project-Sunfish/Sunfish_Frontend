@@ -143,6 +143,11 @@ export default function Character(props: CharacterProps) {
 const styles = StyleSheet.create({
   character: {
     position: 'absolute',
+    borderRadius: 2000,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: 260,
+    height: 260,
   },
   characterRight: {
     // 오른쪽을 향하는 SVG 스타일

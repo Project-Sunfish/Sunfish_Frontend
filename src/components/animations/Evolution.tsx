@@ -9,7 +9,7 @@ export default function Evolution(props: EvolutionProps) {
     <LottieView
       source={require('../../assets/animations/evolution.json')}
       autoPlay
-      loop
+      loop={false}
       style={[{width: 200, height: 200}, props.style]}
     />
   );

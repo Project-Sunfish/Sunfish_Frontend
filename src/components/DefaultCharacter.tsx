@@ -109,7 +109,7 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
         onPress={() => {
           props.setModal('selectCategory');
           props.setFocusedBoguId(id);
-          props.setTutorial('4');
+          if (props.tutorial === '3') props.setTutorial('4');
         }}
         style={
           direction === 'right' ? styles.characterRight : styles.characterLeft
