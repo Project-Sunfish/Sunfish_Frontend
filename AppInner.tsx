@@ -64,14 +64,8 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function AppInner() {
-  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     BootSplash.hide();
-  }, []);
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
   }, []);
   const isLoggedIn = useSelector(
     (state: RootState) => !!state.user.accessToken,
@@ -79,9 +73,7 @@ function AppInner() {
   const [showModal, setShowModal] = useState('no');
   return (
     <NavigationContainer>
-      {isLoading ? (
-        <Splash />
-      ) : isLoggedIn ? (
+      {isLoggedIn ? (
         <Safe color="#ffffff">
           <Tab.Navigator
             initialRouteName="Home"

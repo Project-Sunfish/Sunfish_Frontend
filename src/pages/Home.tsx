@@ -26,6 +26,9 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
 import DefaultCharacter from '../components/DefaultCharacter';
+import Splash from '../components/Splash';
+import {useAppDispatch} from '../store';
+import userSlice from '../slices/user';
 
 type defaultBogu = {
   id: number;
@@ -44,7 +47,16 @@ type evolvedBogu = {
 };
 
 export default function Home() {
+  const dispatch = useAppDispatch();
   useAxiosInterceptor();
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    dispatch(userSlice.actions.setTabBar(''));
+    setTimeout(() => {
+      setIsLoading(false);
+      dispatch(userSlice.actions.setTabBar('show'));
+    }, 4000);
+  }, []);
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
   const [worry, setWorry] = useState('');
@@ -143,7 +155,11 @@ export default function Home() {
       }, 1500);
     }
   }, [tutorial]);
-  return (
+  return isLoading ? (
+    <View style={{flex: 1, zIndex: 10}}>
+      <Splash />
+    </View>
+  ) : (
     <ImageBackground
       source={require('../assets/pictures/Game.png')}
       style={{flex: 1}}>
