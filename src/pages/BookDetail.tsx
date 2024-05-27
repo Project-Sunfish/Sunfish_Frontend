@@ -269,7 +269,8 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     fontSize: 16,
     lineHeight: 15,
-    fontFamily: 'handWriting',
+    fontFamily: 'KCCDodamdodam',
+    paddingTop: 2,
   },
   worryQuantity: {
     color: '#FFFFFFB2',

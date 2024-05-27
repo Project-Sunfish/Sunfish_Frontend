@@ -1,5 +1,5 @@
 import React, {Children, useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable, TextInput} from 'react-native';
 import Modal from 'react-native-modal';
 import Text from './Text';
 
@@ -9,6 +9,7 @@ type MyPageModalProps = {
   condition: string;
   children: React.ReactNode;
   headerTxt: string;
+  onClosed?: () => void;
 };
 
 export default function MyPageModal(props: MyPageModalProps) {
@@ -20,12 +21,24 @@ export default function MyPageModal(props: MyPageModalProps) {
       style={styles.entire}
       isVisible={showModal == props.condition}
       hasBackdrop={true}
-      onBackdropPress={() => setshowModal('no')}
-      onBackButtonPress={() => setshowModal('no')}>
+      onDismiss={() => {
+        props.onClosed && props.onClosed();
+      }}
+      onBackdropPress={() => {
+        setshowModal('no');
+        console.log(props.onClosed);
+        props.onClosed && props.onClosed();
+      }}
+      onBackButtonPress={() => {
+        setshowModal('no');
+        props.onClosed && props.onClosed();
+      }}
+      avoidKeyboard={true}>
       <Pressable
         style={styles.modalBGView}
         onPress={() => {
           setshowModal('no');
+          props.onClosed && props.onClosed();
         }}>
         <Pressable style={styles.modalView} onPress={e => e.stopPropagation()}>
           <View style={styles.modalContent}>
@@ -71,6 +84,7 @@ const styles = StyleSheet.create({
     color: '#002B5D',
     fontWeight: '400',
     fontSize: 25,
+    textAlign: 'center',
   },
   modalBody: {
     flexDirection: 'column',
