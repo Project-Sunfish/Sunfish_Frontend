@@ -117,8 +117,8 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     console.log(Config.API_URL);
     try {
       const response = await axios.post(`${Config.API_URL}/login`, {
-        username: 'ys',
-        password: '1234',
+        username: tempName,
+        password: tempPassword,
       });
       console.log(response.headers);
       dispatch(

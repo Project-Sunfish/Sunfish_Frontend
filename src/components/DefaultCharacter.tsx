@@ -75,7 +75,7 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
       setTimeout(() => {
         setIsChangingDirection(false);
         setDestination({x: randomX, y: randomY});
-      }, 200);
+      }, 0);
     } else {
       setDestination({x: randomX, y: randomY});
     }
@@ -107,8 +107,8 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
       style={[styles.character, {transform: position.getTranslateTransform()}]}>
       <Pressable
         onPress={() => {
-          props.setModal('selectCategory');
           props.setFocusedBoguId(id);
+          props.setModal('selectCategory');
           if (props.tutorial === '3') props.setTutorial('4');
         }}
         style={

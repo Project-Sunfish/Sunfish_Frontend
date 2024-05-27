@@ -79,7 +79,7 @@ export default function Character(props: CharacterProps) {
       setTimeout(() => {
         setIsChangingDirection(false);
         setDestination({x: randomX, y: randomY});
-      }, 260);
+      }, 0);
     } else {
       setDestination({x: randomX, y: randomY});
     }
@@ -111,8 +111,8 @@ export default function Character(props: CharacterProps) {
       style={[styles.character, {transform: position.getTranslateTransform()}]}>
       <Pressable
         onPress={() => {
-          props.setModal('pop');
           props.setFocusedBoguId(id);
+          props.setModal('pop');
         }}
         style={
           direction === 'right' ? styles.characterRight : styles.characterLeft

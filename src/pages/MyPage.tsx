@@ -1,4 +1,5 @@
 import {
+  Dimensions,
   Keyboard,
   Pressable,
   ScrollView,
@@ -87,7 +88,12 @@ export default function MyPage(props: MyPageProps) {
       largerScreenPaddingBottom={0}
       largerScreenMarginBottom={66}>
       <Pressable
-        style={{position: 'absolute', top: 46, right: 21}}
+        style={[
+          {position: 'absolute', zIndex: 1},
+          Dimensions.get('window').height < 670
+            ? {top: 0, right: 21}
+            : {top: 46, right: 21},
+        ]}
         onPress={() => setPushNotification(!pushNotification)}>
         <SvgXml
           xml={

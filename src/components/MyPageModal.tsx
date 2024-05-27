@@ -10,6 +10,8 @@ type MyPageModalProps = {
   children: React.ReactNode;
   headerTxt: string;
   onClosed?: () => void;
+  onBackButtonPress?: () => void;
+  onShow?: () => void;
 };
 
 export default function MyPageModal(props: MyPageModalProps) {
@@ -21,24 +23,23 @@ export default function MyPageModal(props: MyPageModalProps) {
       style={styles.entire}
       isVisible={showModal == props.condition}
       hasBackdrop={true}
-      onDismiss={() => {
-        props.onClosed && props.onClosed();
+      onModalShow={() => {
+        props.onShow && props.onShow();
       }}
       onBackdropPress={() => {
         setshowModal('no');
-        console.log(props.onClosed);
-        props.onClosed && props.onClosed();
+        props.onBackButtonPress && props.onBackButtonPress();
       }}
       onBackButtonPress={() => {
         setshowModal('no');
-        props.onClosed && props.onClosed();
+        props.onBackButtonPress && props.onBackButtonPress();
       }}
       avoidKeyboard={true}>
       <Pressable
         style={styles.modalBGView}
         onPress={() => {
           setshowModal('no');
-          props.onClosed && props.onClosed();
+          props.onBackButtonPress && props.onBackButtonPress();
         }}>
         <Pressable style={styles.modalView} onPress={e => e.stopPropagation()}>
           <View style={styles.modalContent}>

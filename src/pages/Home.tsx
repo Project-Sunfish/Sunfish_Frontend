@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import Text from '../components/Text';
 import Character from '../components/Character';
-import {useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import Modal from 'react-native-modal';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
@@ -24,6 +24,12 @@ import DefaultCharacter from '../components/DefaultCharacter';
 import Splash from '../components/Splash';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
+import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
+import {RootTabParamList} from '../../AppInner';
+type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
+type HomeProps = {
+  navigation: HomeNavigationProp;
+};
 
 type defaultBogu = {
   id: number;
@@ -41,7 +47,7 @@ type evolvedBogu = {
   problem: string;
 };
 
-export default function Home() {
+export default function Home(props: HomeProps) {
   const dispatch = useAppDispatch();
   useAxiosInterceptor();
   const [isLoading, setIsLoading] = useState(false);
@@ -89,25 +95,35 @@ export default function Home() {
     if (tutorial === '2') {
       setTimeout(() => {
         setTutorial('3');
-      }, 1500);
+      }, 2000);
     }
   }, [tutorial]);
   useEffect(() => {
-    getBasicInfo();
+    const focusListener = props.navigation.addListener('focus', () => {
+      getBasicInfo();
+    });
     console.log('getBasicInfo');
+    // setTutorial('0');
+    return focusListener;
   }, []);
-  useEffect(() => {
-    if (modal === 'pop') {
-      // let id = focusedBoguId.split('-')[0].replace('e', '');
-      // for (let i = 0; i < evolvedBogu.length; i++) {
-      //   if (evolvedBogu[i].id === Number(id)) {
-      //     setFocusedBoguName(evolvedBogu[i].name);
-      //     setFocusedBoguProblem(evolvedBogu[i].problem);
-      //   }
-      // }
-      getEvolvedBoguInfo();
-    }
-  }, [modal]);
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     getBasicInfo();
+  //     console.log('getBasicInfo');
+  //   }, []),
+  // );
+  // useEffect(() => {
+  //   if (modal === 'pop') {
+  //     // let id = focusedBoguId.split('-')[0].replace('e', '');
+  //     // for (let i = 0; i < evolvedBogu.length; i++) {
+  //     //   if (evolvedBogu[i].id === Number(id)) {
+  //     //     setFocusedBoguName(evolvedBogu[i].name);
+  //     //     setFocusedBoguProblem(evolvedBogu[i].problem);
+  //     //   }
+  //     // }
+  //     getEvolvedBoguInfo();
+  //   }
+  // }, [modal]);
   const getBasicInfo = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
@@ -140,14 +156,18 @@ export default function Home() {
           problem: worry,
         },
       );
+      setTutorial('0');
       setModal('no');
-      setAnimationType('making');
+      setTimeout(() => {
+        setAnimationType('making');
+      }, 400);
       console.log(response.data);
       setEvolvedBoguId(response.data.evolvedBoguid);
-      // setEvolvedBoguName(response.data.name);
+      setEvolvedBoguName(response.data.name);
       // setEvolvedBoguStatus(response.data.status);
       // setEvolvedBoguSelectedCategory(response.data.selected_category);
       // setEvolvedBoguVariation(response.data.variation);
+      setFocusedBoguId('-1');
       setSelectedCategory([]);
       setWorry('');
       getBasicInfo();
@@ -164,7 +184,7 @@ export default function Home() {
           .replace('e', '')}`,
       );
       console.log(response.data);
-      setFocusedBoguId(response.data.id);
+      // setFocusedBoguId(response.data.id);
       // setFocusedBoguCreatedAt(response.data.created_at);
       setFocusedBoguStatus(response.data.status);
       setFocusedBoguSelectedCategory(response.data.selected_category);
@@ -178,27 +198,30 @@ export default function Home() {
     }
   };
   const pop = async () => {
+    console.log('popping');
     setAnimationType('liberate');
-    // 터지는 애니메이션 넣기
-    try {
-      // const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
-      //   id: focusedBoguId.split('-')[0].replace('e', ''),
-      // });
-      // console.log(response.data);
-      // if (response.data.liberationFlag) {
-      if (true) {
-        setModal('no');
-        setTimeout(() => {
-          setModal('liberate');
-        }, 400);
-        // 해방시킬지 말지 결정하는 모달 띄우기
-      } else {
-        getBasicInfo();
+    // 터지는 애니메이션 넣기 (5초 후 api 전송)
+    setTimeout(() => {
+      try {
+        // const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
+        //   id: focusedBoguId.split('-')[0].replace('e', ''),
+        // });
+        // console.log(response.data);
+        // if (response.data.liberationFlag) {
+        if (true) {
+          setModal('no');
+          setTimeout(() => {
+            setModal('liberate');
+          }, 400);
+          // 해방시킬지 말지 결정하는 모달 띄우기
+        } else {
+          getBasicInfo();
+        }
+      } catch (error: any) {
+        const errorResponse = error.response;
+        console.log('cannot pop', errorResponse);
       }
-    } catch (error: any) {
-      const errorResponse = error.response;
-      console.log('cannot pop', errorResponse);
-    }
+    }, 5000);
   };
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -355,6 +378,7 @@ export default function Home() {
               style={styles.animationBtn}
               onPress={() => {
                 setAnimationType('no');
+                setFocusedBoguId('-1');
               }}>
               <Text style={styles.animationBtnTxt}>확인</Text>
             </Pressable>
@@ -377,7 +401,11 @@ export default function Home() {
           </Text>
         </View>
         <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
-        <Pressable style={styles.cannotCreateBtn}>
+        <Pressable
+          style={styles.cannotCreateBtn}
+          onPress={() => {
+            setModal('no');
+          }}>
           <Text style={styles.cannotCreateBtnTxt}>닫기</Text>
         </Pressable>
       </MyPageModal>
@@ -385,10 +413,27 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition="selectCategory"
-        onClosed={() => {
+        // onClosed={() => {
+        //   if (tutorial === '4') {
+        //     setTutorial('3');
+        //   }
+        //   setFocusedBoguId('-1');
+        // }}
+        // onShow={() => {
+        //   if (tutorial !== '0') {
+        //     setTutorial('4');
+        //   }
+        // }}
+
+        // 튜토리얼이 진행중이면 (tutorial == '4') 취소시 튜토리얼을 3으로 변경, 진행시 튜토리얼 '4' 유지
+        // 취소시 focusedBoguId를 -1로 변경, 진행시 유지
+        // 취소시 selectCategory를 빈 배열로 변경, 진행시 유지
+        onBackButtonPress={() => {
           if (tutorial === '4') {
             setTutorial('3');
           }
+          setFocusedBoguId('-1');
+          // setSelectedCategory([]);
         }}
         headerTxt={`걱정의 종류를\n‘최대 3개’\n선택해주세요`}>
         <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
@@ -450,8 +495,11 @@ export default function Home() {
           <Pressable
             style={styles.selectCategoryBtn}
             onPress={() => {
-              setModal('no');
+              setFocusedBoguId('-1');
               setSelectedCategory([]);
+              setWorry('');
+              if (tutorial === '4') setTutorial('3');
+              setModal('no');
             }}>
             <Text style={styles.cannotCreateBtnTxt}>취소</Text>
           </Pressable>
@@ -482,10 +530,12 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition={'worry'}
-        onClosed={() => {
+        onBackButtonPress={() => {
           if (tutorial === '4') {
             setTutorial('3');
           }
+          setFocusedBoguId('-1');
+          // setSelectedCategory([]);
         }}
         headerTxt="어떤 걱정인가요?">
         <View style={styles.worryContent}>
@@ -542,7 +592,9 @@ export default function Home() {
         setShowModal={setModal}
         condition="pop"
         headerTxt=""
-        onClosed={() => {
+        onShow={() => getEvolvedBoguInfo()}
+        onBackButtonPress={() => {
+          // 백버튼 핸들러 사용
           setFocusedBoguId('-1');
           setFocusedBoguName('');
           setFocusedBoguProblem('');
@@ -575,7 +627,14 @@ export default function Home() {
               </Text>
             </View>
           </View>
-          <Pressable style={styles.popModalBtn} onPress={() => pop()}>
+          <Pressable
+            style={styles.popModalBtn}
+            onPress={() => {
+              setModal('no');
+              setTimeout(() => {
+                pop();
+              }, 400);
+            }}>
             <Text style={styles.popModalBtnTxt}>터트리기</Text>
           </Pressable>
         </View>
