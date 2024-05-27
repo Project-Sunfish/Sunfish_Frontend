@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   createNativeStackNavigator,
   NativeStackNavigationProp,
@@ -26,6 +26,8 @@ import BookNav from './src/navigations/BookNav';
 import {Safe} from './src/components/Safe';
 import Text from './src/components/Text';
 import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
+import Splash from './src/components/Splash';
+import SplashScreen from 'react-native-splash-screen';
 
 export type RootStackParamList = {
   SignIn: {
@@ -62,13 +64,24 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function AppInner() {
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    SplashScreen.hide();
+  }, []);
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     // setIsLoading(false);
+  //   }, 2000);
+  // }, []);
   const isLoggedIn = useSelector(
     (state: RootState) => !!state.user.accessToken,
   );
   const [showModal, setShowModal] = useState('no');
   return (
     <NavigationContainer>
-      {isLoggedIn ? (
+      {isLoading ? (
+        <Splash />
+      ) : isLoggedIn ? (
         <Safe color="#ffffff">
           <Tab.Navigator
             initialRouteName="Home"

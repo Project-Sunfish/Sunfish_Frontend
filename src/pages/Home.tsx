@@ -137,7 +137,7 @@ export default function Home() {
 
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Game.png')}
       style={{flex: 1}}>
       <View style={styles.entire}>
         <View
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
   },
   //temp from here
   gameContainer: {
-    backgroundColor: 'white',
+    // backgroundColor: 'white',
   },
   btn: {
     padding: 20,

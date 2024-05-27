@@ -277,6 +277,18 @@ export const svgList = {
     </svg>
     `,
   },
+  splash: {
+    bogus: `<svg width="253" height="140" viewBox="0 0 253 140" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <rect x="0.273148" width="252" height="140" fill="url(#pattern0_1095_413)"/>
+    <defs>
+    <pattern id="pattern0_1095_413" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_1095_413" transform="matrix(0.00669344 0 0 0.0120482 -0.00200803 0)"/>
+    </pattern>
+    <image id="image0_1095_413" width="150" height="83" xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAABTCAYAAAB9JP7lAAAAAXNSR0IArs4c6QAAA09JREFUeF7t3e12qyAQhWG9/4tOl2ltU1cIA8yGAd/z9+AE9zzFr9juG/9IQJDALqhJSRLYgAUCSQLAksRKUWBhQJIAsCSxUhRYGJAkACxJrBQFFgYkCQBLEitFgbWYgcfj8Xi3S/u+d+111w9brIehdicF6jrJXsCAFYpH3WSsqM7qPXABq66XYbYqRdULF7DCEElP5MRzXWlqUfXABayJYF1BAGuC5kWeYiugT/umOt9ixYos6mduwJqgSTNOEVgzdm2COQNrgibNOEVgzdi1CeZ8hXWecHuA4+R9AgCqKb4CeoXQCkuF6siBq0KVBue6ByJukDqHSrn8XfnSjJSrFStWaTfe3FdSN8gyxdJDYo85cyi0dG7btlzzejQrN9VIcwRWrlsGVD0e6hqm+TskdRVZUqN1LLAyCeZWgevmEVauVhQe2wPrQ4qlqKKtXB5AamvcHlbqu05HoLWwnldFnb9jXgtAtR2wXl4+mOXmowqDZ11gXd5qmeFxiScAVS1gvXld6sDVchjkXItHOk3nUbmf9jufZ7FiJV7wzKGx/D+wLCktOsbjkJeKBliLorHsFrAsKZWP4VDIobBcjWELYHFVaGBSPgRY3McqV2PYAljceTcwKR9ye1ifIms5sb/zFeHzWWm5xftsUQvr7qiAZfgZKcUFqu9QWbEccYHqL0xgGWAdQ3IrF6j+BwksI6zXYakXSCtKLbsJsJZt7dgdA9bY/Jf9dGAt29qxOwassfkv++nAWra1Y3csDCwu58dC8P70ELByqM6d5l6Rd/t19YbDsqIClw6BovJQWKWowKUgoKkph5V6hb0W1fMB581fX9dQ8K3aDdYVRAsscPkiUFTrCusE0YoKWAoKvjW7w/KaPodDryQ1daaFxaqlAeFVVQrL45D3aUdZtbwY+NcBln+mVFR/NZkV677GpCvWEasSF4fCuHC7w+KXmsXF4DmzrrD4NYyerYtdqxusmf7AUOyWzTE7OaxUDC3nXpxbxcc1DFbLiT2wgJVNoHTlAlU20hADhq5YZwJWXKAKYcY0iRCwLIdFUJn6GWZQGFhhEmEiLgkAyyVGilwTABYmJAkASxIrRYGFAUkCwJLESlFgYUCSALAksVIUWBiQJPAFDtJAY8Gr+rsAAAAASUVORK5CYII="/>
+    </defs>
+    </svg>
+    `,
+  },
   temp: {
     defaultBogu: `
     <svg width="89" height="88" viewBox="0 0 89 88" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
