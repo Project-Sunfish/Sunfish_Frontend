@@ -74,24 +74,38 @@ export default function Home() {
   const [focusedBoguId, setFocusedBoguId] = useState('-1');
   const [focusedBoguName, setFocusedBoguName] = useState('');
   const [focusedBoguProblem, setFocusedBoguProblem] = useState('');
+  const [focusedBoguCategory, setFocusedBoguCategory] = useState<string[]>([]);
+  const [focusedBoguVariation, setFocusedBoguVariation] = useState(0);
+  const [focusedBoguSelectedCategory, setFocusedBoguSelectedCategory] =
+    useState('');
+  const [focusedBoguStatus, setFocusedBoguStatus] = useState(0);
+  const [focusedBoguCreatedAt, setFocusedBoguCreatedAt] = useState('');
 
   const ref = useRef<TextInput>(null);
   useEffect(() => {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
   });
   useEffect(() => {
+    if (tutorial === '2') {
+      setTimeout(() => {
+        setTutorial('3');
+      }, 1500);
+    }
+  }, [tutorial]);
+  useEffect(() => {
     getBasicInfo();
     console.log('getBasicInfo');
   }, []);
   useEffect(() => {
     if (modal === 'pop') {
-      let id = focusedBoguId.split('-')[0].replace('e', '');
-      for (let i = 0; i < evolvedBogu.length; i++) {
-        if (evolvedBogu[i].id === Number(id)) {
-          setFocusedBoguName(evolvedBogu[i].name);
-          setFocusedBoguProblem(evolvedBogu[i].problem);
-        }
-      }
+      // let id = focusedBoguId.split('-')[0].replace('e', '');
+      // for (let i = 0; i < evolvedBogu.length; i++) {
+      //   if (evolvedBogu[i].id === Number(id)) {
+      //     setFocusedBoguName(evolvedBogu[i].name);
+      //     setFocusedBoguProblem(evolvedBogu[i].problem);
+      //   }
+      // }
+      getEvolvedBoguInfo();
     }
   }, [modal]);
   const getBasicInfo = async () => {
@@ -150,11 +164,40 @@ export default function Home() {
           .replace('e', '')}`,
       );
       console.log(response.data);
+      setFocusedBoguId(response.data.id);
+      // setFocusedBoguCreatedAt(response.data.created_at);
+      setFocusedBoguStatus(response.data.status);
+      setFocusedBoguSelectedCategory(response.data.selected_category);
+      setFocusedBoguVariation(response.data.variation);
+      setFocusedBoguCategory(response.data.categories);
       setFocusedBoguName(response.data.name);
       setFocusedBoguProblem(response.data.problem);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
+    }
+  };
+  const pop = async () => {
+    setAnimationType('liberate');
+    // 터지는 애니메이션 넣기
+    try {
+      // const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
+      //   id: focusedBoguId.split('-')[0].replace('e', ''),
+      // });
+      // console.log(response.data);
+      // if (response.data.liberationFlag) {
+      if (true) {
+        setModal('no');
+        setTimeout(() => {
+          setModal('liberate');
+        }, 400);
+        // 해방시킬지 말지 결정하는 모달 띄우기
+      } else {
+        getBasicInfo();
+      }
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot pop', errorResponse);
     }
   };
   const formatDate = (date: Date) => {
@@ -167,13 +210,6 @@ export default function Home() {
     return `${year}.${month}.${day}(${dayOfWeek})`;
   };
 
-  useEffect(() => {
-    if (tutorial === '2') {
-      setTimeout(() => {
-        setTutorial('3');
-      }, 1500);
-    }
-  }, [tutorial]);
   return isLoading ? (
     <View style={{flex: 1, zIndex: 10}}>
       <Splash />
@@ -505,18 +541,65 @@ export default function Home() {
         showModal={modal}
         setShowModal={setModal}
         condition="pop"
-        headerTxt="진화 복어 기본 정보"
-        onClosed={() => setFocusedBoguId('-1')}>
-        <View
-          style={{
-            width: '100%',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <Text style={{color: 'black'}}>{`복어 id:${focusedBoguId}`}</Text>
-          <Text style={{color: 'black'}}>{`복어 이름:${focusedBoguName}`}</Text>
-          <Text
-            style={{color: 'black'}}>{`복어 고민:${focusedBoguProblem}`}</Text>
+        headerTxt=""
+        onClosed={() => {
+          setFocusedBoguId('-1');
+          setFocusedBoguName('');
+          setFocusedBoguProblem('');
+          setFocusedBoguCategory([]);
+          setFocusedBoguVariation(0);
+          setFocusedBoguSelectedCategory('');
+          setFocusedBoguStatus(0);
+          setFocusedBoguCreatedAt('');
+        }}>
+        <View style={styles.popModalContent}>
+          <Text style={styles.popModalCreatedAt}>2024.05.16(목)</Text>
+          <View style={styles.popModalView}>
+            <View style={styles.popModalBoguImg}>
+              <Image
+                source={require('../assets/gifs/high_left.gif')}
+                style={{width: 125, height: 125}}
+              />
+            </View>
+            <View style={styles.popModalCategoryView}>
+              <Text style={styles.popModalCategoryTxt}>
+                {focusedBoguCategory.map(item => ` #${item} `)}
+              </Text>
+            </View>
+            <View style={styles.popModalProblemView}>
+              <Text style={styles.popModalProblemTxt}>
+                {focusedBoguProblem}
+              </Text>
+              <Text style={styles.popModalQuantity}>
+                {`${focusedBoguProblem.length}/1000`}
+              </Text>
+            </View>
+          </View>
+          <Pressable style={styles.popModalBtn} onPress={() => pop()}>
+            <Text style={styles.popModalBtnTxt}>터트리기</Text>
+          </Pressable>
+        </View>
+      </MyPageModal>
+      <MyPageModal
+        showModal={modal}
+        setShowModal={setModal}
+        condition="liberate"
+        headerTxt="해방하시겠습니까?"
+        onClosed={() => {
+          // getBasicInfo();
+        }}>
+        {/* <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
+        <View style={styles.cannotCreateContent}>
+          <Text style={styles.cannotCreateContentTxt}>
+            해방하시면 다시 복어를 생성할 수 없습니다.
+          </Text>
+        </View>
+        <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
+        <Pressable style={styles.cannotCreateBtn}>
+          <Text style={styles.cannotCreateBtnTxt}>해방하기</Text>
+        </Pressable> */}
+        <View>
+          <Text>이 고민은 더 이상 당신의 고민이 아닙니까?</Text>
         </View>
       </MyPageModal>
     </ImageBackground>
@@ -659,6 +742,71 @@ const styles = StyleSheet.create({
     bottom: 20,
     right: 7,
   },
+  popModalContent: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popModalCreatedAt: {
+    color: '#6EA5FF',
+    fontSize: 11,
+    fontWeight: '400',
+    textAlign: 'center',
+    letterSpacing: 2.2,
+  },
+  popModalView: {
+    marginVertical: 12,
+    borderRadius: 16,
+    backgroundColor: '#E6EEF7',
+    padding: 7,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popModalBoguImg: {
+    width: 125,
+    height: 125,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  popModalCategoryView: {
+    marginVertical: 10,
+  },
+  popModalCategoryTxt: {
+    color: '#002B5D',
+    fontSize: 15,
+    fontWeight: '400',
+    textAlign: 'center',
+  },
+  popModalProblemView: {
+    width: '100%',
+  },
+  popModalProblemTxt: {
+    color: '#002B5D',
+    fontSize: 16,
+    fontWeight: '400',
+    textAlign: 'center',
+    fontFamily: 'KCCDodamdodam',
+  },
+  popModalBtn: {
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    borderRadius: 20,
+    backgroundColor: '#4F85C54D',
+  },
+  popModalBtnTxt: {
+    color: '#002B5D',
+    fontSize: 13,
+    fontWeight: '400',
+  },
+  popModalQuantity: {
+    color: '#002B5D80',
+    fontSize: 8,
+    fontWeight: '400',
+    marginTop: 10,
+    textAlign: 'right',
+    width: '100%',
+  },
   animationBG: {
     margin: 0,
     backgroundColor: '#000000B2',
@@ -677,7 +825,6 @@ const styles = StyleSheet.create({
     marginTop: 150,
     alignItems: 'center',
   },
-
   animationBtn: {
     marginTop: 20,
     paddingVertical: 12,
