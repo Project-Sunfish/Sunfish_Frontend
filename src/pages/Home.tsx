@@ -11,7 +11,12 @@ import {
   View,
 } from 'react-native';
 import Text from '../components/Text';
-import Character from '../components/Character';
+import Character, {
+  level,
+  selectedCategory,
+  status,
+  variation,
+} from '../components/Character';
 import {useCallback, useEffect, useRef, useState} from 'react';
 import Modal from 'react-native-modal';
 import MyPageModal from '../components/MyPageModal';
@@ -38,12 +43,12 @@ type defaultBogu = {
 
 type evolvedBogu = {
   id: number;
-  level: number;
+  level: level;
   categories: string[];
-  selected_category: string;
-  variation: number;
+  selected_category: selectedCategory;
+  variation: variation;
   name: string;
-  status: number;
+  status: status;
   count: number;
   problem: string;
 };

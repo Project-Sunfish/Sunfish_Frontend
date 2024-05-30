@@ -12,15 +12,30 @@ import {
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import {category, info} from '../assets/info';
+
+export type level = 1 | 2 | 3 | 4 | 5 | 6;
+export type status = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type selectedCategory =
+  | '학업'
+  | '직장'
+  | '가족'
+  | '친구'
+  | '연애'
+  | '건강'
+  | '사회문제'
+  | '이유없음'
+  | '기타';
+export type variation = 1 | 2 | 3 | 4;
 
 type CharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
   id: string;
-  level: number;
-  selectedCategory: string;
-  variation: number;
+  level: level;
+  selectedCategory: selectedCategory;
+  variation: variation;
   name: string;
-  status: number;
+  status: status;
   problem: string;
   focusedBoguId: string;
   setFocusedBoguId: React.Dispatch<React.SetStateAction<string>>;
@@ -30,6 +45,12 @@ type CharacterProps = {
 export default function Character(props: CharacterProps) {
   const id = props.id;
   const focusedBoguId = props.focusedBoguId;
+  const level = props.level;
+  const selectedCategory = category[props.selectedCategory];
+  const variation = props.variation;
+  const name = props.name;
+  const status = props.status;
+  const problem = props.problem;
   const [position] = useState(new Animated.ValueXY({x: 0, y: 0}));
   const [prevX, setPrevX] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
@@ -47,7 +68,7 @@ export default function Character(props: CharacterProps) {
         Math.pow(toY - currentPos.y._value, 2),
     );
 
-    const speed = 100; // 일정한 속도
+    const speed = info.level.speed[level]; // 일정한 속도
     const duration = (distance / speed) * 1000; // ms 단위로 변환
 
     setDirection(toX > currentPos.x._value ? 'right' : 'left');
@@ -61,7 +82,7 @@ export default function Character(props: CharacterProps) {
       if (!isPaused) {
         timerRef.current = setTimeout(() => {
           setNewDestination(toX);
-        }, 2000);
+        }, info.level.stopTime[level]);
       }
     });
   };
@@ -71,7 +92,9 @@ export default function Character(props: CharacterProps) {
     //   Math.random() * Dimensions.get('window').width - 80,
     // );
     // set randomX randomly from -160 to 160
-    const randomX = Math.floor(Math.random() * 320 - 160);
+    const randomX = Math.floor(
+      Math.random() * info.status.size[status] * 2 - info.status.size[status],
+    );
     const randomY = Math.floor(Math.random() * 300);
     const directionNow = prevX < randomX ? 'right' : 'left';
     setDirection(prevX < randomX ? 'right' : 'left');
@@ -109,7 +132,14 @@ export default function Character(props: CharacterProps) {
 
   return (
     <Animated.View
-      style={[styles.character, {transform: position.getTranslateTransform()}]}>
+      style={[
+        styles.character,
+        {transform: position.getTranslateTransform()},
+        {
+          width: info.status.touchSize[status],
+          height: info.status.touchSize[status],
+        },
+      ]}>
       <Pressable
         onPress={() => {
           if (props.animationType === 'popping') return;
@@ -125,23 +155,32 @@ export default function Character(props: CharacterProps) {
             style={{width: 360, height: 360}}
           />
         ) :  */}
-        {props.animationType === 'popping' && props.focusedBoguId === id ? (
+        {props.animationType === 'popping' && focusedBoguId === id ? (
           <Image
             source={require('../assets/gifs/popping.gif')}
-            style={{width: 360, height: 360}}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+            }}
           />
-        ) : props.animationType === 'popEnd' && props.focusedBoguId === id ? (
+        ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
           <></>
         ) : direction == 'right' ? (
           <Image
             source={require('../assets/gifs/high_right.gif')}
-            style={{width: 360, height: 360}}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+            }}
           />
         ) : (
           // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
           <Image
             source={require('../assets/gifs/high_left.gif')}
-            style={{width: 360, height: 360}}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+            }}
           />
         )}
       </Pressable>
@@ -155,8 +194,8 @@ const styles = StyleSheet.create({
     borderRadius: 2000,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 260,
-    height: 260,
+
+    // backgroundColor: 'red',
   },
   characterRight: {
     // 오른쪽을 향하는 SVG 스타일
