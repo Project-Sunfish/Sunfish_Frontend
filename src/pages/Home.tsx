@@ -57,7 +57,7 @@ export default function Home(props: HomeProps) {
     setTimeout(() => {
       setIsLoading(false);
       dispatch(userSlice.actions.setTabBar('show'));
-    }, 4000);
+    }, 1500);
   }, []);
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
@@ -95,7 +95,7 @@ export default function Home(props: HomeProps) {
     if (tutorial === '2') {
       setTimeout(() => {
         setTutorial('3');
-      }, 2000);
+      }, 2500);
     }
   }, [tutorial]);
   useEffect(() => {
@@ -162,15 +162,17 @@ export default function Home(props: HomeProps) {
         setAnimationType('making');
       }, 400);
       console.log(response.data);
-      setEvolvedBoguId(response.data.evolvedBoguid);
+      setEvolvedBoguId(response.data.id);
       setEvolvedBoguName(response.data.name);
-      // setEvolvedBoguStatus(response.data.status);
-      // setEvolvedBoguSelectedCategory(response.data.selected_category);
-      // setEvolvedBoguVariation(response.data.variation);
+      setEvolvedBoguStatus(response.data.status);
+      setEvolvedBoguSelectedCategory(response.data.selected_category);
+      setEvolvedBoguVariation(response.data.variation);
       setFocusedBoguId('-1');
       setSelectedCategory([]);
       setWorry('');
-      getBasicInfo();
+      setTimeout(() => {
+        getBasicInfo();
+      }, 500);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot evolve', errorResponse);
@@ -185,7 +187,7 @@ export default function Home(props: HomeProps) {
       );
       console.log(response.data);
       // setFocusedBoguId(response.data.id);
-      // setFocusedBoguCreatedAt(response.data.created_at);
+      setFocusedBoguCreatedAt(response.data.createdAt);
       setFocusedBoguStatus(response.data.status);
       setFocusedBoguSelectedCategory(response.data.selected_category);
       setFocusedBoguVariation(response.data.variation);
@@ -605,7 +607,9 @@ export default function Home(props: HomeProps) {
           setFocusedBoguCreatedAt('');
         }}>
         <View style={styles.popModalContent}>
-          <Text style={styles.popModalCreatedAt}>2024.05.16(목)</Text>
+          <Text style={styles.popModalCreatedAt}>
+            {formatDate(new Date(focusedBoguCreatedAt))}
+          </Text>
           <View style={styles.popModalView}>
             <View style={styles.popModalBoguImg}>
               <Image
