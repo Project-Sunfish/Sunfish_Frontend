@@ -4,6 +4,7 @@ import {
   Image,
   ImageBackground,
   Pressable,
+  ScrollView,
   StyleSheet,
   TextInput,
   TurboModuleRegistry,
@@ -113,12 +114,9 @@ export default function Home(props: HomeProps) {
     // setTutorial('0');
     return focusListener;
   }, []);
-  useFocusEffect(
-    useCallback(() => {
-      getBasicInfo();
-      console.log('getBasicInfo');
-    }, []),
-  );
+  useEffect(() => {
+    if (focusedBoguId.includes('e')) getEvolvedBoguInfo();
+  }, [focusedBoguId]);
   // useEffect(() => {
   //   if (modal === 'pop') {
   //     // let id = focusedBoguId.split('-')[0].replace('e', '');
@@ -233,6 +231,23 @@ export default function Home(props: HomeProps) {
         console.log('cannot pop', errorResponse);
       }
     }, 5000);
+  };
+  const liberate = async () => {
+    try {
+      const response = await axios.post(
+        `${Config.API_URL}/api/bogu/liberation`,
+        {
+          id: focusedBoguId.split('-')[0].replace('e', ''),
+        },
+      );
+      console.log(response.data);
+      getBasicInfo();
+      setFocusedBoguId('-1');
+      setModal('no');
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot liberate', errorResponse);
+    }
   };
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
@@ -553,18 +568,22 @@ export default function Home(props: HomeProps) {
         headerTxt="어떤 걱정인가요?">
         <View style={styles.worryContent}>
           <Text style={styles.date}>{formatDate(new Date())}</Text>
-          <TextInput
-            ref={ref}
+          <View
             style={[
-              styles.worryInput,
+              styles.worryInputView,
               worry.length >= 1 && {paddingBottom: 30},
-            ]}
-            placeholder="오늘 하루를 기록해보세요."
-            placeholderTextColor={'#002B5D80'}
-            value={worry}
-            onChangeText={text => setWorry(text)}
-            multiline={true}
-          />
+            ]}>
+            <TextInput
+              ref={ref}
+              style={[styles.worryInput]}
+              placeholder="오늘 하루를 기록해보세요."
+              placeholderTextColor={'#002B5D80'}
+              value={worry}
+              onChangeText={text => setWorry(text)}
+              multiline={true}
+              maxLength={1000}
+            />
+          </View>
           {worry.length >= 1 && (
             <Text style={styles.quantity}>{`${worry.length}/1000`}</Text>
           )}
@@ -605,7 +624,7 @@ export default function Home(props: HomeProps) {
         setShowModal={setModal}
         condition="pop"
         headerTxt=""
-        onShow={() => getEvolvedBoguInfo()}
+        // onShow={() => getEvolvedBoguInfo()}
         onBackButtonPress={() => {
           // 백버튼 핸들러 사용
           setFocusedBoguId('-1');
@@ -622,25 +641,33 @@ export default function Home(props: HomeProps) {
             {formatDate(new Date(focusedBoguCreatedAt))}
           </Text>
           <View style={styles.popModalView}>
-            <View style={styles.popModalBoguImg}>
+            <View
+              style={styles.popModalBoguImg}
+              onStartShouldSetResponder={() => true}>
               <Image
                 source={require('../assets/gifs/high_left.gif')}
                 style={{width: 125, height: 125}}
               />
             </View>
-            <View style={styles.popModalCategoryView}>
-              <Text style={styles.popModalCategoryTxt}>
-                {focusedBoguCategory.map(item => ` #${item} `)}
-              </Text>
-            </View>
-            <View style={styles.popModalProblemView}>
-              <Text style={styles.popModalProblemTxt}>
-                {focusedBoguProblem}
-              </Text>
-              <Text style={styles.popModalQuantity}>
-                {`${focusedBoguProblem.length}/1000`}
-              </Text>
-            </View>
+            <ScrollView style={{width: '100%'}}>
+              <View
+                style={styles.popModalCategoryView}
+                onStartShouldSetResponder={() => true}>
+                <Text style={styles.popModalCategoryTxt}>
+                  {focusedBoguCategory.map(item => ` #${item} `)}
+                </Text>
+              </View>
+              <View
+                style={styles.popModalProblemView}
+                onStartShouldSetResponder={() => true}>
+                <Text style={styles.popModalProblemTxt}>
+                  {focusedBoguProblem}
+                </Text>
+                <Text style={styles.popModalQuantity}>
+                  {`${focusedBoguProblem.length}/1000`}
+                </Text>
+              </View>
+            </ScrollView>
           </View>
           <Pressable
             style={styles.popModalBtn}
@@ -659,23 +686,63 @@ export default function Home(props: HomeProps) {
         showModal={modal}
         setShowModal={setModal}
         condition="liberate"
-        headerTxt="해방하시겠습니까?"
-        onClosed={() => {
-          // getBasicInfo();
+        headerTxt="이 고민은 더 이상 당신의 고민이 아닌가요?"
+        onBackButtonPress={() => {
+          getBasicInfo();
         }}>
-        {/* <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
-        <View style={styles.cannotCreateContent}>
-          <Text style={styles.cannotCreateContentTxt}>
-            해방하시면 다시 복어를 생성할 수 없습니다.
+        <View style={styles.popModalContent}>
+          <Text style={[styles.popModalCreatedAt, {marginTop: 12}]}>
+            {formatDate(new Date(focusedBoguCreatedAt))}
           </Text>
-        </View>
-        <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
-        <Pressable style={styles.cannotCreateBtn}>
-          <Text style={styles.cannotCreateBtnTxt}>해방하기</Text>
-          // 해방 후 animationType = 'no'로 변경, getBasicInfo() 실행
-        </Pressable> */}
-        <View>
-          <Text>이 고민은 더 이상 당신의 고민이 아닙니까?</Text>
+          <View style={[styles.popModalView, {maxHeight: 300}]}>
+            <ScrollView style={{width: '100%'}}>
+              <View
+                style={styles.popModalCategoryView}
+                onStartShouldSetResponder={() => true}>
+                <Text style={styles.popModalCategoryTxt}>
+                  {focusedBoguCategory.map(item => ` #${item} `)}
+                </Text>
+              </View>
+              <View
+                style={styles.popModalProblemView}
+                onStartShouldSetResponder={() => true}>
+                <Text style={styles.popModalProblemTxt}>
+                  {focusedBoguProblem}
+                </Text>
+                <Text style={styles.popModalQuantity}>
+                  {`${focusedBoguProblem.length}/1000`}
+                </Text>
+              </View>
+            </ScrollView>
+          </View>
+          <View style={{marginBottom: 12}}>
+            <Text style={styles.liberateDescription}>
+              {'예를 누를 경우, 이 고민의 복어는\n더 이상 리스폰되지 않아요.'}
+            </Text>
+          </View>
+          <View style={{flexDirection: 'row'}}>
+            <Pressable
+              style={styles.popModalBtn}
+              disabled={focusedBoguCreatedAt === ''}
+              onPress={() => {
+                setFocusedBoguId('-1');
+                setModal('no');
+                getBasicInfo();
+              }}>
+              <Text style={styles.popModalBtnTxt}>아니요</Text>
+            </Pressable>
+            <View style={{width: 16}} />
+            <Pressable
+              style={[styles.popModalBtn, {backgroundColor: '#6EA5FF'}]}
+              disabled={focusedBoguCreatedAt === ''}
+              onPress={() => {
+                liberate();
+              }}>
+              <Text style={[styles.popModalBtnTxt, {color: '#ffffff'}]}>
+                예
+              </Text>
+            </Pressable>
+          </View>
         </View>
       </MyPageModal>
     </ImageBackground>
@@ -796,15 +863,20 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: '400',
   },
-  worryInput: {
+  worryInputView: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: '#E6EEF7',
     borderRadius: 16,
     paddingVertical: 8,
     paddingHorizontal: 16,
-    width: '100%',
     marginBottom: 12,
+  },
+  worryInput: {
+    width: '100%',
     textAlign: 'center',
-    maxHeight: 220,
+    maxHeight: 200,
     fontFamily: 'KCCDodamdodam',
     color: '#002B5D',
     fontWeight: '400',
@@ -838,6 +910,7 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    maxHeight: 450,
   },
   popModalBoguImg: {
     width: 125,
@@ -863,6 +936,12 @@ const styles = StyleSheet.create({
     fontWeight: '400',
     textAlign: 'center',
     fontFamily: 'KCCDodamdodam',
+  },
+  liberateDescription: {
+    color: '#002B5D80',
+    fontSize: 10,
+    fontWeight: '400',
+    textAlign: 'center',
   },
   popModalBtn: {
     paddingVertical: 12,
