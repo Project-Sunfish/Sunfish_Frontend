@@ -17,6 +17,8 @@ import {useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import axios from 'axios';
+import Config from 'react-native-config';
 
 type BookScreenNavigationProp = NativeStackNavigationProp<
   BookStackParamList,
@@ -36,6 +38,22 @@ export default function Book(props: BookProps) {
   for (let i = 0; i < openData.length; i++) {
     data[openData[i].id] = openData[i];
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      getData();
+    }, []),
+  );
+
+  const getData = async () => {
+    try {
+      const response = await axios.get(`${Config.API_URL}/api/collection`);
+      console.log(response.data);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot get evolved bogu info', errorResponse);
+    }
+  };
   return (
     // <View style={{flex: 1}}>
     //   <Pressable onPress={() => Vibration.vibrate(100)}>
