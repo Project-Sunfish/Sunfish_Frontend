@@ -24,6 +24,7 @@ type CharacterProps = {
   problem: string;
   focusedBoguId: string;
   setFocusedBoguId: React.Dispatch<React.SetStateAction<string>>;
+  animationType: string;
 };
 
 export default function Character(props: CharacterProps) {
@@ -111,6 +112,7 @@ export default function Character(props: CharacterProps) {
       style={[styles.character, {transform: position.getTranslateTransform()}]}>
       <Pressable
         onPress={() => {
+          if (props.animationType === 'popping') return;
           props.setFocusedBoguId(id);
           props.setModal('pop');
         }}
@@ -123,7 +125,14 @@ export default function Character(props: CharacterProps) {
             style={{width: 360, height: 360}}
           />
         ) :  */}
-        {direction == 'right' ? (
+        {props.animationType === 'popping' && props.focusedBoguId === id ? (
+          <Image
+            source={require('../assets/gifs/popping.gif')}
+            style={{width: 360, height: 360}}
+          />
+        ) : props.animationType === 'popEnd' && props.focusedBoguId === id ? (
+          <></>
+        ) : direction == 'right' ? (
           <Image
             source={require('../assets/gifs/high_right.gif')}
             style={{width: 360, height: 360}}

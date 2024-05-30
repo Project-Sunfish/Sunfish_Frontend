@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextInput,
   TurboModuleRegistry,
+  Vibration,
   View,
 } from 'react-native';
 import Text from '../components/Text';
@@ -65,7 +66,7 @@ export default function Home(props: HomeProps) {
 
   const [cnt, setCnt] = useState(0);
   const [tutorial, setTutorial] = useState('0');
-  const [animationType, setAnimationType] = useState('no');
+  const [animationType, setAnimationType] = useState('no'); // making: 생성 중 => both => pop: 선물상자 open, popping: 터트리기
   const [evolvedBoguId, setEvolvedBoguId] = useState('-1');
   const [evolvedBoguStatus, setEvolvedBoguStatus] = useState(0);
   const [evolvedBoguSelectedCategory, setEvolvedBoguSelectedCategory] =
@@ -199,18 +200,20 @@ export default function Home(props: HomeProps) {
       console.log('cannot get evolved bogu info', errorResponse);
     }
   };
-  const pop = async () => {
+  const pop = () => {
     console.log('popping');
-    setAnimationType('liberate');
+    setAnimationType('popping');
+    Vibration.vibrate(5000);
     // 터지는 애니메이션 넣기 (5초 후 api 전송)
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
-        // const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
-        //   id: focusedBoguId.split('-')[0].replace('e', ''),
-        // });
-        // console.log(response.data);
-        // if (response.data.liberationFlag) {
-        if (true) {
+        const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
+          id: focusedBoguId.split('-')[0].replace('e', ''),
+        });
+        console.log(response.data);
+        setAnimationType('popEnd');
+        if (response.data.liberationFlag) {
+          // if (true) {
           setModal('no');
           setTimeout(() => {
             setModal('liberate');
@@ -291,6 +294,7 @@ export default function Home(props: HomeProps) {
                 problem={item.problem}
                 focusedBoguId={focusedBoguId}
                 setFocusedBoguId={setFocusedBoguId}
+                animationType={animationType}
               />
             )),
           )}
@@ -660,6 +664,7 @@ export default function Home(props: HomeProps) {
         <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
         <Pressable style={styles.cannotCreateBtn}>
           <Text style={styles.cannotCreateBtnTxt}>해방하기</Text>
+          // 해방 후 animationType = 'no'로 변경, getBasicInfo() 실행
         </Pressable> */}
         <View>
           <Text>이 고민은 더 이상 당신의 고민이 아닙니까?</Text>
