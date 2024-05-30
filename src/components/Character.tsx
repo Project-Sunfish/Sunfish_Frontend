@@ -51,7 +51,15 @@ export default function Character(props: CharacterProps) {
   const name = props.name;
   const status = props.status;
   const problem = props.problem;
-  const [position] = useState(new Animated.ValueXY({x: 0, y: 0}));
+  const [position] = useState(
+    new Animated.ValueXY({
+      x: Math.floor(
+        Math.random() * Dimensions.get('window').width -
+          info.status.size[status] / 2,
+      ),
+      y: Math.floor(Math.random() * (Dimensions.get('window').height - 200)),
+    }),
+  );
   const [prevX, setPrevX] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [isPaused, setIsPaused] = useState(false);
@@ -88,14 +96,14 @@ export default function Character(props: CharacterProps) {
   };
 
   const setNewDestination = (prevX: number) => {
-    // const randomX = Math.floor(
-    //   Math.random() * Dimensions.get('window').width - 80,
-    // );
-    // set randomX randomly from -160 to 160
+    // set randomX randomly from -size/2 to windowWidth-size/2
     const randomX = Math.floor(
-      Math.random() * info.status.size[status] * 2 - info.status.size[status],
+      Math.random() * Dimensions.get('window').width -
+        info.status.size[status] / 2,
     );
-    const randomY = Math.floor(Math.random() * 300);
+    const randomY = Math.floor(
+      Math.random() * (Dimensions.get('window').height - 200),
+    );
     const directionNow = prevX < randomX ? 'right' : 'left';
     setDirection(prevX < randomX ? 'right' : 'left');
     if (directionNow !== direction && !isPaused) {
@@ -129,7 +137,6 @@ export default function Character(props: CharacterProps) {
       setNewDestination(prevX); // isPaused가 false로 변경되면 새로운 목적지 설정
     }
   }, [focusedBoguId]);
-
   return (
     <Animated.View
       style={[
@@ -161,6 +168,7 @@ export default function Character(props: CharacterProps) {
             style={{
               width: info.status.size[status],
               height: info.status.size[status],
+              zIndex: 10,
             }}
           />
         ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
@@ -194,8 +202,6 @@ const styles = StyleSheet.create({
     borderRadius: 2000,
     justifyContent: 'center',
     alignItems: 'center',
-
-    // backgroundColor: 'red',
   },
   characterRight: {
     // 오른쪽을 향하는 SVG 스타일

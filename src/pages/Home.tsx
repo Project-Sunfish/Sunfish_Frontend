@@ -32,6 +32,7 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
+import {useFocusEffect} from '@react-navigation/native';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -112,12 +113,12 @@ export default function Home(props: HomeProps) {
     // setTutorial('0');
     return focusListener;
   }, []);
-  // useFocusEffect(
-  //   useCallback(() => {
-  //     getBasicInfo();
-  //     console.log('getBasicInfo');
-  //   }, []),
-  // );
+  useFocusEffect(
+    useCallback(() => {
+      getBasicInfo();
+      console.log('getBasicInfo');
+    }, []),
+  );
   // useEffect(() => {
   //   if (modal === 'pop') {
   //     // let id = focusedBoguId.split('-')[0].replace('e', '');
@@ -239,8 +240,9 @@ export default function Home(props: HomeProps) {
     const day = String(date.getDate()).padStart(2, '0');
     const weekDays = ['일', '월', '화', '수', '목', '금', '토'];
     const dayOfWeek = weekDays[date.getDay()];
-
-    return `${year}.${month}.${day}(${dayOfWeek})`;
+    if (year && month && day && dayOfWeek)
+      return `${year}.${month}.${day}(${dayOfWeek})`;
+    else return '로딩 중...';
   };
 
   return isLoading ? (
@@ -642,6 +644,7 @@ export default function Home(props: HomeProps) {
           </View>
           <Pressable
             style={styles.popModalBtn}
+            disabled={focusedBoguCreatedAt === ''}
             onPress={() => {
               setModal('no');
               setTimeout(() => {

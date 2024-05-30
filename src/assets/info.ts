@@ -1,5 +1,4 @@
 const STATUS1_SIZE = 88;
-const STATUS1_TOUCH_SIZE = 88;
 const LEVEL1_STOP_TIME = 3000;
 const LEVEL1_SPEED = 100;
 const LEVEL1_VIBRATION_TIME = 0;
@@ -31,14 +30,14 @@ export const info = {
     },
     touchSize: {
       1: 65,
-      2: 122,
-      3: 156,
-      4: 190,
-      5: 224,
-      6: 258,
-      7: 292,
-      8: 326,
-      9: 360,
+      2: 90,
+      3: 115,
+      4: 145,
+      5: 165,
+      6: 190,
+      7: 220,
+      8: 240,
+      9: 260,
     },
   },
   level: {
