@@ -12,24 +12,54 @@ import {
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
+import {category, info} from '../assets/info';
+
+export type level = 1 | 2 | 3 | 4 | 5 | 6;
+export type status = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+export type selectedCategory =
+  | '학업'
+  | '직장'
+  | '가족'
+  | '친구'
+  | '연애'
+  | '건강'
+  | '사회문제'
+  | '이유없음'
+  | '기타';
+export type variation = 1 | 2 | 3 | 4;
 
 type CharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
   id: string;
-  level: number;
-  selectedCategory: string;
-  variation: number;
+  level: level;
+  selectedCategory: selectedCategory;
+  variation: variation;
   name: string;
-  status: number;
+  status: status;
   problem: string;
   focusedBoguId: string;
   setFocusedBoguId: React.Dispatch<React.SetStateAction<string>>;
+  animationType: string;
 };
 
 export default function Character(props: CharacterProps) {
   const id = props.id;
   const focusedBoguId = props.focusedBoguId;
-  const [position] = useState(new Animated.ValueXY({x: 0, y: 0}));
+  const level = props.level;
+  const selectedCategory = category[props.selectedCategory];
+  const variation = props.variation;
+  const name = props.name;
+  const status = props.status;
+  const problem = props.problem;
+  const [position] = useState(
+    new Animated.ValueXY({
+      x: Math.floor(
+        Math.random() * Dimensions.get('window').width -
+          info.status.size[status] / 2,
+      ),
+      y: Math.floor(Math.random() * (Dimensions.get('window').height - 200)),
+    }),
+  );
   const [prevX, setPrevX] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [isPaused, setIsPaused] = useState(false);
@@ -46,7 +76,7 @@ export default function Character(props: CharacterProps) {
         Math.pow(toY - currentPos.y._value, 2),
     );
 
-    const speed = 100; // 일정한 속도
+    const speed = info.level.speed[level]; // 일정한 속도
     const duration = (distance / speed) * 1000; // ms 단위로 변환
 
     setDirection(toX > currentPos.x._value ? 'right' : 'left');
@@ -60,18 +90,20 @@ export default function Character(props: CharacterProps) {
       if (!isPaused) {
         timerRef.current = setTimeout(() => {
           setNewDestination(toX);
-        }, 2000);
+        }, info.level.stopTime[level]);
       }
     });
   };
 
   const setNewDestination = (prevX: number) => {
-    // const randomX = Math.floor(
-    //   Math.random() * Dimensions.get('window').width - 80,
-    // );
-    // set randomX randomly from -160 to 160
-    const randomX = Math.floor(Math.random() * 320 - 160);
-    const randomY = Math.floor(Math.random() * 300);
+    // set randomX randomly from -size/2 to windowWidth-size/2
+    const randomX = Math.floor(
+      Math.random() * Dimensions.get('window').width -
+        info.status.size[status] / 2,
+    );
+    const randomY = Math.floor(
+      Math.random() * (Dimensions.get('window').height - 200),
+    );
     const directionNow = prevX < randomX ? 'right' : 'left';
     setDirection(prevX < randomX ? 'right' : 'left');
     if (directionNow !== direction && !isPaused) {
@@ -79,7 +111,7 @@ export default function Character(props: CharacterProps) {
       setTimeout(() => {
         setIsChangingDirection(false);
         setDestination({x: randomX, y: randomY});
-      }, 260);
+      }, 0);
     } else {
       setDestination({x: randomX, y: randomY});
     }
@@ -105,14 +137,21 @@ export default function Character(props: CharacterProps) {
       setNewDestination(prevX); // isPaused가 false로 변경되면 새로운 목적지 설정
     }
   }, [focusedBoguId]);
-
   return (
     <Animated.View
-      style={[styles.character, {transform: position.getTranslateTransform()}]}>
+      style={[
+        styles.character,
+        {transform: position.getTranslateTransform()},
+        {
+          width: info.status.touchSize[status],
+          height: info.status.touchSize[status],
+        },
+      ]}>
       <Pressable
         onPress={() => {
-          props.setModal('pop');
+          if (props.animationType === 'popping') return;
           props.setFocusedBoguId(id);
+          props.setModal('pop');
         }}
         style={
           direction === 'right' ? styles.characterRight : styles.characterLeft
@@ -123,16 +162,33 @@ export default function Character(props: CharacterProps) {
             style={{width: 360, height: 360}}
           />
         ) :  */}
-        {direction == 'right' ? (
+        {props.animationType === 'popping' && focusedBoguId === id ? (
+          <Image
+            source={require('../assets/gifs/popping.gif')}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+              zIndex: 10,
+            }}
+          />
+        ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
+          <></>
+        ) : direction == 'right' ? (
           <Image
             source={require('../assets/gifs/high_right.gif')}
-            style={{width: 360, height: 360}}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+            }}
           />
         ) : (
           // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
           <Image
             source={require('../assets/gifs/high_left.gif')}
-            style={{width: 360, height: 360}}
+            style={{
+              width: info.status.size[status],
+              height: info.status.size[status],
+            }}
           />
         )}
       </Pressable>
@@ -146,8 +202,6 @@ const styles = StyleSheet.create({
     borderRadius: 2000,
     justifyContent: 'center',
     alignItems: 'center',
-    width: 260,
-    height: 260,
   },
   characterRight: {
     // 오른쪽을 향하는 SVG 스타일

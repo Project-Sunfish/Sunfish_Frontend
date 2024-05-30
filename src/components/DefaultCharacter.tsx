@@ -13,6 +13,7 @@ import {
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {Cursor} from './animations';
+import {info} from '../assets/info';
 
 type DefaultCharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
@@ -57,7 +58,7 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
       if (!isPaused) {
         timerRef.current = setTimeout(() => {
           setNewDestination(toX);
-        }, 2000);
+        }, info.level.stopTime[1]);
       }
     });
   };
@@ -75,7 +76,7 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
       setTimeout(() => {
         setIsChangingDirection(false);
         setDestination({x: randomX, y: randomY});
-      }, 200);
+      }, 0);
     } else {
       setDestination({x: randomX, y: randomY});
     }
@@ -107,8 +108,8 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
       style={[styles.character, {transform: position.getTranslateTransform()}]}>
       <Pressable
         onPress={() => {
-          props.setModal('selectCategory');
           props.setFocusedBoguId(id);
+          props.setModal('selectCategory');
           if (props.tutorial === '3') props.setTutorial('4');
         }}
         style={
@@ -129,13 +130,13 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
         {direction === 'right' ? (
           <Image
             source={require('../assets/gifs/temp.gif')}
-            style={{width: 88, height: 88}}
+            style={{width: info.status.size[1], height: info.status.size[1]}}
           />
         ) : (
           // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
           <Image
             source={require('../assets/gifs/temp.gif')}
-            style={{width: 88, height: 88}}
+            style={{width: info.status.size[1], height: info.status.size[1]}}
           />
         )}
       </Pressable>

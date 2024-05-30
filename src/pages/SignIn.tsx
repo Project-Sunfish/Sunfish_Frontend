@@ -35,11 +35,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   const setShowModal = route.params.setShowModal;
   const [isWebView, setIsWebView] = useState(false);
 
-  const Login = async () => {
+  const Login = async (id: number) => {
     console.log(Config.API_URL);
     try {
       const response = await axios.post(`${Config.API_URL}/login`, {
-        username: 'ys',
+        username: id == 1 ? 'ys' : id == 2 ? 'ys2' : 'ys3',
         password: '1234',
       });
       console.log(response.status);
@@ -52,9 +52,19 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
       const errorResponse = error.response;
       console.log(errorResponse);
       if (errorResponse.status === 401) {
-        dispatch(
-          userSlice.actions.setPerson({username: 'ys', password: '1234'}),
-        );
+        if (id == 1) {
+          dispatch(
+            userSlice.actions.setPerson({username: 'ys', password: '1234'}),
+          );
+        } else if (id == 2) {
+          dispatch(
+            userSlice.actions.setPerson({username: 'ys2', password: '1234'}),
+          );
+        } else {
+          dispatch(
+            userSlice.actions.setPerson({username: 'ys3', password: '1234'}),
+          );
+        }
         setShowModal('show');
       }
     }
@@ -84,7 +94,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login();
+                Login(1);
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.kakao} />
@@ -97,7 +107,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login();
+                Login(2);
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.google} />
@@ -110,7 +120,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login();
+                Login(3);
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.naver} />
