@@ -2,6 +2,7 @@ const STATUS1_SIZE = 88;
 const LEVEL1_STOP_TIME = 3000;
 const LEVEL1_SPEED = 100;
 const LEVEL1_VIBRATION_TIME = 0;
+export const BOGU_TYPE = 21;
 
 export const category = {
   학업: 'study',
@@ -188,4 +189,30 @@ export const info = {
       },
     },
   },
+};
+
+export const idList = {
+  '-1': {name: '', playText: ''},
+  0: info.category.study[1],
+  1: info.category.study[2],
+  2: info.category.work[1],
+  3: info.category.work[2],
+  4: info.category.work[3],
+  5: info.category.family[1],
+  6: info.category.family[2],
+  7: info.category.family[3],
+  8: info.category.family[4],
+  9: info.category.friend[1],
+  10: info.category.friend[2],
+  11: info.category.friend[3],
+  12: info.category.love[1],
+  13: info.category.love[2],
+  14: info.category.health[1],
+  15: info.category.health[2],
+  16: info.category.health[3],
+  17: info.category.social[1],
+  18: info.category.noReason[1],
+  19: info.category.noReason[2],
+  20: info.category.etc[1],
+  21: info.category.etc[2],
 };

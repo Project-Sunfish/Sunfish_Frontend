@@ -117,31 +117,19 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     if (focusedBoguId.includes('e')) getEvolvedBoguInfo();
   }, [focusedBoguId]);
-  // useEffect(() => {
-  //   if (modal === 'pop') {
-  //     // let id = focusedBoguId.split('-')[0].replace('e', '');
-  //     // for (let i = 0; i < evolvedBogu.length; i++) {
-  //     //   if (evolvedBogu[i].id === Number(id)) {
-  //     //     setFocusedBoguName(evolvedBogu[i].name);
-  //     //     setFocusedBoguProblem(evolvedBogu[i].problem);
-  //     //   }
-  //     // }
-  //     getEvolvedBoguInfo();
-  //   }
-  // }, [modal]);
   const updateBogu = async () => {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
-      console.log(response.data);
+      console.log('update', response.data);
     } catch (error: any) {
       const errorResponse = error.response;
-      console.log('cannot liberate', errorResponse);
+      console.log('cannot update', errorResponse);
     }
   };
   const getBasicInfo = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
-      console.log(response.data);
+      console.log('getBasicInfo', response.data);
       setNewBogus(response.data.todayQuota >= 1);
       setDefaultBogu(response.data.defaultBogus);
       setEvolvedBogu(response.data.evolvedBogus);
@@ -153,8 +141,8 @@ export default function Home(props: HomeProps) {
   };
   const createDefaultBogu = async () => {
     try {
-      const response = await axios.post(`${Config.API_URL}/api/bogu`);
-      console.log(response.data);
+      const response = await axios.post(`${Config.API_URL}/api/bogu/creation`);
+      console.log('create', response.data);
       updateBogu();
       getBasicInfo();
     } catch (error: any) {
@@ -177,7 +165,7 @@ export default function Home(props: HomeProps) {
       setTimeout(() => {
         setAnimationType('making');
       }, 400);
-      console.log(response.data);
+      console.log('evolve', response.data);
       setEvolvedBoguId(response.data.id);
       setEvolvedBoguName(response.data.name);
       setEvolvedBoguStatus(response.data.status);
@@ -202,7 +190,7 @@ export default function Home(props: HomeProps) {
           .split('-')[0]
           .replace('e', '')}`,
       );
-      console.log(response.data);
+      console.log('getEvolvedInfo', response.data);
       // setFocusedBoguId(response.data.id);
       setFocusedBoguCreatedAt(response.data.createdAt);
       setFocusedBoguStatus(response.data.status);
@@ -226,7 +214,7 @@ export default function Home(props: HomeProps) {
         const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
           id: focusedBoguId.split('-')[0].replace('e', ''),
         });
-        console.log(response.data);
+        console.log('pop', response.data);
         setAnimationType('popEnd');
         if (response.data.liberationFlag) {
           // if (true) {
@@ -253,7 +241,7 @@ export default function Home(props: HomeProps) {
           id: focusedBoguId.split('-')[0].replace('e', ''),
         },
       );
-      console.log(response.data);
+      console.log('liberate', response.data);
       updateBogu();
       getBasicInfo();
       setFocusedBoguId('-1');
