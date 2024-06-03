@@ -26,7 +26,6 @@ import BookNav from './src/navigations/BookNav';
 import {Safe} from './src/components/Safe';
 import Text from './src/components/Text';
 import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
-import Splash from './src/components/Splash';
 import BootSplash from 'react-native-bootsplash';
 
 export type RootStackParamList = {

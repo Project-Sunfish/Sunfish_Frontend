@@ -33,7 +33,6 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
-import {useFocusEffect} from '@react-navigation/native';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -65,7 +64,7 @@ export default function Home(props: HomeProps) {
     setTimeout(() => {
       setIsLoading(false);
       dispatch(userSlice.actions.setTabBar('show'));
-    }, 1500);
+    }, 2000);
   }, []);
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
@@ -108,6 +107,7 @@ export default function Home(props: HomeProps) {
   }, [tutorial]);
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
+      updateBogu();
       getBasicInfo();
     });
     console.log('getBasicInfo');
@@ -129,9 +129,19 @@ export default function Home(props: HomeProps) {
   //     getEvolvedBoguInfo();
   //   }
   // }, [modal]);
+  const updateBogu = async () => {
+    try {
+      const response = await axios.post(`${Config.API_URL}/api/bogu`);
+      console.log(response.data);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot liberate', errorResponse);
+    }
+  };
   const getBasicInfo = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
+      console.log(response.data);
       setNewBogus(response.data.todayQuota >= 1);
       setDefaultBogu(response.data.defaultBogus);
       setEvolvedBogu(response.data.evolvedBogus);
@@ -145,6 +155,7 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
       console.log(response.data);
+      updateBogu();
       getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;
@@ -176,6 +187,7 @@ export default function Home(props: HomeProps) {
       setSelectedCategory([]);
       setWorry('');
       setTimeout(() => {
+        updateBogu();
         getBasicInfo();
       }, 500);
     } catch (error: any) {
@@ -224,6 +236,7 @@ export default function Home(props: HomeProps) {
           }, 400);
           // 해방시킬지 말지 결정하는 모달 띄우기
         } else {
+          updateBogu();
           getBasicInfo();
         }
       } catch (error: any) {
@@ -241,6 +254,7 @@ export default function Home(props: HomeProps) {
         },
       );
       console.log(response.data);
+      updateBogu();
       getBasicInfo();
       setFocusedBoguId('-1');
       setModal('no');
@@ -293,7 +307,7 @@ export default function Home(props: HomeProps) {
           ]}>
           {defaultBogu.map((_, index) => (
             <DefaultCharacter
-              key={index}
+              key={`d${index}`}
               setModal={setModal}
               id={`d${defaultBogu[index].id}`}
               tutorial={tutorial}
@@ -305,7 +319,7 @@ export default function Home(props: HomeProps) {
           {evolvedBogu.map((item, index) =>
             [...Array(item.count)].map((_, idx) => (
               <Character
-                key={index}
+                key={`e${item.id}-${idx}`}
                 setModal={setModal}
                 id={`e${item.id}-${idx}`}
                 level={item.level}
@@ -688,6 +702,7 @@ export default function Home(props: HomeProps) {
         condition="liberate"
         headerTxt="이 고민은 더 이상 당신의 고민이 아닌가요?"
         onBackButtonPress={() => {
+          updateBogu();
           getBasicInfo();
         }}>
         <View style={styles.popModalContent}>
@@ -727,6 +742,7 @@ export default function Home(props: HomeProps) {
               onPress={() => {
                 setFocusedBoguId('-1');
                 setModal('no');
+                updateBogu();
                 getBasicInfo();
               }}>
               <Text style={styles.popModalBtnTxt}>아니요</Text>
