@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -93,6 +94,7 @@ export default function Home(props: HomeProps) {
     useState('');
   const [focusedBoguStatus, setFocusedBoguStatus] = useState(0);
   const [focusedBoguCreatedAt, setFocusedBoguCreatedAt] = useState('');
+  const [focusedBoguLevel, setFocusedBoguLevel] = useState(0);
 
   const ref = useRef<TextInput>(null);
   useEffect(() => {
@@ -199,6 +201,7 @@ export default function Home(props: HomeProps) {
       setFocusedBoguCategory(response.data.categories);
       setFocusedBoguName(response.data.name);
       setFocusedBoguProblem(response.data.problem);
+      setFocusedBoguLevel(response.data.level);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
@@ -207,7 +210,18 @@ export default function Home(props: HomeProps) {
   const pop = () => {
     console.log('popping');
     setAnimationType('popping');
-    Vibration.vibrate(5000);
+    let time = 0;
+    if (focusedBoguLevel === 1 || focusedBoguLevel === 2) {
+      Vibration.vibrate([200, 200]);
+      time = 600;
+    } else if (focusedBoguLevel === 3 || focusedBoguLevel === 4) {
+      Vibration.vibrate([200, 400, 200, 400]);
+      time = 1200;
+    } else if (focusedBoguLevel === 5 || focusedBoguLevel === 6) {
+      Vibration.vibrate([200, 400, 200, 400, 200, 400, 200, 400]);
+      time = 2400;
+    }
+    // console.log('level', focusedBoguLevel, time);
     // 터지는 애니메이션 넣기 (5초 후 api 전송)
     setTimeout(async () => {
       try {
@@ -231,7 +245,7 @@ export default function Home(props: HomeProps) {
         const errorResponse = error.response;
         console.log('cannot pop', errorResponse);
       }
-    }, 5000);
+    }, time);
   };
   const liberate = async () => {
     try {
@@ -637,6 +651,7 @@ export default function Home(props: HomeProps) {
           setFocusedBoguSelectedCategory('');
           setFocusedBoguStatus(0);
           setFocusedBoguCreatedAt('');
+          setFocusedBoguLevel(0);
         }}>
         <View style={styles.popModalContent}>
           <Text style={styles.popModalCreatedAt}>

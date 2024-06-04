@@ -72,6 +72,7 @@ export default function BookDetail(props: BookDetailProps) {
 
   useEffect(() => {
     getData();
+    deleteNew();
   }, []);
 
   const getData = async () => {
@@ -84,6 +85,17 @@ export default function BookDetail(props: BookDetailProps) {
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
+    }
+  };
+  const deleteNew = async () => {
+    try {
+      const response = await axios.post(`${Config.API_URL}/api/deleteNew`, {
+        id: id,
+      });
+      console.log('deleteNew', response.data);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot delete new', errorResponse);
     }
   };
   const formateDate = (date: string) => {
