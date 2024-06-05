@@ -110,7 +110,6 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
       updateBogu();
-      getBasicInfo();
     });
     console.log('getBasicInfo');
     // setTutorial('0');
@@ -123,6 +122,7 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
       console.log('update', response.data);
+      getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot update', errorResponse);

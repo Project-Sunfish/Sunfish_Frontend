@@ -287,13 +287,20 @@ export const svgList = {
     `,
   },
   bookDetail: {
-    arrowLeft: `
-    <svg width="29" height="88" viewBox="0 0 29 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M27.7002 1.14478L1.53198 44.9597L26.4735 87.0674" stroke="white" stroke-linecap="round"/>
+    arrowLeft: `<svg width="28" height="88" viewBox="0 0 28 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M27 0.602539L0.831787 44.4174L25.7733 86.5252" stroke="white" stroke-linecap="round"/>
     </svg>
     `,
     arrowRight: `<svg width="28" height="88" viewBox="0 0 28 88" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M0.700195 1.14478L26.8684 44.9597L1.92686 87.0674" stroke="white" stroke-linecap="round"/>
+    <path d="M1 0.602539L27.1682 44.4174L2.22667 86.5252" stroke="white" stroke-linecap="round"/>
+    </svg>
+    `,
+    arrowLeftThick: `<svg width="30" height="90" viewBox="0 0 30 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M28.3152 1.60254L2.14697 45.4174L27.0885 87.5252" stroke="white" stroke-width="3" stroke-linecap="round"/>
+    </svg>
+    `,
+    arrowRightThick: `<svg width="31" height="90" viewBox="0 0 31 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M2.316 2L28.4834 45.8135L3.54263 87.92" stroke="white" stroke-width="3" stroke-linecap="round"/>
     </svg>
     `,
   },

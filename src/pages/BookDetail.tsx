@@ -128,14 +128,19 @@ export default function BookDetail(props: BookDetailProps) {
               <Pressable
                 style={styles.arrowArea}
                 onPress={() => {
-                  if (data.length === 1) return;
-                  if (idx === 0) {
-                    setIdx(data.length - 1);
-                  } else {
-                    setIdx(idx - 1);
-                  }
+                  if (idx === 0) return;
+                  // if (idx === 0) {
+                  //   setIdx(data.length - 1);
+                  // } else {
+                  // }
+                  console.log(idx);
+                  setIdx(idx - 1);
                 }}>
-                <SvgXml xml={svgList.bookDetail.arrowLeft} />
+                {idx != 0 ? (
+                  <SvgXml xml={svgList.bookDetail.arrowLeftThick} />
+                ) : (
+                  <SvgXml xml={svgList.bookDetail.arrowLeft} strokeWidth={1} />
+                )}
               </Pressable>
               <View style={styles.boguImage}>
                 <SvgXml xml={svgList.enterInfo.sunfish} />
@@ -143,14 +148,18 @@ export default function BookDetail(props: BookDetailProps) {
               <Pressable
                 style={styles.arrowArea}
                 onPress={() => {
-                  if (data.length === 1) return;
-                  if (idx === data.length - 1) {
-                    setIdx(0);
-                  } else {
-                    setIdx(idx + 1);
-                  }
+                  if (data.length === idx + 1) return;
+                  // if (idx === data.length - 1) {
+                  //   setIdx(0);
+                  // } else {
+                  // }
+                  setIdx(idx + 1);
                 }}>
-                <SvgXml xml={svgList.bookDetail.arrowRight} />
+                {idx == data.length - 1 ? (
+                  <SvgXml xml={svgList.bookDetail.arrowRight} strokeWidth={1} />
+                ) : (
+                  <SvgXml xml={svgList.bookDetail.arrowRightThick} />
+                )}
               </Pressable>
             </View>
             <View style={styles.boguContentFooter}>
@@ -166,10 +175,11 @@ export default function BookDetail(props: BookDetailProps) {
               </View>
               <View style={styles.worryContentHashtag}>
                 <View style={styles.eachHashtag}>
-                  <Text
-                    style={
-                      styles.eachHashtagTxt
-                    }>{`#${data[idx].categories[0]}`}</Text>
+                  <Text style={styles.eachHashtagTxt}>
+                    {data[idx].categories[0]
+                      ? `#${data[idx].categories[0]}`
+                      : '#'}
+                  </Text>
                 </View>
                 {data[idx].categories.length > 1 && (
                   <View style={styles.eachHashtag}>
