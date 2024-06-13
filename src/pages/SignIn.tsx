@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
@@ -26,6 +26,8 @@ import Text from '../components/Text';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
 import NaverLogin, {NaverLoginResponse} from '@react-native-seoul/naver-login';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+// import auth from '@react-native-firebase/auth';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -138,7 +140,6 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     console.log('successResponse:', successResponse?.accessToken);
     if (successResponse) {
       try {
-        console.log('try login');
         const response = await axios.post(`${Config.API_URL}/login`, {
           socialType: 'Naver',
           accessToken: successResponse.accessToken,
@@ -169,6 +170,66 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     }
   };
 
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      GoogleSignin.configure({
+        webClientId: Config.GOOGLE_CLIENT_ID,
+        offlineAccess: true,
+      });
+    } else {
+      GoogleSignin.configure({
+        iosClientId: Config.GOOGLE_IOS_CLIENT_ID,
+        webClientId: Config.GOOGLE_CLIENT_ID,
+        offlineAccess: true,
+      });
+    }
+  }, []);
+  const LoginWithGoogle = async () => {
+    console.log('로그인 시도 중');
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const resp = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        body: JSON.stringify({
+          code: userInfo.serverAuthCode,
+          client_id: Config.GOOGLE_CLIENT_ID,
+          client_secret: Config.GOOGLE_CLIENT_SECRET,
+          grant_type: 'authorization_code',
+          redirect_uri: 'https://sunfish-79106.firebaseapp.com/__/auth/handler',
+        }),
+      });
+      const data = await resp.json();
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        socialType: 'Google',
+        accessToken: data.access_token,
+      });
+      console.log(response.data);
+      if (response.data.role === 'ROLE_GUEST') {
+        dispatch(
+          userSlice.actions.setPerson({
+            preAcc: response.data.accessToken,
+            preRef: response.data.refreshToken,
+          }),
+        );
+        setShowModal('show');
+      } else {
+        dispatch(
+          userSlice.actions.setToken({
+            accessToken: response.data.accessToken,
+          }),
+        );
+        await EncryptedStorage.setItem(
+          'refreshToken',
+          response.data.refreshToken,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      const errorResponse = (error as AxiosError<{message: string}>).response;
+      // console.log(errorResponse);
+    }
+  };
   return (
     <View style={styles.entire}>
       <ImageBackground
@@ -207,7 +268,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login(2);
+                // Login(2);
+                LoginWithGoogle();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.google} />

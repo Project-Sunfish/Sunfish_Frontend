@@ -16,4 +16,5 @@
   public static <fields>;
   public *;
 }
--dontwarn android.support.v4.**,org.slf4j.**,com.google.android.gms.**
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**

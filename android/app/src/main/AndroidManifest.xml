@@ -24,16 +24,5 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-      <activity android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity" android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.VIEW" />
-            <category android:name="android.intent.category.DEFAULT" />
-            <category android:name="android.intent.category.BROWSABLE" />
-
-            <!-- Redirect URI: "kakao{NATIVE_APP_KEY}://oauth“ -->
-            <data android:host="oauth"
-                android:scheme="kakao{9560340684a1b762e111be9fb810c0d4}" />
-        </intent-filter>
-      </activity>
     </application>
 </manifest>

@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "106877521013",
+    "project_id": "sunfish-79106",
+    "storage_bucket": "sunfish-79106.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:106877521013:android:6441e846a47927e7057c3c",
+        "android_client_info": {
+          "package_name": "com.sunfish"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "106877521013-gbph9bbs1skect0no479qajbl5cn12me.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sunfish",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "106877521013-ek6flg1qlsarmcfoc15rrpt30tss0g8b.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8BPDYDtzB_G0bfHwvGbhvWCSnghCBKnk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "106877521013-ek6flg1qlsarmcfoc15rrpt30tss0g8b.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

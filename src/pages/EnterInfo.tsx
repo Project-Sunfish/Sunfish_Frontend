@@ -17,7 +17,7 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import Text from '../components/Text';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
@@ -125,7 +125,8 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         response.data.refreshToken,
       );
     } catch (error) {
-      const errorResponse = error.response;
+      const errorResponse = (error as AxiosError<{message: string}>).response;
+      // const errorResponse = error.response;
       console.log(errorResponse);
     }
   };
