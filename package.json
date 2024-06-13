@@ -13,6 +13,9 @@
     "@react-native-clipboard/clipboard": "^1.14.1",
     "@react-native-community/blur": "^4.4.0",
     "@react-native-community/netinfo": "^11.3.2",
+    "@react-native-google-signin/google-signin": "^12.2.1",
+    "@react-native-seoul/kakao-login": "^5.4.1",
+    "@react-native-seoul/naver-login": "^4.0.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/native-stack": "^6.9.26",
@@ -33,6 +36,7 @@
     "react-native-safearea-height": "^1.0.6",
     "react-native-screens": "^3.30.1",
     "react-native-svg": "^15.1.0",
+    "react-native-video": "^6.1.2",
     "react-redux": "^9.1.0",
     "redux": "^5.0.1"
   },

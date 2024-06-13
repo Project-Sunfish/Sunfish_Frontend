@@ -4,21 +4,18 @@ import {
   ImageBackground,
   Pressable,
   StyleSheet,
-  Vibration,
   View,
 } from 'react-native';
-import {Ex} from '../components/animations';
 import Text from '../components/Text';
-import {BookStackParamList} from '../navigations/BookNav';
+import {BookStackParamList, typeID} from '../navigations/BookNav';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {useAppDispatch} from '../store';
-import userSlice from '../slices/user';
 import {useFocusEffect} from '@react-navigation/native';
 import {useCallback, useState} from 'react';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import axios from 'axios';
 import Config from 'react-native-config';
+import {BOGU_TYPE} from '../assets/info';
 
 type BookScreenNavigationProp = NativeStackNavigationProp<
   BookStackParamList,
@@ -28,16 +25,24 @@ type BookProps = {
   navigation: BookScreenNavigationProp;
 };
 
+type itemProps = {
+  typeId: typeID;
+  name: string;
+  newFlag: boolean;
+};
+
 export default function Book(props: BookProps) {
   const itemSize = (Dimensions.get('window').width - 100) / 2;
-  const [openData, setOpenData] = useState([{id: 2, name: '김복어사원'}]);
-  let data = [];
-  for (let i = 0; i < 10; i++) {
-    data.push({id: -1, name: ''});
-  }
-  for (let i = 0; i < openData.length; i++) {
-    data[openData[i].id] = openData[i];
-  }
+  const [openData, setOpenData] = useState<itemProps[]>([
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: ''},
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -48,7 +53,16 @@ export default function Book(props: BookProps) {
   const getData = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/collection`);
-      console.log(response.data);
+      let data: itemProps[] = [];
+      for (let i = 0; i < BOGU_TYPE; i++) {
+        data.push({newFlag: false, typeId: '-1', name: ''});
+      }
+      for (let i = 0; i < response.data.collectedBogus.length; i++) {
+        data[response.data.collectedBogus[i].typeId] =
+          response.data.collectedBogus[i];
+      }
+      setOpenData(data);
+      console.log(response.data.collectedBogus);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
@@ -77,34 +91,49 @@ export default function Book(props: BookProps) {
           <Text style={styles.headerText}>복어 도감</Text>
         </View>
         <FlatList
-          data={data}
+          // columnWrapperStyle={{
+          //   alignItems: 'center',
+          //   // justifyContent: 'center',
+          //   backgroundColor: 'black',
+          //   flexGrow: 1,
+          // }}
+          data={openData}
           ListFooterComponent={<View style={{height: 100}} />}
           renderItem={({item, index}) => (
-            <Pressable
-              style={[
-                styles.item,
-                {width: itemSize, height: itemSize},
-                item.id != -1 ? styles.itemKnown : styles.itemUnknown,
-              ]}
-              onPress={() => {
-                if (item.id !== -1)
-                  props.navigation.navigate('BookDetail', {id: index});
-              }}>
-              {item.id !== -1 && (
-                <SvgXml
-                  xml={svgList.enterInfo.sunfish}
-                  width={itemSize - 30}
-                  height={itemSize - 30}
-                />
-              )}
-              {item.id !== -1 && (
-                <View style={styles.itemKnownNameView}>
-                  <Text style={styles.itemKnownText}>{item.name}</Text>
-                  <Text style={styles.itemNew}>!!</Text>
-                </View>
-              )}
-              {item.id === -1 && <Text style={styles.itemUnknownText}>?</Text>}
-            </Pressable>
+            <View style={{maxHeight: 160, maxWidth: 160}}>
+              <Pressable
+                style={[
+                  styles.item,
+                  {
+                    width: itemSize,
+                    height: itemSize,
+                    maxHeight: 150,
+                    maxWidth: 150,
+                  },
+                  item.typeId != '-1' ? styles.itemKnown : styles.itemUnknown,
+                ]}
+                onPress={() => {
+                  if (item.typeId !== '-1')
+                    props.navigation.navigate('BookDetail', {id: item.typeId});
+                }}>
+                {item.typeId !== '-1' && (
+                  <SvgXml
+                    xml={svgList.enterInfo.sunfish}
+                    width={itemSize > 150 ? 120 : itemSize - 30}
+                    height={itemSize > 150 ? 120 : itemSize - 30}
+                  />
+                )}
+                {item.typeId !== '-1' && (
+                  <View style={styles.itemKnownNameView}>
+                    <Text style={styles.itemKnownText}>{item.name}</Text>
+                    {item.newFlag && <Text style={styles.itemNew}>!!</Text>}
+                  </View>
+                )}
+                {item.typeId === '-1' && (
+                  <Text style={styles.itemUnknownText}>?</Text>
+                )}
+              </Pressable>
+            </View>
           )}
           keyExtractor={(item, index) => index.toString()}
           numColumns={2}
@@ -120,6 +149,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#00000080',
     paddingHorizontal: 34,
     position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   header: {
     alignItems: 'center',
@@ -134,6 +165,7 @@ const styles = StyleSheet.create({
   },
   item: {
     margin: 8,
+    // flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 14,
@@ -144,8 +176,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderColor: '#DEEAFF',
     paddingVertical: 4,
-    alignItems: 'center',
-    justifyContent: 'flex-end',
   },
   itemUnknown: {
     backgroundColor: '#FFFFFF33',

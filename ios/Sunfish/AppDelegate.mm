@@ -2,8 +2,23 @@
 #import "RNBootSplash.h"
 
 #import <React/RCTBundleURLProvider.h>
+#import <RNKakaoLogins.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 @implementation AppDelegate
+
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options
+{
+  if ([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
+    return [RNKakaoLogins handleOpenUrl:url];
+  }
+
+  if ([url.scheme isEqualToString:@"naverLogin"]) {
+      return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+    }
+
+  return NO;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

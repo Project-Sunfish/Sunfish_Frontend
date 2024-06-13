@@ -11,6 +11,7 @@ export default function Cursor(props: CursorProps) {
       autoPlay
       loop
       style={[{width: 200, height: 200}, props.style]}
+      speed={0.8}
     />
   );
 }

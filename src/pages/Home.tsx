@@ -3,6 +3,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -33,7 +34,6 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
-import {useFocusEffect} from '@react-navigation/native';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -65,7 +65,7 @@ export default function Home(props: HomeProps) {
     setTimeout(() => {
       setIsLoading(false);
       dispatch(userSlice.actions.setTabBar('show'));
-    }, 1500);
+    }, 2000);
   }, []);
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
@@ -94,6 +94,7 @@ export default function Home(props: HomeProps) {
     useState('');
   const [focusedBoguStatus, setFocusedBoguStatus] = useState(0);
   const [focusedBoguCreatedAt, setFocusedBoguCreatedAt] = useState('');
+  const [focusedBoguLevel, setFocusedBoguLevel] = useState(0);
 
   const ref = useRef<TextInput>(null);
   useEffect(() => {
@@ -108,7 +109,7 @@ export default function Home(props: HomeProps) {
   }, [tutorial]);
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
-      getBasicInfo();
+      updateBogu();
     });
     console.log('getBasicInfo');
     // setTutorial('0');
@@ -117,21 +118,20 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     if (focusedBoguId.includes('e')) getEvolvedBoguInfo();
   }, [focusedBoguId]);
-  // useEffect(() => {
-  //   if (modal === 'pop') {
-  //     // let id = focusedBoguId.split('-')[0].replace('e', '');
-  //     // for (let i = 0; i < evolvedBogu.length; i++) {
-  //     //   if (evolvedBogu[i].id === Number(id)) {
-  //     //     setFocusedBoguName(evolvedBogu[i].name);
-  //     //     setFocusedBoguProblem(evolvedBogu[i].problem);
-  //     //   }
-  //     // }
-  //     getEvolvedBoguInfo();
-  //   }
-  // }, [modal]);
+  const updateBogu = async () => {
+    try {
+      const response = await axios.post(`${Config.API_URL}/api/bogu`);
+      console.log('update', response.data);
+      getBasicInfo();
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot update', errorResponse);
+    }
+  };
   const getBasicInfo = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
+      console.log('getBasicInfo', response.data);
       setNewBogus(response.data.todayQuota >= 1);
       setDefaultBogu(response.data.defaultBogus);
       setEvolvedBogu(response.data.evolvedBogus);
@@ -143,8 +143,9 @@ export default function Home(props: HomeProps) {
   };
   const createDefaultBogu = async () => {
     try {
-      const response = await axios.post(`${Config.API_URL}/api/bogu`);
-      console.log(response.data);
+      const response = await axios.post(`${Config.API_URL}/api/bogu/creation`);
+      console.log('create', response.data);
+      updateBogu();
       getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;
@@ -166,7 +167,7 @@ export default function Home(props: HomeProps) {
       setTimeout(() => {
         setAnimationType('making');
       }, 400);
-      console.log(response.data);
+      console.log('evolve', response.data);
       setEvolvedBoguId(response.data.id);
       setEvolvedBoguName(response.data.name);
       setEvolvedBoguStatus(response.data.status);
@@ -176,6 +177,7 @@ export default function Home(props: HomeProps) {
       setSelectedCategory([]);
       setWorry('');
       setTimeout(() => {
+        updateBogu();
         getBasicInfo();
       }, 500);
     } catch (error: any) {
@@ -190,7 +192,7 @@ export default function Home(props: HomeProps) {
           .split('-')[0]
           .replace('e', '')}`,
       );
-      console.log(response.data);
+      console.log('getEvolvedInfo', response.data);
       // setFocusedBoguId(response.data.id);
       setFocusedBoguCreatedAt(response.data.createdAt);
       setFocusedBoguStatus(response.data.status);
@@ -199,6 +201,7 @@ export default function Home(props: HomeProps) {
       setFocusedBoguCategory(response.data.categories);
       setFocusedBoguName(response.data.name);
       setFocusedBoguProblem(response.data.problem);
+      setFocusedBoguLevel(response.data.level);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
@@ -207,14 +210,25 @@ export default function Home(props: HomeProps) {
   const pop = () => {
     console.log('popping');
     setAnimationType('popping');
-    Vibration.vibrate(5000);
+    let time = 0;
+    if (focusedBoguLevel === 1 || focusedBoguLevel === 2) {
+      Vibration.vibrate([200, 200]);
+      time = 600;
+    } else if (focusedBoguLevel === 3 || focusedBoguLevel === 4) {
+      Vibration.vibrate([200, 400, 200, 400]);
+      time = 1200;
+    } else if (focusedBoguLevel === 5 || focusedBoguLevel === 6) {
+      Vibration.vibrate([200, 400, 200, 400, 200, 400, 200, 400]);
+      time = 2400;
+    }
+    // console.log('level', focusedBoguLevel, time);
     // 터지는 애니메이션 넣기 (5초 후 api 전송)
     setTimeout(async () => {
       try {
         const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
           id: focusedBoguId.split('-')[0].replace('e', ''),
         });
-        console.log(response.data);
+        console.log('pop', response.data);
         setAnimationType('popEnd');
         if (response.data.liberationFlag) {
           // if (true) {
@@ -224,13 +238,14 @@ export default function Home(props: HomeProps) {
           }, 400);
           // 해방시킬지 말지 결정하는 모달 띄우기
         } else {
+          updateBogu();
           getBasicInfo();
         }
       } catch (error: any) {
         const errorResponse = error.response;
         console.log('cannot pop', errorResponse);
       }
-    }, 5000);
+    }, time);
   };
   const liberate = async () => {
     try {
@@ -240,7 +255,8 @@ export default function Home(props: HomeProps) {
           id: focusedBoguId.split('-')[0].replace('e', ''),
         },
       );
-      console.log(response.data);
+      console.log('liberate', response.data);
+      updateBogu();
       getBasicInfo();
       setFocusedBoguId('-1');
       setModal('no');
@@ -293,7 +309,7 @@ export default function Home(props: HomeProps) {
           ]}>
           {defaultBogu.map((_, index) => (
             <DefaultCharacter
-              key={index}
+              key={`d${index}`}
               setModal={setModal}
               id={`d${defaultBogu[index].id}`}
               tutorial={tutorial}
@@ -305,7 +321,7 @@ export default function Home(props: HomeProps) {
           {evolvedBogu.map((item, index) =>
             [...Array(item.count)].map((_, idx) => (
               <Character
-                key={index}
+                key={`e${item.id}-${idx}`}
                 setModal={setModal}
                 id={`e${item.id}-${idx}`}
                 level={item.level}
@@ -635,6 +651,7 @@ export default function Home(props: HomeProps) {
           setFocusedBoguSelectedCategory('');
           setFocusedBoguStatus(0);
           setFocusedBoguCreatedAt('');
+          setFocusedBoguLevel(0);
         }}>
         <View style={styles.popModalContent}>
           <Text style={styles.popModalCreatedAt}>
@@ -688,6 +705,7 @@ export default function Home(props: HomeProps) {
         condition="liberate"
         headerTxt="이 고민은 더 이상 당신의 고민이 아닌가요?"
         onBackButtonPress={() => {
+          updateBogu();
           getBasicInfo();
         }}>
         <View style={styles.popModalContent}>
@@ -727,6 +745,7 @@ export default function Home(props: HomeProps) {
               onPress={() => {
                 setFocusedBoguId('-1');
                 setModal('no');
+                updateBogu();
                 getBasicInfo();
               }}>
               <Text style={styles.popModalBtnTxt}>아니요</Text>

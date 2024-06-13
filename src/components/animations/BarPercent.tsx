@@ -11,6 +11,7 @@ export default function BarPercent(props: BarPercentProps) {
       autoPlay
       loop={false}
       style={[{width: 200, height: 200}, props.style]}
+      duration={2000}
     />
   );
 }
