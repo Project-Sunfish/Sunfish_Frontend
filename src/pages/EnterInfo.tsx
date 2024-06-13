@@ -8,6 +8,8 @@ import {
   Keyboard,
   ImageBackground,
   Text as RNText,
+  useWindowDimensions,
+  PixelRatio,
 } from 'react-native';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -17,11 +19,12 @@ import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import Text from '../components/Text';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import {LinearGradient} from 'react-native-linear-gradient';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -29,8 +32,7 @@ type EnterInfoScreenProps = NativeStackScreenProps<
 >;
 
 export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
-  const tempName = useSelector((state: RootState) => state.user.username);
-  const tempPassword = useSelector((state: RootState) => state.user.password);
+  const preAcc = useSelector((state: RootState) => state.user.preAcc);
 
   useEffect(() => {
     const backButtonPressHandler = () => {
@@ -56,6 +58,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
       keyBoardShowHandler.remove();
     };
   }, []);
+  const fold5Width = 904;
+  const fold5Height = 2176;
+  const {width, height} = useWindowDimensions();
+  const currentDPI = PixelRatio.get();
+  const scaleFactor = currentDPI / PixelRatio.getFontScale();
+  const adjustedWidth = width * scaleFactor;
+  const adjustedHeight = height * scaleFactor;
+  const isSmallScreen = adjustedWidth < fold5Width;
 
   const dispatch = useAppDispatch();
   const [keyboard, setKeyboard] = useState(false);
@@ -68,8 +78,17 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
   const nameRef = useRef<TextInput>(null);
   const birthRef = useRef<TextInput>(null);
   useEffect(() => {
-    nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
-    birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    if (isSmallScreen) {
+      nameRef.current?.setNativeProps({
+        style: {fontFamily: 'DNFBitBitv2', fontSize: 9},
+      });
+      birthRef.current?.setNativeProps({
+        style: {fontFamily: 'DNFBitBitv2', fontSize: 8},
+      });
+    } else {
+      nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+      birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    }
   });
 
   const isValidDate = (date: string) => {
@@ -99,38 +118,55 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     );
   };
   const SignUp = async () => {
-    console.log(tempName, tempPassword);
     try {
-      const response = await axios.post(`${Config.API_URL}/join`, {
-        username: tempName,
-        password: tempPassword,
-      });
-      if (response.status == 201) {
-        Login();
-      }
-    } catch (error) {
-      const errorResponse = error.response;
-      console.log(errorResponse.status);
-    }
-  };
-  const Login = async () => {
-    console.log(Config.API_URL);
-    try {
-      const response = await axios.post(`${Config.API_URL}/login`, {
-        username: tempName,
-        password: tempPassword,
-      });
-      console.log(response.headers);
-      dispatch(
-        userSlice.actions.setToken({
-          accessToken: response.headers['authorization'].replace('Bearer ', ''),
-        }),
+      const response = await axios.post(
+        `${Config.API_URL}/signup`,
+        {
+          name: name,
+          birthType: calendar == 'solar' ? 'Solar' : 'Lunar',
+          birth: `${birth.slice(0, 4)}-${birth.slice(4, 6)}-${birth.slice(
+            6,
+            8,
+          )}`,
+          gender: sex,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${preAcc}`,
+          },
+        },
       );
-    } catch (error: any) {
-      const errorResponse = error.response;
+      dispatch(
+        userSlice.actions.setToken({accessToken: response.data.accessToken}),
+      );
+      await EncryptedStorage.setItem(
+        'refreshToken',
+        response.data.refreshToken,
+      );
+    } catch (error) {
+      const errorResponse = (error as AxiosError<{message: string}>).response;
+      // const errorResponse = error.response;
       console.log(errorResponse);
     }
   };
+  // const Login = async () => {
+  //   console.log(Config.API_URL);
+  //   try {
+  //     const response = await axios.post(`${Config.API_URL}/login`, {
+  //       username: tempName,
+  //       password: tempPassword,
+  //     });
+  //     console.log(response.headers);
+  //     dispatch(
+  //       userSlice.actions.setToken({
+  //         accessToken: response.headers['authorization'].replace('Bearer ', ''),
+  //       }),
+  //     );
+  //   } catch (error: any) {
+  //     const errorResponse = error.response;
+  //     console.log(errorResponse);
+  //   }
+  // };
   return (
     <ImageBackground
       source={require('../assets/pictures/EnterInfo.png')}
@@ -287,14 +323,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                 <Pressable
                   style={[
                     styles.answerButton,
-                    sex == 'N' && {
+                    sex == 'Non' && {
                       backgroundColor: 'rgba(255, 255, 255, 0.50)',
                     },
                   ]}
-                  onPress={() => setSex('N')}>
+                  onPress={() => setSex('Non')}>
                   <Text
                     style={
-                      sex == 'N' ? styles.answerText : styles.answerButtonText
+                      sex == 'Non' ? styles.answerText : styles.answerButtonText
                     }>
                     논바이너리
                   </Text>
@@ -372,6 +408,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '400',
     fontSize: 16,
+    textAlign: 'center',
   },
   body: {
     flex: 1,
@@ -439,6 +476,7 @@ const styles = StyleSheet.create({
   calendarButtonText: {
     fontWeight: '400',
     marginHorizontal: 5,
+    fontSize: 12,
   },
   checkBtnView: {
     flexDirection: 'row',

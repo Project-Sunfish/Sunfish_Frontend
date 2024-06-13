@@ -19,6 +19,7 @@ import ImageBackgroundSrollViewRegardingHeight from '../components/ImageBackgrou
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MyPageStackParamList} from '../navigations/MyPageNav';
 import {useSelector} from 'react-redux';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 type MyPageScreenNavigationProp = NativeStackNavigationProp<
   MyPageStackParamList,
@@ -201,6 +202,7 @@ export default function MyPage(props: MyPageProps) {
         <Pressable
           style={styles.logoutBtn}
           onPress={() => {
+            EncryptedStorage.removeItem('refreshToken');
             dispatch(userSlice.actions.setToken({accessToken: ''}));
           }}>
           <Text style={styles.logoutBtnTxt}>로그아웃</Text>

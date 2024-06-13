@@ -2,9 +2,10 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   accessToken: '',
-  username: '',
-  password: '',
+  preAcc: '',
+  preRef: '',
   tabBar: 'show',
+  isSmallScreen: false,
 };
 
 const userSlice = createSlice({
@@ -15,12 +16,15 @@ const userSlice = createSlice({
       state.accessToken = action.payload.accessToken;
     },
     setPerson(state, action) {
-      state.username = action.payload.username;
-      state.password = action.payload.password;
+      state.preAcc = action.payload.preAcc;
+      state.preRef = action.payload.preRef;
     },
     setTabBar(state, action) {
       if (state.tabBar === undefined) state.tabBar = 'show';
       else state.tabBar = action.payload.tabBar;
+    },
+    setScreenSize(state, action) {
+      state.isSmallScreen = action.payload.isSmallScreen;
     },
   },
   extraReducers: builder => {},

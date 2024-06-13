@@ -2,12 +2,13 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
   View,
 } from 'react-native';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
@@ -22,6 +23,11 @@ import Config from 'react-native-config';
 // import {Temp} from '../components/animations';
 import FastImage from 'react-native-fast-image';
 import Text from '../components/Text';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import * as KakaoLogin from '@react-native-seoul/kakao-login';
+import NaverLogin, {NaverLoginResponse} from '@react-native-seoul/naver-login';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+// import auth from '@react-native-firebase/auth';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -33,7 +39,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   // const [showModal, setShowModal] = useState('no');
   const showModal = route.params.showModal;
   const setShowModal = route.params.setShowModal;
-  const [isWebView, setIsWebView] = useState(false);
+
+  const [success, setSuccessResponse] =
+    useState<NaverLoginResponse['successResponse']>();
+  const [failure, setFailureResponse] =
+    useState<NaverLoginResponse['failureResponse']>();
 
   const Login = async (id: number) => {
     console.log(Config.API_URL);
@@ -70,6 +80,156 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     }
   };
 
+  const LoginWithKakao = async () => {
+    console.log('카카오 로그인');
+    const token = await KakaoLogin.login();
+    const profile = await KakaoLogin.getProfile();
+    try {
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        socialType: 'Kakao',
+        accessToken: token.accessToken,
+      });
+      console.log('kakao token:', token.accessToken);
+      console.log(response.data);
+      if (response.data.role === 'ROLE_GUEST') {
+        dispatch(
+          userSlice.actions.setPerson({
+            preAcc: response.data.accessToken,
+            preRef: response.data.refreshToken,
+          }),
+        );
+
+        setShowModal('show');
+      } else {
+        dispatch(
+          userSlice.actions.setToken({accessToken: response.data.accessToken}),
+        );
+        await EncryptedStorage.setItem(
+          'refreshToken',
+          response.data.refreshToken,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const LoginWithNaver = async () => {
+    const initANDROID = {
+      consumerKey: Config.NAVER_CLIENT_ID ? Config.NAVER_CLIENT_ID : '',
+      consumerSecret: Config.NAVER_CLIENT_SECRET
+        ? Config.NAVER_CLIENT_SECRET
+        : '',
+      appName: '복어펑',
+    };
+    const initIOS = {
+      consumerKey: Config.NAVER_CLIENT_ID ? Config.NAVER_CLIENT_ID : '',
+      consumerSecret: Config.NAVER_CLIENT_SECRET
+        ? Config.NAVER_CLIENT_SECRET
+        : '',
+      appName: '복어펑',
+      serviceUrlSchemeIOS: 'naverLogin',
+    };
+    NaverLogin.initialize(Platform.OS === 'android' ? initANDROID : initIOS);
+    console.log('네이버 로그인');
+    const {failureResponse, successResponse} = await NaverLogin.login();
+    setSuccessResponse(successResponse);
+    setFailureResponse(failureResponse);
+    console.log(successResponse ? 'success' : 'failure');
+
+    console.log('successResponse:', successResponse?.accessToken);
+    if (successResponse) {
+      try {
+        const response = await axios.post(`${Config.API_URL}/login`, {
+          socialType: 'Naver',
+          accessToken: successResponse.accessToken,
+        });
+        console.log(response.data);
+        if (response.data.role === 'ROLE_GUEST') {
+          dispatch(
+            userSlice.actions.setPerson({
+              preAcc: response.data.accessToken,
+              preRef: response.data.refreshToken,
+            }),
+          );
+          setShowModal('show');
+        } else {
+          dispatch(
+            userSlice.actions.setToken({
+              accessToken: response.data.accessToken,
+            }),
+          );
+          await EncryptedStorage.setItem(
+            'refreshToken',
+            response.data.refreshToken,
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      GoogleSignin.configure({
+        webClientId: Config.GOOGLE_CLIENT_ID,
+        offlineAccess: true,
+      });
+    } else {
+      GoogleSignin.configure({
+        iosClientId: Config.GOOGLE_IOS_CLIENT_ID,
+        webClientId: Config.GOOGLE_CLIENT_ID,
+        offlineAccess: true,
+      });
+    }
+  }, []);
+  const LoginWithGoogle = async () => {
+    console.log('로그인 시도 중');
+    try {
+      await GoogleSignin.hasPlayServices();
+      const userInfo = await GoogleSignin.signIn();
+      const resp = await fetch('https://oauth2.googleapis.com/token', {
+        method: 'POST',
+        body: JSON.stringify({
+          code: userInfo.serverAuthCode,
+          client_id: Config.GOOGLE_CLIENT_ID,
+          client_secret: Config.GOOGLE_CLIENT_SECRET,
+          grant_type: 'authorization_code',
+          redirect_uri: 'https://sunfish-79106.firebaseapp.com/__/auth/handler',
+        }),
+      });
+      const data = await resp.json();
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        socialType: 'Google',
+        accessToken: data.access_token,
+      });
+      console.log(response.data);
+      if (response.data.role === 'ROLE_GUEST') {
+        dispatch(
+          userSlice.actions.setPerson({
+            preAcc: response.data.accessToken,
+            preRef: response.data.refreshToken,
+          }),
+        );
+        setShowModal('show');
+      } else {
+        dispatch(
+          userSlice.actions.setToken({
+            accessToken: response.data.accessToken,
+          }),
+        );
+        await EncryptedStorage.setItem(
+          'refreshToken',
+          response.data.refreshToken,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      const errorResponse = (error as AxiosError<{message: string}>).response;
+      // console.log(errorResponse);
+    }
+  };
   return (
     <View style={styles.entire}>
       <ImageBackground
@@ -90,45 +250,49 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         </View>
         <View style={styles.bottom}>
           <View style={styles.loginButtonView}>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                Login(1);
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.kakao} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>카카오톡</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                Login(2);
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.google} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>구글</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                Login(3);
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.naver} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>네이버</Text>
-              </View>
-            </Pressable>
+            <View style={styles.loginButtonViewContainer}>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithKakao();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.kakao} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>카카오톡</Text>
+                </View>
+              </Pressable>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithGoogle();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.google} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>구글</Text>
+                </View>
+              </Pressable>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithNaver();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.naver} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>네이버</Text>
+                </View>
+              </Pressable>
+            </View>
+            {Platform.OS === 'ios' && (
+              <Pressable>
+                <Text style={styles.appleLoginTxt}>애플 로그인</Text>
+              </Pressable>
+            )}
           </View>
           <View style={styles.helperButtonView}>
             <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
@@ -141,7 +305,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             <Pressable
               style={[styles.helperButton, {paddingTop: 10}]}
               onPress={() =>
-                dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+                // dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+                {}
               }>
               <SvgXml xml={svgList.socialLoginLogo.us} />
             </Pressable>
@@ -192,10 +357,21 @@ const styles = StyleSheet.create({
   },
   loginButtonView: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginButtonViewContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  appleLoginTxt: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    marginTop: 16,
+    textDecorationLine: 'underline',
   },
   eachLoginButton: {
     justifyContent: 'center',
