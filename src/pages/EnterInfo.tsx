@@ -8,6 +8,8 @@ import {
   Keyboard,
   ImageBackground,
   Text as RNText,
+  useWindowDimensions,
+  PixelRatio,
 } from 'react-native';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -56,6 +58,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
       keyBoardShowHandler.remove();
     };
   }, []);
+  const fold5Width = 904;
+  const fold5Height = 2176;
+  const {width, height} = useWindowDimensions();
+  const currentDPI = PixelRatio.get();
+  const scaleFactor = currentDPI / PixelRatio.getFontScale();
+  const adjustedWidth = width * scaleFactor;
+  const adjustedHeight = height * scaleFactor;
+  const isSmallScreen = adjustedWidth < fold5Width;
 
   const dispatch = useAppDispatch();
   const [keyboard, setKeyboard] = useState(false);
@@ -68,8 +78,17 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
   const nameRef = useRef<TextInput>(null);
   const birthRef = useRef<TextInput>(null);
   useEffect(() => {
-    nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
-    birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    if (isSmallScreen) {
+      nameRef.current?.setNativeProps({
+        style: {fontFamily: 'DNFBitBitv2', fontSize: 9},
+      });
+      birthRef.current?.setNativeProps({
+        style: {fontFamily: 'DNFBitBitv2', fontSize: 8},
+      });
+    } else {
+      nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+      birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
+    }
   });
 
   const isValidDate = (date: string) => {
@@ -389,6 +408,7 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '400',
     fontSize: 16,
+    textAlign: 'center',
   },
   body: {
     flex: 1,
@@ -456,6 +476,7 @@ const styles = StyleSheet.create({
   calendarButtonText: {
     fontWeight: '400',
     marginHorizontal: 5,
+    fontSize: 12,
   },
   checkBtnView: {
     flexDirection: 'row',

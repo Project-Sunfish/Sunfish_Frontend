@@ -9,6 +9,7 @@ import {
   Vibration,
   Image,
   StyleSheet,
+  useWindowDimensions,
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -43,6 +44,11 @@ type CharacterProps = {
 };
 
 export default function Character(props: CharacterProps) {
+  const {width, height} = useWindowDimensions();
+  const Ultra24Width = 1440;
+  const BigScreen = (Ultra24Width * 160) / 500;
+  const isBigScreen = width > BigScreen;
+
   const id = props.id;
   const focusedBoguId = props.focusedBoguId;
   const level = props.level;
@@ -53,10 +59,16 @@ export default function Character(props: CharacterProps) {
   const problem = props.problem;
   const [position] = useState(
     new Animated.ValueXY({
-      x: Math.floor(
-        Math.random() * Dimensions.get('window').width -
-          info.status.size[status] / 2,
-      ),
+      x: isBigScreen
+        ? Math.floor(
+            Math.random() * BigScreen -
+              info.status.size[1] / 2 +
+              (width - BigScreen) / 2,
+          )
+        : Math.floor(
+            Math.random() * Dimensions.get('window').width -
+              info.status.size[status] / 2,
+          ),
       y: Math.floor(Math.random() * (Dimensions.get('window').height - 200)),
     }),
   );
@@ -96,11 +108,16 @@ export default function Character(props: CharacterProps) {
   };
 
   const setNewDestination = (prevX: number) => {
-    // set randomX randomly from -size/2 to windowWidth-size/2
-    const randomX = Math.floor(
-      Math.random() * Dimensions.get('window').width -
-        info.status.size[status] / 2,
-    );
+    const randomX = isBigScreen
+      ? Math.floor(
+          Math.random() * BigScreen -
+            info.status.size[1] / 2 +
+            (width - BigScreen) / 2,
+        )
+      : Math.floor(
+          Math.random() * Dimensions.get('window').width -
+            info.status.size[1] / 2,
+        );
     const randomY = Math.floor(
       Math.random() * (Dimensions.get('window').height - 200),
     );

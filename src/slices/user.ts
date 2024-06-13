@@ -5,6 +5,7 @@ const initialState = {
   preAcc: '',
   preRef: '',
   tabBar: 'show',
+  isSmallScreen: false,
 };
 
 const userSlice = createSlice({
@@ -21,6 +22,9 @@ const userSlice = createSlice({
     setTabBar(state, action) {
       if (state.tabBar === undefined) state.tabBar = 'show';
       else state.tabBar = action.payload.tabBar;
+    },
+    setScreenSize(state, action) {
+      state.isSmallScreen = action.payload.isSmallScreen;
     },
   },
   extraReducers: builder => {},

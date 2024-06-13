@@ -9,6 +9,7 @@ import {
   Vibration,
   Image,
   StyleSheet,
+  useWindowDimensions,
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -25,9 +26,28 @@ type DefaultCharacterProps = {
 };
 
 export default function DefaultCharacter(props: DefaultCharacterProps) {
+  const {width, height} = useWindowDimensions();
+  const Ultra24Width = 1440;
+  const BigScreen = (Ultra24Width * 160) / 500;
+  const isBigScreen = width > BigScreen;
+
   const id = props.id;
   const focusedBoguId = props.focusedBoguId;
-  const [position] = useState(new Animated.ValueXY({x: 0, y: 0}));
+  const [position] = useState(
+    new Animated.ValueXY({
+      x: isBigScreen
+        ? Math.floor(
+            Math.random() * BigScreen -
+              info.status.size[1] / 2 +
+              (width - BigScreen) / 2,
+          )
+        : Math.floor(
+            Math.random() * Dimensions.get('window').width -
+              info.status.size[1] / 2,
+          ),
+      y: Math.floor(Math.random() * (Dimensions.get('window').height - 200)),
+    }),
+  );
   const [prevX, setPrevX] = useState(0);
   const [direction, setDirection] = useState<'left' | 'right'>('right');
   const [isPaused, setIsPaused] = useState(false);
@@ -67,8 +87,21 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
     // const randomX = Math.floor(
     //   Math.random() * Dimensions.get('window').width - 80,
     // );
-    const randomX = Math.floor(Math.random() * 80 - 40);
-    const randomY = Math.floor(Math.random() * 300);
+    // const randomX = Math.floor(Math.random() * 80 - 40);
+    // const randomY = Math.floor(Math.random() * 300);
+    const randomX = isBigScreen
+      ? Math.floor(
+          Math.random() * BigScreen -
+            info.status.size[1] / 2 +
+            (width - BigScreen) / 2,
+        )
+      : Math.floor(
+          Math.random() * Dimensions.get('window').width -
+            info.status.size[1] / 2,
+        );
+    const randomY = Math.floor(
+      Math.random() * (Dimensions.get('window').height - 200),
+    );
     const directionNow = prevX < randomX ? 'right' : 'left';
     setDirection(prevX < randomX ? 'right' : 'left');
     if (directionNow !== direction && !isPaused) {

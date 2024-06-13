@@ -7,7 +7,13 @@ import {
   BottomTabNavigationProp,
   createBottomTabNavigator,
 } from '@react-navigation/bottom-tabs';
-import {Platform, StyleSheet} from 'react-native';
+import {
+  PixelRatio,
+  Platform,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+} from 'react-native';
 
 import {useSelector} from 'react-redux';
 import {RootState, useAppDispatch} from './src/store';
@@ -30,7 +36,7 @@ import BootSplash from 'react-native-bootsplash';
 import Config from 'react-native-config';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import userSlice from './src/slices/user';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 
 export type RootStackParamList = {
   SignIn: {
@@ -67,6 +73,21 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function AppInner() {
+  // const Ultra24Width = 1440;
+  // const fUltra24Height = 1440;
+  const {width, height} = useWindowDimensions();
+  // const currentDPI = PixelRatio.get();
+  // const scaleFactor = currentDPI / PixelRatio.getFontScale();
+  // const adjustedWidth = width * scaleFactor;
+  // const adjustedHeight = height * scaleFactor;
+  // const isBigScreen = adjustedWidth > Ultra24Width;
+  // console.log('adjustedWidth', adjustedWidth);
+  // console.log('width', width);
+
+  const Ultra24Width = 1440;
+  const BigScreen = (Ultra24Width * 160) / 500;
+  const isBigScreen = width > BigScreen;
+
   useEffect(() => {
     BootSplash.hide();
   }, []);
@@ -105,106 +126,143 @@ function AppInner() {
       console.log('Token 재발급(자동로그인)');
       console.log('accessToken', response.data.accessToken);
     } catch (error) {
-      console.log(error.response.message);
+      const errorResponse = (
+        error as AxiosError<{message: string; code: number}>
+      ).response;
+      console.log('errorResponse', errorResponse?.data);
+      if (errorResponse?.data.code == 7) {
+        EncryptedStorage.removeItem('refreshToken');
+      }
     }
   };
   useEffect(() => {
-    reissue();
+    // EncryptedStorage.removeItem('refreshToken');
+    if (!isLoggedIn) reissue();
   }, [isLoggedIn]);
   return (
-    <NavigationContainer>
-      {isLoggedIn ? (
-        <Safe color="#ffffff">
-          <Tab.Navigator
-            initialRouteName="Home"
-            screenOptions={screenoptions}
-            tabBar={props => <CustomTabbarWithCustomIndexingIcon {...props} />}>
-            <Tab.Screen
-              name="Home"
-              component={Home}
-              options={{
-                headerShown: false,
-                tabBarLabel: '플레이',
-                tabBarIcon: (props: {
-                  focused: boolean;
-                  color: string;
-                  size: number;
-                }) => (
-                  <SvgXml width={43} height={43} xml={svgList.tabbar.home} />
-                ),
-              }}
-            />
-            <Tab.Screen
-              name="BookNav"
-              component={BookNav}
-              options={{
-                title: 'Book',
-                headerShown: false,
-                headerTitleAlign: 'center',
-                headerTitleStyle: {
-                  color: '#F0F0F0',
-                  fontSize: 15,
-                  fontWeight: '600',
-                },
-                headerStyle: {
-                  backgroundColor: '#202020',
-                },
-                headerShadowVisible: false,
-                tabBarLabel: '도  감',
-                tabBarIcon: (props: {
-                  focused: boolean;
-                  color: string;
-                  size: number;
-                }) => (
-                  <SvgXml width={43} height={43} xml={svgList.tabbar.book} />
-                ),
-              }}
-            />
+    <View style={styles.containerOutside}>
+      <View
+        style={[styles.containerInside, isBigScreen && {maxWidth: BigScreen}]}>
+        <NavigationContainer>
+          {isLoggedIn ? (
+            <Safe color="#ffffff">
+              <Tab.Navigator
+                initialRouteName="Home"
+                screenOptions={screenoptions}
+                tabBar={props => (
+                  <CustomTabbarWithCustomIndexingIcon {...props} />
+                )}>
+                <Tab.Screen
+                  name="Home"
+                  component={Home}
+                  options={{
+                    headerShown: false,
+                    tabBarLabel: '플레이',
+                    tabBarIcon: (props: {
+                      focused: boolean;
+                      color: string;
+                      size: number;
+                    }) => (
+                      <SvgXml
+                        width={43}
+                        height={43}
+                        xml={svgList.tabbar.home}
+                      />
+                    ),
+                  }}
+                />
+                <Tab.Screen
+                  name="BookNav"
+                  component={BookNav}
+                  options={{
+                    title: 'Book',
+                    headerShown: false,
+                    headerTitleAlign: 'center',
+                    headerTitleStyle: {
+                      color: '#F0F0F0',
+                      fontSize: 15,
+                      fontWeight: '600',
+                    },
+                    headerStyle: {
+                      backgroundColor: '#202020',
+                    },
+                    headerShadowVisible: false,
+                    tabBarLabel: '도  감',
+                    tabBarIcon: (props: {
+                      focused: boolean;
+                      color: string;
+                      size: number;
+                    }) => (
+                      <SvgXml
+                        width={43}
+                        height={43}
+                        xml={svgList.tabbar.book}
+                      />
+                    ),
+                  }}
+                />
 
-            <Tab.Screen
-              name="MyPageNav"
-              component={MyPageNav}
-              options={{
-                headerShown: false,
-                tabBarLabel: '마이페이지',
-                tabBarIcon: (props: {
-                  focused: boolean;
-                  color: string;
-                  size: number;
-                }) => (
-                  <SvgXml width={43} height={43} xml={svgList.tabbar.mypage} />
-                ),
-              }}
-            />
-          </Tab.Navigator>
-        </Safe>
-      ) : (
-        <Safe color="#202020">
-          <Stack.Navigator>
-            <Stack.Screen
-              name="SignIn"
-              component={SignIn}
-              initialParams={{showModal, setShowModal}}
-              options={() => ({
-                headerShown: false,
-              })}
-            />
-            <Stack.Screen
-              name="EnterInfo"
-              component={EnterInfo}
-              initialParams={{setShowModal}}
-              options={() => ({
-                headerShown: false,
-              })}
-            />
-          </Stack.Navigator>
-          <TermModal showModal={showModal} setShowModal={setShowModal} />
-        </Safe>
-      )}
-    </NavigationContainer>
+                <Tab.Screen
+                  name="MyPageNav"
+                  component={MyPageNav}
+                  options={{
+                    headerShown: false,
+                    tabBarLabel: '마이페이지',
+                    tabBarIcon: (props: {
+                      focused: boolean;
+                      color: string;
+                      size: number;
+                    }) => (
+                      <SvgXml
+                        width={43}
+                        height={43}
+                        xml={svgList.tabbar.mypage}
+                      />
+                    ),
+                  }}
+                />
+              </Tab.Navigator>
+            </Safe>
+          ) : (
+            <Safe color="#202020">
+              <Stack.Navigator>
+                <Stack.Screen
+                  name="SignIn"
+                  component={SignIn}
+                  initialParams={{showModal, setShowModal}}
+                  options={() => ({
+                    headerShown: false,
+                  })}
+                />
+                <Stack.Screen
+                  name="EnterInfo"
+                  component={EnterInfo}
+                  initialParams={{setShowModal}}
+                  options={() => ({
+                    headerShown: false,
+                  })}
+                />
+              </Stack.Navigator>
+              <TermModal showModal={showModal} setShowModal={setShowModal} />
+            </Safe>
+          )}
+        </NavigationContainer>
+      </View>
+    </View>
   );
 }
 
 export default AppInner;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  containerOutside: {
+    flex: 1,
+    alignContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'black',
+  },
+  containerInside: {
+    // maxWidth: 500,
+    width: '100%',
+  },
+});
