@@ -250,48 +250,49 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         </View>
         <View style={styles.bottom}>
           <View style={styles.loginButtonView}>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                // Login(1);
-                LoginWithKakao();
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.kakao} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>카카오톡</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                // Login(2);
-                LoginWithGoogle();
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.google} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>구글</Text>
-              </View>
-            </Pressable>
-            <Pressable
-              style={styles.eachLoginButton}
-              onPress={() => {
-                // setShowModal('show');
-                // Login(3);
-                LoginWithNaver();
-              }}>
-              <View style={styles.loginButton}>
-                <SvgXml xml={svgList.socialLoginLogo.naver} />
-              </View>
-              <View style={styles.loginButtonTxtView}>
-                <Text style={styles.loginButtonTxt}>네이버</Text>
-              </View>
-            </Pressable>
+            <View style={styles.loginButtonViewContainer}>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithKakao();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.kakao} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>카카오톡</Text>
+                </View>
+              </Pressable>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithGoogle();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.google} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>구글</Text>
+                </View>
+              </Pressable>
+              <Pressable
+                style={styles.eachLoginButton}
+                onPress={() => {
+                  LoginWithNaver();
+                }}>
+                <View style={styles.loginButton}>
+                  <SvgXml xml={svgList.socialLoginLogo.naver} />
+                </View>
+                <View style={styles.loginButtonTxtView}>
+                  <Text style={styles.loginButtonTxt}>네이버</Text>
+                </View>
+              </Pressable>
+            </View>
+            {Platform.OS === 'ios' && (
+              <Pressable>
+                <Text style={styles.appleLoginTxt}>애플 로그인</Text>
+              </Pressable>
+            )}
           </View>
           <View style={styles.helperButtonView}>
             <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
@@ -304,7 +305,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             <Pressable
               style={[styles.helperButton, {paddingTop: 10}]}
               onPress={() =>
-                dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+                // dispatch(userSlice.actions.setToken({accessToken: '1234'}))
+                {}
               }>
               <SvgXml xml={svgList.socialLoginLogo.us} />
             </Pressable>
@@ -355,10 +357,21 @@ const styles = StyleSheet.create({
   },
   loginButtonView: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loginButtonViewContainer: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+  },
+  appleLoginTxt: {
+    fontSize: 12,
+    fontWeight: '400',
+    color: '#FFFFFF',
+    marginTop: 16,
+    textDecorationLine: 'underline',
   },
   eachLoginButton: {
     justifyContent: 'center',
