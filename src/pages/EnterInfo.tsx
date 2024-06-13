@@ -22,6 +22,7 @@ import Config from 'react-native-config';
 import {useSelector} from 'react-redux';
 import {RootState} from '../store/reducer';
 import {LinearGradient} from 'react-native-linear-gradient';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 type EnterInfoScreenProps = NativeStackScreenProps<
   RootStackParamList,
@@ -29,8 +30,7 @@ type EnterInfoScreenProps = NativeStackScreenProps<
 >;
 
 export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
-  const tempName = useSelector((state: RootState) => state.user.username);
-  const tempPassword = useSelector((state: RootState) => state.user.password);
+  const preAcc = useSelector((state: RootState) => state.user.preAcc);
 
   useEffect(() => {
     const backButtonPressHandler = () => {
@@ -99,38 +99,53 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     );
   };
   const SignUp = async () => {
-    console.log(tempName, tempPassword);
     try {
-      const response = await axios.post(`${Config.API_URL}/join`, {
-        username: tempName,
-        password: tempPassword,
-      });
-      if (response.status == 201) {
-        Login();
-      }
+      const response = await axios.post(
+        `${Config.API_URL}/signup`,
+        {
+          name: name,
+          birth: `${birth.slice(0, 4)}-${birth.slice(4, 6)}-${birth.slice(
+            6,
+            8,
+          )}`,
+          gender: sex,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${preAcc}`,
+          },
+        },
+      );
+      dispatch(
+        userSlice.actions.setToken({accessToken: response.data.accessToken}),
+      );
+      await EncryptedStorage.setItem(
+        'refreshToken',
+        response.data.refreshToken,
+      );
     } catch (error) {
       const errorResponse = error.response;
       console.log(errorResponse.status);
     }
   };
-  const Login = async () => {
-    console.log(Config.API_URL);
-    try {
-      const response = await axios.post(`${Config.API_URL}/login`, {
-        username: tempName,
-        password: tempPassword,
-      });
-      console.log(response.headers);
-      dispatch(
-        userSlice.actions.setToken({
-          accessToken: response.headers['authorization'].replace('Bearer ', ''),
-        }),
-      );
-    } catch (error: any) {
-      const errorResponse = error.response;
-      console.log(errorResponse);
-    }
-  };
+  // const Login = async () => {
+  //   console.log(Config.API_URL);
+  //   try {
+  //     const response = await axios.post(`${Config.API_URL}/login`, {
+  //       username: tempName,
+  //       password: tempPassword,
+  //     });
+  //     console.log(response.headers);
+  //     dispatch(
+  //       userSlice.actions.setToken({
+  //         accessToken: response.headers['authorization'].replace('Bearer ', ''),
+  //       }),
+  //     );
+  //   } catch (error: any) {
+  //     const errorResponse = error.response;
+  //     console.log(errorResponse);
+  //   }
+  // };
   return (
     <ImageBackground
       source={require('../assets/pictures/EnterInfo.png')}
@@ -287,14 +302,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                 <Pressable
                   style={[
                     styles.answerButton,
-                    sex == 'N' && {
+                    sex == 'Non' && {
                       backgroundColor: 'rgba(255, 255, 255, 0.50)',
                     },
                   ]}
-                  onPress={() => setSex('N')}>
+                  onPress={() => setSex('Non')}>
                   <Text
                     style={
-                      sex == 'N' ? styles.answerText : styles.answerButtonText
+                      sex == 'Non' ? styles.answerText : styles.answerButtonText
                     }>
                     논바이너리
                   </Text>

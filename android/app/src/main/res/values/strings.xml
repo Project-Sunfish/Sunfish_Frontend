@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">복어펑</string>
+    <string name="kakao_app_key">9560340684a1b762e111be9fb810c0d4</string>
 </resources>

@@ -15,7 +15,8 @@ const useAxiosInterceptor = () => {
       if (config.headers['Content-Type'] == undefined) {
         config.headers['Content-Type'] = 'application/json';
       }
-      config.headers['Authorization'] = `Bearer ${accessToken}`;
+      if (config.headers['Authorization'] == undefined)
+        config.headers['Authorization'] = `Bearer ${accessToken}`;
       return config;
     },
     error => {
@@ -40,22 +41,23 @@ const useAxiosInterceptor = () => {
                 accessToken: '',
               }),
             );
+            return;
           }
-          const resp = await axios.post(`${Config.API_URL}/auth/reissue`, {
+          const resp = await axios.post(`${Config.API_URL}/reissue`, {
             refreshToken: refreshToken,
           });
           await dispatch(
             userSlice.actions.setToken({
-              accessToken: resp.data.data.accessToken,
+              accessToken: resp.data.accessToken,
             }),
           );
           await EncryptedStorage.setItem(
             'refreshToken',
-            resp.data.data.refreshToken,
+            resp.data.refreshToken,
           );
           console.log('Token 재발급');
 
-          const accessToken = resp.data.data.accessToken;
+          const accessToken = resp.data.accessToken;
 
           error.config.headers = {
             'Content-Type': 'application/json',

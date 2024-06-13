@@ -10,7 +10,7 @@ import {
 import {Platform, StyleSheet} from 'react-native';
 
 import {useSelector} from 'react-redux';
-import {RootState} from './src/store';
+import {RootState, useAppDispatch} from './src/store';
 
 import {svgList} from './src/assets/svgList';
 import {SvgXml} from 'react-native-svg';
@@ -27,6 +27,10 @@ import {Safe} from './src/components/Safe';
 import Text from './src/components/Text';
 import CustomTabbarWithCustomIndexingIcon from './src/components/CustomTabbarWithCustomIndexingIcon';
 import BootSplash from 'react-native-bootsplash';
+import Config from 'react-native-config';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import userSlice from './src/slices/user';
+import axios from 'axios';
 
 export type RootStackParamList = {
   SignIn: {
@@ -70,6 +74,43 @@ function AppInner() {
     (state: RootState) => !!state.user.accessToken,
   );
   const [showModal, setShowModal] = useState('no');
+
+  const dispatch = useAppDispatch();
+  const reissue = async () => {
+    try {
+      // EncryptedStorage.removeItem('refreshToken');
+      const refreshToken = await EncryptedStorage.getItem('refreshToken');
+      console.log('before', refreshToken);
+      if (!refreshToken) {
+        dispatch(
+          userSlice.actions.setToken({
+            accessToken: '',
+          }),
+        );
+        return;
+      }
+      const response = await axios.post(`${Config.API_URL}/reissue`, {
+        refreshToken: refreshToken,
+      });
+      console.log('after', response.data.refreshToken);
+      dispatch(
+        userSlice.actions.setToken({
+          accessToken: response.data.accessToken,
+        }),
+      );
+      await EncryptedStorage.setItem(
+        'refreshToken',
+        response.data.refreshToken,
+      );
+      console.log('Token 재발급(자동로그인)');
+      console.log('accessToken', response.data.accessToken);
+    } catch (error) {
+      console.log(error.response.message);
+    }
+  };
+  useEffect(() => {
+    reissue();
+  }, [isLoggedIn]);
   return (
     <NavigationContainer>
       {isLoggedIn ? (

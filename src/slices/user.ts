@@ -2,8 +2,8 @@ import {createSlice} from '@reduxjs/toolkit';
 
 const initialState = {
   accessToken: '',
-  username: '',
-  password: '',
+  preAcc: '',
+  preRef: '',
   tabBar: 'show',
 };
 
@@ -15,8 +15,8 @@ const userSlice = createSlice({
       state.accessToken = action.payload.accessToken;
     },
     setPerson(state, action) {
-      state.username = action.payload.username;
-      state.password = action.payload.password;
+      state.preAcc = action.payload.preAcc;
+      state.preRef = action.payload.preRef;
     },
     setTabBar(state, action) {
       if (state.tabBar === undefined) state.tabBar = 'show';

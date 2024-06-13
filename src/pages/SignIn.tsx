@@ -22,6 +22,8 @@ import Config from 'react-native-config';
 // import {Temp} from '../components/animations';
 import FastImage from 'react-native-fast-image';
 import Text from '../components/Text';
+import EncryptedStorage from 'react-native-encrypted-storage';
+import * as KakaoLogin from '@react-native-seoul/kakao-login';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -33,7 +35,6 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   // const [showModal, setShowModal] = useState('no');
   const showModal = route.params.showModal;
   const setShowModal = route.params.setShowModal;
-  const [isWebView, setIsWebView] = useState(false);
 
   const Login = async (id: number) => {
     console.log(Config.API_URL);
@@ -70,6 +71,40 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     }
   };
 
+  const LoginWithKakao = async () => {
+    console.log('카카오 로그인');
+    const token = await KakaoLogin.login();
+    const profile = await KakaoLogin.getProfile();
+    try {
+      const response = await axios.post(`${Config.API_URL}/login`, {
+        socialType: 'Kakao',
+        accessToken: token.accessToken,
+      });
+      console.log('kakao token:', token.accessToken);
+      console.log(response.data);
+      if (response.data.role === 'ROLE_GUEST') {
+        dispatch(
+          userSlice.actions.setPerson({
+            preAcc: response.data.accessToken,
+            preRef: response.data.refreshToken,
+          }),
+        );
+
+        setShowModal('show');
+      } else {
+        dispatch(
+          userSlice.actions.setToken({accessToken: response.data.accessToken}),
+        );
+        await EncryptedStorage.setItem(
+          'refreshToken',
+          response.data.refreshToken,
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <View style={styles.entire}>
       <ImageBackground
@@ -94,7 +129,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login(1);
+                // Login(1);
+                LoginWithKakao();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.kakao} />
