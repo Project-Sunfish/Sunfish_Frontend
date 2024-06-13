@@ -104,6 +104,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         `${Config.API_URL}/signup`,
         {
           name: name,
+          birthType: calendar == 'solar' ? 'Solar' : 'Lunar',
           birth: `${birth.slice(0, 4)}-${birth.slice(4, 6)}-${birth.slice(
             6,
             8,
@@ -125,7 +126,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
       );
     } catch (error) {
       const errorResponse = error.response;
-      console.log(errorResponse.status);
+      console.log(errorResponse);
     }
   };
   // const Login = async () => {

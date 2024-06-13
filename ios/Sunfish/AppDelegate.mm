@@ -3,6 +3,7 @@
 
 #import <React/RCTBundleURLProvider.h>
 #import <RNKakaoLogins.h>
+#import <NaverThirdPartyLogin/NaverThirdPartyLoginConnection.h>
 
 @implementation AppDelegate
 
@@ -11,6 +12,10 @@
   if ([RNKakaoLogins isKakaoTalkLoginUrl:url]) {
     return [RNKakaoLogins handleOpenUrl:url];
   }
+
+  if ([url.scheme isEqualToString:@"naverLogin"]) {
+      return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
+    }
 
   return NO;
 }

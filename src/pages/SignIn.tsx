@@ -2,6 +2,7 @@ import {
   Dimensions,
   Image,
   ImageBackground,
+  Platform,
   Pressable,
   SafeAreaView,
   StyleSheet,
@@ -24,6 +25,7 @@ import FastImage from 'react-native-fast-image';
 import Text from '../components/Text';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
+import NaverLogin, {NaverLoginResponse} from '@react-native-seoul/naver-login';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
 
@@ -35,6 +37,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   // const [showModal, setShowModal] = useState('no');
   const showModal = route.params.showModal;
   const setShowModal = route.params.setShowModal;
+
+  const [success, setSuccessResponse] =
+    useState<NaverLoginResponse['successResponse']>();
+  const [failure, setFailureResponse] =
+    useState<NaverLoginResponse['failureResponse']>();
 
   const Login = async (id: number) => {
     console.log(Config.API_URL);
@@ -105,6 +112,63 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     }
   };
 
+  const LoginWithNaver = async () => {
+    const initANDROID = {
+      consumerKey: Config.NAVER_CLIENT_ID ? Config.NAVER_CLIENT_ID : '',
+      consumerSecret: Config.NAVER_CLIENT_SECRET
+        ? Config.NAVER_CLIENT_SECRET
+        : '',
+      appName: '복어펑',
+    };
+    const initIOS = {
+      consumerKey: Config.NAVER_CLIENT_ID ? Config.NAVER_CLIENT_ID : '',
+      consumerSecret: Config.NAVER_CLIENT_SECRET
+        ? Config.NAVER_CLIENT_SECRET
+        : '',
+      appName: '복어펑',
+      serviceUrlSchemeIOS: 'naverLogin',
+    };
+    NaverLogin.initialize(Platform.OS === 'android' ? initANDROID : initIOS);
+    console.log('네이버 로그인');
+    const {failureResponse, successResponse} = await NaverLogin.login();
+    setSuccessResponse(successResponse);
+    setFailureResponse(failureResponse);
+    console.log(successResponse ? 'success' : 'failure');
+
+    console.log('successResponse:', successResponse?.accessToken);
+    if (successResponse) {
+      try {
+        console.log('try login');
+        const response = await axios.post(`${Config.API_URL}/login`, {
+          socialType: 'Naver',
+          accessToken: successResponse.accessToken,
+        });
+        console.log(response.data);
+        if (response.data.role === 'ROLE_GUEST') {
+          dispatch(
+            userSlice.actions.setPerson({
+              preAcc: response.data.accessToken,
+              preRef: response.data.refreshToken,
+            }),
+          );
+          setShowModal('show');
+        } else {
+          dispatch(
+            userSlice.actions.setToken({
+              accessToken: response.data.accessToken,
+            }),
+          );
+          await EncryptedStorage.setItem(
+            'refreshToken',
+            response.data.refreshToken,
+          );
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  };
+
   return (
     <View style={styles.entire}>
       <ImageBackground
@@ -156,7 +220,8 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               style={styles.eachLoginButton}
               onPress={() => {
                 // setShowModal('show');
-                Login(3);
+                // Login(3);
+                LoginWithNaver();
               }}>
               <View style={styles.loginButton}>
                 <SvgXml xml={svgList.socialLoginLogo.naver} />
