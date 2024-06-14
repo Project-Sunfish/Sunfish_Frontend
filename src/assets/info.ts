@@ -1,6 +1,6 @@
 const STATUS1_SIZE = 88;
 const LEVEL1_STOP_TIME = 3000;
-const LEVEL1_SPEED = 100;
+const LEVEL1_SPEED = 80;
 export const BOGU_TYPE = 21;
 
 export const category = {

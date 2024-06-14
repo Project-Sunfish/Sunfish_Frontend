@@ -213,13 +213,13 @@ export default function Home(props: HomeProps) {
     let time = 0;
     if (focusedBoguLevel === 1 || focusedBoguLevel === 2) {
       Vibration.vibrate([200, 200]);
-      time = 600;
+      time = 400;
     } else if (focusedBoguLevel === 3 || focusedBoguLevel === 4) {
       Vibration.vibrate([200, 400, 200, 400]);
-      time = 1200;
+      time = 1000;
     } else if (focusedBoguLevel === 5 || focusedBoguLevel === 6) {
       Vibration.vibrate([200, 400, 200, 400, 200, 400, 200, 400]);
-      time = 2400;
+      time = 2200;
     }
     // console.log('level', focusedBoguLevel, time);
     // 터지는 애니메이션 넣기 (5초 후 api 전송)
@@ -228,8 +228,8 @@ export default function Home(props: HomeProps) {
         const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
           id: focusedBoguId.split('-')[0].replace('e', ''),
         });
-        console.log('pop', response.data);
         setAnimationType('popEnd');
+        console.log('pop', response.data);
         if (response.data.liberationFlag) {
           // if (true) {
           setModal('no');
