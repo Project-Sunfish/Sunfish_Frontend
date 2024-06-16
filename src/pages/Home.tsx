@@ -34,6 +34,7 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
+import {category, fileDirection} from '../assets/info';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -47,7 +48,7 @@ type evolvedBogu = {
   id: number;
   level: level;
   categories: string[];
-  selected_category: selectedCategory;
+  selectedCategory: selectedCategory;
   variation: variation;
   name: string;
   status: status;
@@ -111,7 +112,6 @@ export default function Home(props: HomeProps) {
     const focusListener = props.navigation.addListener('focus', () => {
       updateBogu();
     });
-    console.log('getBasicInfo');
     // setTutorial('0');
     return focusListener;
   }, []);
@@ -131,11 +131,22 @@ export default function Home(props: HomeProps) {
   const getBasicInfo = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
-      console.log('getBasicInfo', response.data);
       setNewBogus(response.data.todayQuota >= 1);
       setDefaultBogu(response.data.defaultBogus);
       setEvolvedBogu(response.data.evolvedBogus);
       console.log(response.data);
+      if (response.data) {
+        setAnimationType('no');
+        setFocusedBoguId('-1');
+        setFocusedBoguName('');
+        setFocusedBoguProblem('');
+        setFocusedBoguCategory([]);
+        setFocusedBoguVariation(0);
+        setFocusedBoguSelectedCategory('');
+        setFocusedBoguStatus(0);
+        setFocusedBoguCreatedAt('');
+        setFocusedBoguLevel(0);
+      }
     } catch (error: any) {
       const errorResponse = error.response;
       console.log(errorResponse.status);
@@ -171,7 +182,7 @@ export default function Home(props: HomeProps) {
       setEvolvedBoguId(response.data.id);
       setEvolvedBoguName(response.data.name);
       setEvolvedBoguStatus(response.data.status);
-      setEvolvedBoguSelectedCategory(response.data.selected_category);
+      setEvolvedBoguSelectedCategory(response.data.selectedCategory);
       setEvolvedBoguVariation(response.data.variation);
       setFocusedBoguId('-1');
       setSelectedCategory([]);
@@ -196,7 +207,7 @@ export default function Home(props: HomeProps) {
       // setFocusedBoguId(response.data.id);
       setFocusedBoguCreatedAt(response.data.createdAt);
       setFocusedBoguStatus(response.data.status);
-      setFocusedBoguSelectedCategory(response.data.selected_category);
+      setFocusedBoguSelectedCategory(response.data.selectedCategory);
       setFocusedBoguVariation(response.data.variation);
       setFocusedBoguCategory(response.data.categories);
       setFocusedBoguName(response.data.name);
@@ -207,45 +218,57 @@ export default function Home(props: HomeProps) {
       console.log('cannot get evolved bogu info', errorResponse);
     }
   };
-  const pop = () => {
+  const pop = async () => {
     console.log('popping');
-    setAnimationType('popping');
-    let time = 0;
-    if (focusedBoguLevel === 1 || focusedBoguLevel === 2) {
-      Vibration.vibrate([200, 200]);
-      time = 600;
-    } else if (focusedBoguLevel === 3 || focusedBoguLevel === 4) {
-      Vibration.vibrate([200, 400, 200, 400]);
-      time = 1200;
-    } else if (focusedBoguLevel === 5 || focusedBoguLevel === 6) {
-      Vibration.vibrate([200, 400, 200, 400, 200, 400, 200, 400]);
-      time = 2400;
-    }
     // console.log('level', focusedBoguLevel, time);
     // 터지는 애니메이션 넣기 (5초 후 api 전송)
-    setTimeout(async () => {
-      try {
-        const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
-          id: focusedBoguId.split('-')[0].replace('e', ''),
-        });
-        console.log('pop', response.data);
+    try {
+      let time =
+        focusedBoguLevel == 1 || focusedBoguLevel == 2
+          ? 400
+          : focusedBoguLevel == 3 || focusedBoguLevel == 4
+          ? 1000
+          : 2200;
+      setAnimationType('popping');
+      setTimeout(() => {
         setAnimationType('popEnd');
-        if (response.data.liberationFlag) {
-          // if (true) {
-          setModal('no');
-          setTimeout(() => {
-            setModal('liberate');
-          }, 400);
-          // 해방시킬지 말지 결정하는 모달 띄우기
-        } else {
-          updateBogu();
-          getBasicInfo();
-        }
-      } catch (error: any) {
-        const errorResponse = error.response;
-        console.log('cannot pop', errorResponse);
+      }, time);
+      if (time == 400) {
+        Vibration.vibrate([200, 200]);
+      } else if (time == 1000) {
+        Vibration.vibrate([200, 200, 200, 200]);
+      } else if (time == 2200) {
+        Vibration.vibrate([200, 200, 200, 200, 200, 200, 200, 200]);
       }
-    }, time);
+      const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
+        id: focusedBoguId.split('-')[0].replace('e', ''),
+      });
+
+      console.log('pop', response.data);
+      if (response.data.liberationFlag) {
+        // if (true) {
+        setModal('no');
+        setTimeout(() => {
+          setModal('liberate');
+        }, 400);
+        // 해방시킬지 말지 결정하는 모달 띄우기
+      } else {
+        updateBogu();
+        getBasicInfo();
+        setFocusedBoguId('-1');
+        setFocusedBoguName('');
+        setFocusedBoguProblem('');
+        setFocusedBoguCategory([]);
+        setFocusedBoguVariation(0);
+        setFocusedBoguSelectedCategory('');
+        setFocusedBoguStatus(0);
+        setFocusedBoguCreatedAt('');
+        setFocusedBoguLevel(0);
+      }
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot pop', errorResponse);
+    }
   };
   const liberate = async () => {
     try {
@@ -258,7 +281,6 @@ export default function Home(props: HomeProps) {
       console.log('liberate', response.data);
       updateBogu();
       getBasicInfo();
-      setFocusedBoguId('-1');
       setModal('no');
     } catch (error: any) {
       const errorResponse = error.response;
@@ -325,7 +347,7 @@ export default function Home(props: HomeProps) {
                 setModal={setModal}
                 id={`e${item.id}-${idx}`}
                 level={item.level}
-                selectedCategory={item.selected_category}
+                selectedCategory={item.selectedCategory}
                 variation={item.variation}
                 name={item.name}
                 status={item.status}
@@ -408,7 +430,11 @@ export default function Home(props: HomeProps) {
           )}
           {(animationType === 'pop' || animationType === 'both') && (
             <Image
-              source={require('../assets/gifs/high_right.gif')}
+              source={
+                fileDirection[category[evolvedBoguSelectedCategory]][
+                  'var' + evolvedBoguVariation
+                ]['1']['left']
+              }
               style={{width: 200, height: 200}}
             />
           )}
@@ -661,10 +687,20 @@ export default function Home(props: HomeProps) {
             <View
               style={styles.popModalBoguImg}
               onStartShouldSetResponder={() => true}>
-              <Image
+              {/* <Image
                 source={require('../assets/gifs/high_left.gif')}
                 style={{width: 125, height: 125}}
-              />
+              /> */}
+              {focusedBoguSelectedCategory && (
+                <Image
+                  source={
+                    fileDirection[category[focusedBoguSelectedCategory]][
+                      'var' + focusedBoguVariation
+                    ]['1']['left']
+                  }
+                  style={{width: 160, height: 160, marginTop: 30}}
+                />
+              )}
             </View>
             <ScrollView style={{width: '100%'}}>
               <View

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import Svg, {Circle, SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import {category, info} from '../assets/info';
+import {category, fileDirection, info} from '../assets/info';
 
 export type level = 1 | 2 | 3 | 4 | 5 | 6;
 export type status = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
@@ -22,7 +22,7 @@ export type selectedCategory =
   | '직장'
   | '가족'
   | '친구'
-  | '연애'
+  | '연인'
   | '건강'
   | '사회문제'
   | '이유없음'
@@ -179,35 +179,60 @@ export default function Character(props: CharacterProps) {
             style={{width: 360, height: 360}}
           />
         ) :  */}
-        {props.animationType === 'popping' && focusedBoguId === id ? (
-          <Image
-            source={require('../assets/gifs/popping.gif')}
-            style={{
-              width: info.status.size[status],
-              height: info.status.size[status],
-              zIndex: 10,
-            }}
-          />
-        ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
-          <></>
-        ) : direction == 'right' ? (
-          <Image
-            source={require('../assets/gifs/high_right.gif')}
-            style={{
-              width: info.status.size[status],
-              height: info.status.size[status],
-            }}
-          />
-        ) : (
-          // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
-          <Image
-            source={require('../assets/gifs/high_left.gif')}
-            style={{
-              width: info.status.size[status],
-              height: info.status.size[status],
-            }}
-          />
-        )}
+        {selectedCategory &&
+          (props.animationType === 'popping' && focusedBoguId === id ? (
+            <Image
+              source={
+                fileDirection[selectedCategory]['var' + variation][
+                  status === 1 || status === 2 || status === 3
+                    ? '1'
+                    : status === 4 || status === 5 || status === 6
+                    ? '2'
+                    : '3'
+                ]['pop']
+              }
+              style={{
+                width: info.status.size[status],
+                height: info.status.size[status],
+                zIndex: 10,
+              }}
+            />
+          ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
+            <></>
+          ) : direction == 'right' ? (
+            <Image
+              source={
+                fileDirection[selectedCategory]['var' + variation][
+                  status === 1 || status === 2 || status === 3
+                    ? '1'
+                    : status === 4 || status === 5 || status === 6
+                    ? '2'
+                    : '3'
+                ]['right']
+              }
+              style={{
+                width: info.status.size[status],
+                height: info.status.size[status],
+              }}
+            />
+          ) : (
+            // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
+            <Image
+              source={
+                fileDirection[selectedCategory]['var' + variation][
+                  status === 1 || status === 2 || status === 3
+                    ? '1'
+                    : status === 4 || status === 5 || status === 6
+                    ? '2'
+                    : '3'
+                ]['left']
+              }
+              style={{
+                width: info.status.size[status],
+                height: info.status.size[status],
+              }}
+            />
+          ))}
       </Pressable>
     </Animated.View>
   );
