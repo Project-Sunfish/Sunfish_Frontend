@@ -29,19 +29,20 @@ type itemProps = {
   typeId: typeID;
   name: string;
   newFlag: boolean;
+  liberatedFlag: boolean;
 };
 
 export default function Book(props: BookProps) {
   const itemSize = (Dimensions.get('window').width - 100) / 2;
   const [openData, setOpenData] = useState<itemProps[]>([
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
-    {newFlag: false, typeId: '-1', name: ''},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
+    {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
   ]);
 
   useFocusEffect(
@@ -55,7 +56,12 @@ export default function Book(props: BookProps) {
       const response = await axios.get(`${Config.API_URL}/api/collection`);
       let data: itemProps[] = [];
       for (let i = 0; i < BOGU_TYPE; i++) {
-        data.push({newFlag: false, typeId: '-1', name: ''});
+        data.push({
+          newFlag: false,
+          typeId: '-1',
+          name: '',
+          liberatedFlag: false,
+        });
       }
       for (let i = 0; i < response.data.collectedBogus.length; i++) {
         data[response.data.collectedBogus[i].typeId] =
@@ -91,16 +97,10 @@ export default function Book(props: BookProps) {
           <Text style={styles.headerText}>복어 도감</Text>
         </View>
         <FlatList
-          // columnWrapperStyle={{
-          //   alignItems: 'center',
-          //   // justifyContent: 'center',
-          //   backgroundColor: 'black',
-          //   flexGrow: 1,
-          // }}
           data={openData}
           ListFooterComponent={<View style={{height: 100}} />}
           renderItem={({item, index}) => (
-            <View style={{maxHeight: 160, maxWidth: 160}}>
+            <View style={{maxHeight: 170, maxWidth: 170}}>
               <Pressable
                 style={[
                   styles.item,
@@ -114,15 +114,27 @@ export default function Book(props: BookProps) {
                 ]}
                 onPress={() => {
                   if (item.typeId !== '-1')
-                    props.navigation.navigate('BookDetail', {id: item.typeId});
+                    props.navigation.navigate('BookDetail', {
+                      id: item.typeId,
+                      liberated: item.liberatedFlag,
+                    });
                 }}>
-                {item.typeId !== '-1' && (
-                  <SvgXml
-                    xml={svgList.enterInfo.sunfish}
-                    width={itemSize > 150 ? 120 : itemSize - 30}
-                    height={itemSize > 150 ? 120 : itemSize - 30}
-                  />
-                )}
+                {item.typeId !== '-1' &&
+                  (item.liberatedFlag ? (
+                    <SvgXml
+                      xml={svgList.bogus.liberated[item.typeId]}
+                      width={itemSize > 150 ? 130 : itemSize - 20}
+                      height={itemSize > 150 ? 130 : itemSize - 20}
+                      style={{marginBottom: 10}}
+                    />
+                  ) : (
+                    <SvgXml
+                      xml={svgList.bogus[item.typeId]}
+                      width={itemSize > 150 ? 130 : itemSize - 20}
+                      height={itemSize > 150 ? 130 : itemSize - 20}
+                      style={{marginBottom: 10}}
+                    />
+                  ))}
                 {item.typeId !== '-1' && (
                   <View style={styles.itemKnownNameView}>
                     <Text style={styles.itemKnownText}>{item.name}</Text>
@@ -182,10 +194,13 @@ const styles = StyleSheet.create({
     borderColor: '#AEAEAE',
   },
   itemKnownNameView: {
+    position: 'absolute',
+    bottom: -5,
     paddingHorizontal: 15,
     paddingVertical: 4,
     backgroundColor: '#6EA5FF',
     borderRadius: 32,
+    marginBottom: 10,
   },
   itemKnownText: {
     fontSize: 12,
