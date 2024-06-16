@@ -7,7 +7,7 @@ import BookDetail from '../pages/BookDetail';
 
 export type BookStackParamList = {
   Book: undefined;
-  BookDetail: {id: typeID};
+  BookDetail: {id: typeID; liberated: boolean};
 };
 
 export type BookStackNavigationProp =

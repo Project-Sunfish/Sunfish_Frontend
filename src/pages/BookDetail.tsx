@@ -25,7 +25,7 @@ type BookDetailScreenNavigationProp = NativeStackNavigationProp<
 >;
 type BookDetailProps = {
   navigation: BookDetailScreenNavigationProp;
-  route: {params: {id: typeID}};
+  route: {params: {id: typeID; liberated: boolean}};
 };
 
 type itemProps = {
@@ -124,7 +124,7 @@ export default function BookDetail(props: BookDetailProps) {
             <View style={styles.boguName}>
               <Text style={styles.boguNameTxt}>{idList[id].name}</Text>
             </View>
-            <View style={styles.boguContentBody}>
+            <View style={[styles.boguContentBody, {height: 250}]}>
               <Pressable
                 style={styles.arrowArea}
                 onPress={() => {
@@ -143,7 +143,21 @@ export default function BookDetail(props: BookDetailProps) {
                 )}
               </Pressable>
               <View style={styles.boguImage}>
-                <SvgXml xml={svgList.enterInfo.sunfish} />
+                {props.route.params.liberated ? (
+                  <SvgXml
+                    xml={svgList.bogus.liberated[id]}
+                    width={280}
+                    height={280}
+                    style={{marginTop: 40}}
+                  />
+                ) : (
+                  <SvgXml
+                    xml={svgList.bogus[id]}
+                    width={280}
+                    height={280}
+                    style={{marginTop: 40}}
+                  />
+                )}
               </View>
               <Pressable
                 style={styles.arrowArea}
@@ -201,7 +215,9 @@ export default function BookDetail(props: BookDetailProps) {
             </View>
             <View style={styles.worryContentBody}>
               <Text style={styles.worryContentTxt}>{data[idx].problem}</Text>
-              <Text style={styles.worryQuantity}>112/1000</Text>
+              <Text style={styles.worryQuantity}>
+                {data[idx].problem.length.toString()}/1000
+              </Text>
             </View>
           </View>
         </ScrollView>
