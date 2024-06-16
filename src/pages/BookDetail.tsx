@@ -148,14 +148,20 @@ export default function BookDetail(props: BookDetailProps) {
                     xml={svgList.bogus.liberated[id]}
                     width={280}
                     height={280}
-                    style={{marginTop: 40}}
+                    style={[
+                      {marginTop: 40},
+                      idList[id].name == '아싸 복어' && {opacity: 0.5},
+                    ]}
                   />
                 ) : (
                   <SvgXml
                     xml={svgList.bogus[id]}
                     width={280}
                     height={280}
-                    style={{marginTop: 40}}
+                    style={[
+                      {marginTop: 40},
+                      idList[id].name == '아싸 복어' && {opacity: 0.5},
+                    ]}
                   />
                 )}
               </View>

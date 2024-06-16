@@ -217,6 +217,10 @@ export const idList = {
 };
 
 export const fileDirection = {
+  default: {
+    right: require('./gifs/default_right.gif'),
+    left: require('./gifs/default_left.gif'),
+  },
   study: {
     var0: {
       1: {

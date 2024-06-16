@@ -73,16 +73,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function AppInner() {
-  // const Ultra24Width = 1440;
-  // const fUltra24Height = 1440;
   const {width, height} = useWindowDimensions();
-  // const currentDPI = PixelRatio.get();
-  // const scaleFactor = currentDPI / PixelRatio.getFontScale();
-  // const adjustedWidth = width * scaleFactor;
-  // const adjustedHeight = height * scaleFactor;
-  // const isBigScreen = adjustedWidth > Ultra24Width;
-  // console.log('adjustedWidth', adjustedWidth);
-  // console.log('width', width);
 
   const Ultra24Width = 1440;
   const BigScreen = (Ultra24Width * 160) / 500;
@@ -136,7 +127,6 @@ function AppInner() {
     }
   };
   useEffect(() => {
-    // EncryptedStorage.removeItem('refreshToken');
     if (!isLoggedIn) reissue();
   }, [isLoggedIn]);
   return (
@@ -262,7 +252,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   containerInside: {
-    // maxWidth: 500,
     width: '100%',
   },
 });

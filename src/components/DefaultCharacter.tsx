@@ -1,20 +1,15 @@
 import {useEffect, useRef, useState} from 'react';
 import {
-  View,
-  Text,
   Animated,
   Easing,
   Dimensions,
   Pressable,
-  Vibration,
   Image,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import Svg, {Circle, SvgXml} from 'react-native-svg';
-import {svgList} from '../assets/svgList';
 import {Cursor} from './animations';
-import {info} from '../assets/info';
+import {fileDirection, info} from '../assets/info';
 
 type DefaultCharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
@@ -84,11 +79,6 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
   };
 
   const setNewDestination = (prevX: number) => {
-    // const randomX = Math.floor(
-    //   Math.random() * Dimensions.get('window').width - 80,
-    // );
-    // const randomX = Math.floor(Math.random() * 80 - 40);
-    // const randomY = Math.floor(Math.random() * 300);
     const randomX = isBigScreen
       ? Math.floor(
           Math.random() * BigScreen -
@@ -162,13 +152,12 @@ export default function DefaultCharacter(props: DefaultCharacterProps) {
         )}
         {direction === 'right' ? (
           <Image
-            source={require('../assets/gifs/temp.gif')}
+            source={fileDirection.default.right}
             style={{width: info.status.size[1], height: info.status.size[1]}}
           />
         ) : (
-          // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
           <Image
-            source={require('../assets/gifs/temp.gif')}
+            source={fileDirection.default.left}
             style={{width: info.status.size[1], height: info.status.size[1]}}
           />
         )}

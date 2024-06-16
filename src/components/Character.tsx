@@ -1,18 +1,13 @@
 import {useEffect, useRef, useState} from 'react';
 import {
-  View,
-  Text,
   Animated,
   Easing,
   Dimensions,
   Pressable,
-  Vibration,
   Image,
   StyleSheet,
   useWindowDimensions,
 } from 'react-native';
-import Svg, {Circle, SvgXml} from 'react-native-svg';
-import {svgList} from '../assets/svgList';
 import {category, fileDirection, info} from '../assets/info';
 
 export type level = 1 | 2 | 3 | 4 | 5 | 6;
@@ -27,7 +22,7 @@ export type selectedCategory =
   | '사회문제'
   | '이유없음'
   | '기타';
-export type variation = 1 | 2 | 3 | 4;
+export type variation = 0 | 1 | 2 | 3;
 
 type CharacterProps = {
   setModal: React.Dispatch<React.SetStateAction<string>>;
@@ -191,11 +186,14 @@ export default function Character(props: CharacterProps) {
                     : '3'
                 ]['pop']
               }
-              style={{
-                width: info.status.size[status],
-                height: info.status.size[status],
-                zIndex: 10,
-              }}
+              style={[
+                {
+                  width: info.status.size[status],
+                  height: info.status.size[status],
+                  zIndex: 10,
+                },
+                name === '아싸 복어' && {opacity: 0.5},
+              ]}
             />
           ) : props.animationType === 'popEnd' && focusedBoguId === id ? (
             <></>
@@ -210,13 +208,15 @@ export default function Character(props: CharacterProps) {
                     : '3'
                 ]['right']
               }
-              style={{
-                width: info.status.size[status],
-                height: info.status.size[status],
-              }}
+              style={[
+                {
+                  width: info.status.size[status],
+                  height: info.status.size[status],
+                },
+                name === '아싸 복어' && {opacity: 0.5},
+              ]}
             />
           ) : (
-            // <SvgXml xml={svgList.temp.defaultBogu} width={88} height={88} />
             <Image
               source={
                 fileDirection[selectedCategory]['var' + variation][
@@ -227,10 +227,13 @@ export default function Character(props: CharacterProps) {
                     : '3'
                 ]['left']
               }
-              style={{
-                width: info.status.size[status],
-                height: info.status.size[status],
-              }}
+              style={[
+                {
+                  width: info.status.size[status],
+                  height: info.status.size[status],
+                },
+                name === '아싸 복어' && {opacity: 0.5},
+              ]}
             />
           ))}
       </Pressable>

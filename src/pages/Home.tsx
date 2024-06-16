@@ -3,12 +3,11 @@ import {
   FlatList,
   Image,
   ImageBackground,
-  Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   TextInput,
-  TurboModuleRegistry,
   Vibration,
   View,
 } from 'react-native';
@@ -19,7 +18,7 @@ import Character, {
   status,
   variation,
 } from '../components/Character';
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import Modal from 'react-native-modal';
 import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
@@ -136,8 +135,6 @@ export default function Home(props: HomeProps) {
       setEvolvedBogu(response.data.evolvedBogus);
       console.log(response.data);
       if (response.data) {
-        setAnimationType('no');
-        setFocusedBoguId('-1');
         setFocusedBoguName('');
         setFocusedBoguProblem('');
         setFocusedBoguCategory([]);
@@ -146,6 +143,8 @@ export default function Home(props: HomeProps) {
         setFocusedBoguStatus(0);
         setFocusedBoguCreatedAt('');
         setFocusedBoguLevel(0);
+        setAnimationType('no');
+        setFocusedBoguId('-1');
       }
     } catch (error: any) {
       const errorResponse = error.response;
@@ -225,25 +224,25 @@ export default function Home(props: HomeProps) {
     try {
       let time =
         focusedBoguLevel == 1 || focusedBoguLevel == 2
-          ? 400
+          ? 700
           : focusedBoguLevel == 3 || focusedBoguLevel == 4
-          ? 1000
-          : 2200;
+          ? 1700
+          : 4200;
+      let t = 300;
       setAnimationType('popping');
       setTimeout(() => {
         setAnimationType('popEnd');
       }, time);
-      if (time == 400) {
-        Vibration.vibrate([200, 200]);
-      } else if (time == 1000) {
-        Vibration.vibrate([200, 200, 200, 200]);
-      } else if (time == 2200) {
-        Vibration.vibrate([200, 200, 200, 200, 200, 200, 200, 200]);
+      if (time == 700) {
+        Vibration.vibrate([t, t]);
+      } else if (time == 1700) {
+        Vibration.vibrate([t, t, t, t]);
+      } else if (time == 4200) {
+        Vibration.vibrate([t, t, t, t, t, t, t, t]);
       }
       const response = await axios.post(`${Config.API_URL}/api/bogu/pop`, {
         id: focusedBoguId.split('-')[0].replace('e', ''),
       });
-
       console.log('pop', response.data);
       if (response.data.liberationFlag) {
         // if (true) {
@@ -254,16 +253,6 @@ export default function Home(props: HomeProps) {
         // 해방시킬지 말지 결정하는 모달 띄우기
       } else {
         updateBogu();
-        getBasicInfo();
-        setFocusedBoguId('-1');
-        setFocusedBoguName('');
-        setFocusedBoguProblem('');
-        setFocusedBoguCategory([]);
-        setFocusedBoguVariation(0);
-        setFocusedBoguSelectedCategory('');
-        setFocusedBoguStatus(0);
-        setFocusedBoguCreatedAt('');
-        setFocusedBoguLevel(0);
       }
     } catch (error: any) {
       const errorResponse = error.response;
@@ -306,6 +295,7 @@ export default function Home(props: HomeProps) {
     <ImageBackground
       source={require('../assets/pictures/Game.png')}
       style={{flex: 1}}>
+      <StatusBar hidden={true} />
       <View style={styles.entire}>
         {tutorial !== '0' && (
           <View style={styles.tutorialViewTop}>
@@ -503,7 +493,6 @@ export default function Home(props: HomeProps) {
             setTutorial('3');
           }
           setFocusedBoguId('-1');
-          // setSelectedCategory([]);
         }}
         headerTxt={`걱정의 종류를\n‘최대 3개’\n선택해주세요`}>
         <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
@@ -687,10 +676,6 @@ export default function Home(props: HomeProps) {
             <View
               style={styles.popModalBoguImg}
               onStartShouldSetResponder={() => true}>
-              {/* <Image
-                source={require('../assets/gifs/high_left.gif')}
-                style={{width: 125, height: 125}}
-              /> */}
               {focusedBoguSelectedCategory && (
                 <Image
                   source={
@@ -698,7 +683,10 @@ export default function Home(props: HomeProps) {
                       'var' + focusedBoguVariation
                     ]['1']['left']
                   }
-                  style={{width: 160, height: 160, marginTop: 30}}
+                  style={[
+                    {width: 160, height: 160, marginTop: 30},
+                    focusedBoguName === '아싸 복어' && {opacity: 0.5},
+                  ]}
                 />
               )}
             </View>

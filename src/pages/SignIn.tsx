@@ -1,10 +1,8 @@
 import {
   Dimensions,
-  Image,
   ImageBackground,
   Platform,
   Pressable,
-  SafeAreaView,
   StyleSheet,
   View,
 } from 'react-native';
@@ -13,15 +11,10 @@ import {useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
-import TermModal from '../components/TermModal';
-import {useEffect, useRef, useState} from 'react';
-// import WebView from 'react-native-webview';
+import {useEffect, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import Modal from 'react-native-modal';
 import {RootStackParamList} from '../../AppInner';
 import Config from 'react-native-config';
-// import {Temp} from '../components/animations';
-import FastImage from 'react-native-fast-image';
 import Text from '../components/Text';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
@@ -235,19 +228,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
       <ImageBackground
         source={require('../assets/pictures/SignIn.png')}
         style={{flex: 1}}>
-        {/* <Pressable
-        onPress={() => {
-          // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
-          setShowModal(true);
-        }}>
-        <Text>로그인</Text>
-      </Pressable> */}
-        <View style={styles.top}>
-          {/* <Image
-          source={require('../assets/temp.gif')}
-          style={{width: 500, height: 500}}
-        /> */}
-        </View>
+        <View style={styles.top}></View>
         <View style={styles.bottom}>
           <View style={styles.loginButtonView}>
             <View style={styles.loginButtonViewContainer}>
@@ -296,46 +277,15 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
           </View>
           <View style={styles.helperButtonView}>
             <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
-              {/* <Text style={styles.helperButtonText}>앱스토어</Text>
-              <Text style={styles.helperButtonText}>플레이스토어</Text> */}
               <SvgXml xml={svgList.socialLoginLogo.playStore} />
               <View style={{height: 4}}></View>
               <SvgXml xml={svgList.socialLoginLogo.appStore} />
             </Pressable>
-            <Pressable
-              style={[styles.helperButton, {paddingTop: 10}]}
-              onPress={() =>
-                // dispatch(userSlice.actions.setToken({accessToken: '1234'}))
-                {}
-              }>
+            <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
               <SvgXml xml={svgList.socialLoginLogo.us} />
             </Pressable>
           </View>
         </View>
-        {/* <Modal
-        isVisible={isWebView}
-        style={{flex: 1, justifyContent: 'center'}}
-        onBackButtonPress={() => setIsWebView(false)}
-        onBackdropPress={() => setIsWebView(false)}
-        hasBackdrop={true}>
-        <Pressable
-          style={{flex: 1, padding: 20}}
-          onPress={() => setIsWebView(false)}>
-          <Pressable
-            style={{flex: 1, backgroundColor: 'white'}}
-            onPress={e => e.stopPropagation()}>
-            <WebView
-              style={{width: '100%'}}
-              source={{
-                uri: `${Config.API_URL}:8080/oauth2/authorization/kakao`,
-                // uri: `https://www.naver.com`,
-              }}
-              javaScriptEnabled={true}
-              domStorageEnabled={true}
-            />
-          </Pressable>
-        </Pressable>
-      </Modal> */}
       </ImageBackground>
     </View>
   );

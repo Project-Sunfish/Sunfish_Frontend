@@ -75,19 +75,6 @@ export default function Book(props: BookProps) {
     }
   };
   return (
-    // <View style={{flex: 1}}>
-    //   <Pressable onPress={() => Vibration.vibrate(100)}>
-    //     <Text>Haptic</Text>
-    //   </Pressable>
-    //   <Text>Book</Text>
-    //   <Ex />
-    //   <Pressable
-    //     onPress={() => {
-    //       props.navigation.navigate('BookDetail');
-    //     }}>
-    //     <Text>go</Text>
-    //   </Pressable>
-    // </View>
     <ImageBackground
       source={require('../assets/pictures/Base.png')}
       style={{flex: 1}}>
@@ -125,14 +112,20 @@ export default function Book(props: BookProps) {
                       xml={svgList.bogus.liberated[item.typeId]}
                       width={itemSize > 150 ? 130 : itemSize - 20}
                       height={itemSize > 150 ? 130 : itemSize - 20}
-                      style={{marginBottom: 10}}
+                      style={[
+                        {marginBottom: 10},
+                        item.typeId == 9 && {opacity: 0.5},
+                      ]}
                     />
                   ) : (
                     <SvgXml
                       xml={svgList.bogus[item.typeId]}
                       width={itemSize > 150 ? 130 : itemSize - 20}
                       height={itemSize > 150 ? 130 : itemSize - 20}
-                      style={{marginBottom: 10}}
+                      style={[
+                        {marginBottom: 10},
+                        item.typeId == 9 && {opacity: 0.5},
+                      ]}
                     />
                   ))}
                 {item.typeId !== '-1' && (
