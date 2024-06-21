@@ -1,7 +1,7 @@
 const STATUS1_SIZE = 88;
 const LEVEL1_STOP_TIME = 3000;
 const LEVEL1_SPEED = 80;
-export const BOGU_TYPE = 21;
+export const BOGU_TYPE = 22;
 
 export const category = {
   학업: 'study',
@@ -116,9 +116,9 @@ export const info = {
         playText: '뭐…! 존재감이 없어서 좋은 점도 있어!!\n\n…나랑 친구할래…?',
       },
       1: {
-        name: '연극 복어',
+        name: '마스크 복어',
         playText:
-          '요즘 따라 ‘하고 싶은 말’과 ‘해야 하는 말’의 차이가 뭘까, 고민하고 있다. 속마음을 감춘 복어.',
+          '이 복어는 감기에 걸린…건 아니고 눈에 띄지 않기 위해 마스크를 썼다고 한다. 화장할 시간이 없었다거나?(…)',
       },
       2: {
         name: '혼밥 복어',
@@ -186,6 +186,11 @@ export const info = {
         name: '눈물 복어',
         playText: '얼마나 슬펐으면 바다에 눈물이 보이겠어요…',
       },
+      2: {
+        name: '질색 복어',
+        playText:
+          '이상은 높은데 현실을 자각해버린 복어. 본인이 개복치만큼 커질 줄 알았다고.(…)',
+      },
     },
   },
 };
@@ -214,6 +219,7 @@ export const idList = {
   19: info.category.noReason[1],
   20: info.category.etc[0],
   21: info.category.etc[1],
+  22: info.category.etc[2],
 };
 
 export const fileDirection = {
@@ -400,19 +406,19 @@ export const fileDirection = {
     },
     var1: {
       1: {
-        //       pop: require('./gifs/friend/var1/1_pop.gif'),
-        //       left: require('./gifs/friend/var1/1_left.gif'),
-        //       right: require('./gifs/friend/var1/1_right.gif'),
+        pop: require('./gifs/friend/var1/1_pop.gif'),
+        left: require('./gifs/friend/var1/1_left.gif'),
+        right: require('./gifs/friend/var1/1_right.gif'),
       },
       2: {
-        //       pop: require('./gifs/friend/var1/2_pop.gif'),
-        //       left: require('./gifs/friend/var1/2_left.gif'),
-        //       right: require('./gifs/friend/var1/2_right.gif'),
+        pop: require('./gifs/friend/var1/2_pop.gif'),
+        left: require('./gifs/friend/var1/2_left.gif'),
+        right: require('./gifs/friend/var1/2_right.gif'),
       },
       3: {
-        //       pop: require('./gifs/friend/var1/3_pop.gif'),
-        //       left: require('./gifs/friend/var1/3_left.gif'),
-        //       right: require('./gifs/friend/var1/3_right.gif'),
+        pop: require('./gifs/friend/var1/3_pop.gif'),
+        left: require('./gifs/friend/var1/3_left.gif'),
+        right: require('./gifs/friend/var1/3_right.gif'),
       },
     },
     var2: {
@@ -610,6 +616,23 @@ export const fileDirection = {
         pop: require('./gifs/etc/var1/3_pop.gif'),
         left: require('./gifs/etc/var1/3_left.gif'),
         right: require('./gifs/etc/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/etc/var2/1_pop.gif'),
+        left: require('./gifs/etc/var2/1_left.gif'),
+        right: require('./gifs/etc/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/etc/var2/2_pop.gif'),
+        left: require('./gifs/etc/var2/2_left.gif'),
+        right: require('./gifs/etc/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/etc/var2/3_pop.gif'),
+        left: require('./gifs/etc/var2/3_left.gif'),
+        right: require('./gifs/etc/var2/3_right.gif'),
       },
     },
   },

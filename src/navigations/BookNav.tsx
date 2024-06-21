@@ -42,7 +42,8 @@ export type typeID =
   | 18
   | 19
   | 20
-  | 21;
+  | 21
+  | 22;
 
 const Stack = createNativeStackNavigator<BookStackParamList>();
 

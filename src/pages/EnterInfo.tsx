@@ -137,6 +137,11 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
         },
       );
       dispatch(
+        userSlice.actions.setTutorialFlag({
+          tutorialFlag: response.data.tutorialFlag,
+        }),
+      );
+      dispatch(
         userSlice.actions.setToken({accessToken: response.data.accessToken}),
       );
       await EncryptedStorage.setItem(

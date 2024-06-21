@@ -29,11 +29,12 @@ import Config from 'react-native-config';
 import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
 import DefaultCharacter from '../components/DefaultCharacter';
 import Splash from '../components/Splash';
-import {useAppDispatch} from '../store';
+import {RootState, useAppDispatch} from '../store';
 import userSlice from '../slices/user';
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
 import {category, fileDirection} from '../assets/info';
+import {useSelector} from 'react-redux';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -57,6 +58,9 @@ type evolvedBogu = {
 
 export default function Home(props: HomeProps) {
   const dispatch = useAppDispatch();
+  const tutorialFlag = useSelector(
+    (state: RootState) => state.user.tutorialFlag,
+  );
   useAxiosInterceptor();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -101,10 +105,16 @@ export default function Home(props: HomeProps) {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
   });
   useEffect(() => {
+    if (!tutorialFlag && tutorial === '0') {
+      setTutorial('1');
+      if (defaultBogu.length > 0) {
+        setTutorial('3');
+      }
+    }
     if (tutorial === '2') {
       setTimeout(() => {
         setTutorial('3');
-      }, 2500);
+      }, 2000);
     }
   }, [tutorial]);
   useEffect(() => {
@@ -172,6 +182,11 @@ export default function Home(props: HomeProps) {
           problem: worry,
         },
       );
+      if (!tutorialFlag) {
+        const res = await axios.post(`${Config.API_URL}/api/user/tutorial`);
+        console.log('tutorial', res.data);
+        dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
+      }
       setTutorial('0');
       setModal('no');
       setTimeout(() => {
@@ -354,6 +369,7 @@ export default function Home(props: HomeProps) {
             if (newBogus) {
               if (tutorial === '1') {
                 setTutorial('2');
+                console.log('tutorial', tutorial);
               }
               createDefaultBogu();
             } else {

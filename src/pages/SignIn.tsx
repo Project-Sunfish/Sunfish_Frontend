@@ -91,11 +91,15 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             preRef: response.data.refreshToken,
           }),
         );
-
         setShowModal('show');
       } else {
         dispatch(
           userSlice.actions.setToken({accessToken: response.data.accessToken}),
+        );
+        dispatch(
+          userSlice.actions.setTutorialFlag({
+            tutorialFlag: response.data.tutorialFlag,
+          }),
         );
         await EncryptedStorage.setItem(
           'refreshToken',
