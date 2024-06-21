@@ -20,6 +20,13 @@ import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {MyPageStackParamList} from '../navigations/MyPageNav';
 import {useSelector} from 'react-redux';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import * as KakaoLogin from '@react-native-seoul/kakao-login';
+import NaverLogin from '@react-native-seoul/naver-login';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+
+import axios, {AxiosError} from 'axios';
+import Config from 'react-native-config';
+import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 type MyPageScreenNavigationProp = NativeStackNavigationProp<
   MyPageStackParamList,
@@ -35,7 +42,8 @@ export default function MyPage(props: MyPageProps) {
 
   const [showModal, setShowModal] = useState('no');
 
-  const [name, setName] = useState('');
+  const [socialType, setSocialType] = useState('');
+  const [name, setName] = useState('loading..');
   const [birth, setBirth] = useState('');
   const [calendar, setCalendar] = useState('');
   const [sex, setSex] = useState('');
@@ -52,6 +60,106 @@ export default function MyPage(props: MyPageProps) {
     nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
     birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
   });
+
+  useEffect(() => {
+    const focusListener = props.navigation.addListener('focus', () => {
+      getData();
+    });
+    return focusListener;
+  }, []);
+
+  const getData = async () => {
+    try {
+      const response = await axios.get(`${Config.API_URL}/api/user`);
+      console.log('userInfo', response.data);
+      setName(response.data.name);
+      setNameVal(response.data.name);
+      setBirth(response.data.birth.replace('-', '').replace('-', ''));
+      setBirthVal(response.data.birth.replace('-', '').replace('-', ''));
+      setCalendar(response.data.birthType);
+      setCalendarVal(response.data.birthType);
+      setSex(response.data.gender);
+      setSexVal(response.data.gender);
+      setSocialType(response.data.socialType);
+    } catch (error) {
+      const errorResponse = (
+        error as AxiosError<{message: string; code: number}>
+      ).response;
+      console.log('errorResponse', errorResponse?.data);
+    }
+  };
+
+  const updateData = async () => {
+    if (
+      name == nameVal &&
+      birth == birthVal &&
+      calendar == calendarVal &&
+      sex == sexVal
+    ) {
+      console.log('no change');
+      setShowModal('no');
+      return;
+    }
+    try {
+      const response = await axios.put(`${Config.API_URL}/api/user`, {
+        name: nameVal,
+        birth:
+          birthVal.slice(0, 4) +
+          '-' +
+          birthVal.slice(4, 6) +
+          '-' +
+          birthVal.slice(6, 8),
+        birthType: calendarVal,
+        gender: sexVal,
+      });
+      console.log('update', response.data);
+      setShowModal('no');
+      getData();
+    } catch (error) {
+      const errorResponse = (
+        error as AxiosError<{message: string; code: number}>
+      ).response;
+      console.log('errorResponse', errorResponse?.data);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      // const response = await axios.post(`${Config.API_URL}/auth/logout`);
+      if (socialType.toLowerCase() == 'kakao') {
+        KakaoLogin.logout();
+      } else if (socialType.toLowerCase() == 'naver') {
+        NaverLogin.logout();
+      } else if (socialType.toLowerCase() == 'google') {
+        GoogleSignin.signOut();
+      }
+      EncryptedStorage.removeItem('refreshToken');
+      dispatch(userSlice.actions.setToken({accessToken: ''}));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const quit = async () => {
+    try {
+      const response = await axios.delete(`${Config.API_URL}/api/user`);
+      console.log('delete', response.data);
+      if (socialType.toLowerCase() == 'kakao') {
+        KakaoLogin.unlink();
+      } else if (socialType.toLowerCase() == 'naver') {
+        NaverLogin.deleteToken();
+      } else if (socialType.toLowerCase() == 'google') {
+        GoogleSignin.revokeAccess();
+      }
+      EncryptedStorage.removeItem('refreshToken');
+      dispatch(userSlice.actions.setToken({accessToken: ''}));
+    } catch (error) {
+      const errorResponse = (
+        error as AxiosError<{message: string; code: number}>
+      ).response;
+      console.log('errorResponse', errorResponse?.data);
+    }
+  };
 
   const isValidDate = (date: string) => {
     const year = date.slice(0, 4);
@@ -108,7 +216,7 @@ export default function MyPage(props: MyPageProps) {
         <View style={styles.profileImgView}>
           <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
         </View>
-        <Text style={styles.nameText}>복어펑펑이</Text>
+        <Text style={styles.nameText}>{name}</Text>
         <Pressable
           style={styles.editButton}
           onPress={() => setShowModal('edit')}>
@@ -202,8 +310,7 @@ export default function MyPage(props: MyPageProps) {
         <Pressable
           style={styles.logoutBtn}
           onPress={() => {
-            EncryptedStorage.removeItem('refreshToken');
-            dispatch(userSlice.actions.setToken({accessToken: ''}));
+            logout();
           }}>
           <Text style={styles.logoutBtnTxt}>로그아웃</Text>
         </Pressable>
@@ -226,15 +333,26 @@ export default function MyPage(props: MyPageProps) {
           </Text>
         </View>
         <View style={[styles.modalBtnView, {marginBottom: 10}]}>
-          <Pressable style={[styles.modalBtn, {width: 96}]}>
+          <Pressable
+            style={[styles.modalBtn, {width: 96}]}
+            onPress={() => setShowModal('no')}>
             <Text style={styles.modalBtnTransTxt}>취소</Text>
           </Pressable>
-          <Pressable style={[styles.modalBtn, {width: 96}]}>
+          <Pressable
+            style={[styles.modalBtn, {width: 96}]}
+            onPress={() => quit()}>
             <Text style={styles.modalBtnTxt}>탈퇴하기</Text>
           </Pressable>
         </View>
       </MyPageModal>
       <MyPageModal
+        onBackButtonPress={() => {
+          setNameVal(name);
+          setBirthVal(birth);
+          setCalendarVal(calendar);
+          setSexVal(sex);
+          setShowModal('no');
+        }}
         showModal={showModal}
         setShowModal={setShowModal}
         condition={'edit'}
@@ -297,11 +415,11 @@ export default function MyPage(props: MyPageProps) {
               <View style={styles.eachAnswerCalendarView}>
                 <Pressable
                   style={styles.calendarBtn}
-                  onTouchEnd={() => setCalendarVal('solar')}>
+                  onTouchEnd={() => setCalendarVal('Solar')}>
                   <Text
                     style={[
                       styles.calendarBtnTxt,
-                      calendarVal == 'solar'
+                      calendarVal == 'Solar'
                         ? {color: '#002B5D'}
                         : {color: '#002B5D80'},
                     ]}>
@@ -319,11 +437,11 @@ export default function MyPage(props: MyPageProps) {
                 </View>
                 <Pressable
                   style={styles.calendarBtn}
-                  onTouchEnd={() => setCalendarVal('lunar')}>
+                  onTouchEnd={() => setCalendarVal('Lunar')}>
                   <Text
                     style={[
                       styles.calendarBtnTxt,
-                      calendarVal == 'lunar'
+                      calendarVal == 'Lunar'
                         ? {color: '#002B5D'}
                         : {color: '#002B5D80'},
                     ]}>
@@ -382,18 +500,20 @@ export default function MyPage(props: MyPageProps) {
               </Pressable>
               <View style={{width: 4}} />
               <Pressable
-                onPress={() => setSexVal('N')}
+                onPress={() => setSexVal('Non')}
                 style={[
                   styles.eachAnswerBtn,
                   {flex: 3},
-                  sexVal == 'N'
+                  sexVal == 'Non'
                     ? {backgroundColor: '#6EA5FFE5'}
                     : {backgroundColor: '#EAEAEA4D'},
                 ]}>
                 <Text
                   style={[
                     styles.eachAnswerBtnTxt,
-                    sexVal == 'N' ? {color: '#FFFFFFBD'} : {color: '#002B5D80'},
+                    sexVal == 'Non'
+                      ? {color: '#FFFFFFBD'}
+                      : {color: '#002B5D80'},
                   ]}>
                   논바이너리
                 </Text>
@@ -403,6 +523,7 @@ export default function MyPage(props: MyPageProps) {
         </View>
         <View style={styles.modalBtnView}>
           <Pressable
+            onPress={updateData}
             disabled={
               !(
                 nameVal &&
