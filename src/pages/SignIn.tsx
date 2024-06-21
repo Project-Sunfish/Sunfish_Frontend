@@ -41,7 +41,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   const Login = async (id: number) => {
     console.log(Config.API_URL);
     try {
-      const response = await axios.post(`${Config.API_URL}/login`, {
+      const response = await axios.post(`${Config.API_URL}/admin/login`, {
         username: id == 1 ? 'ys' : id == 2 ? 'ys2' : 'ys3',
         password: '1234',
       });
@@ -78,11 +78,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     const token = await KakaoLogin.login();
     const profile = await KakaoLogin.getProfile();
     try {
-      const response = await axios.post(`${Config.API_URL}/login`, {
+      console.log('kakao token:', token.accessToken);
+      const response = await axios.post(`${Config.API_URL}/admin/login`, {
         socialType: 'Kakao',
         accessToken: token.accessToken,
       });
-      console.log('kakao token:', token.accessToken);
       console.log(response.data);
       if (response.data.role === 'ROLE_GUEST') {
         dispatch(
@@ -137,7 +137,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
     console.log('successResponse:', successResponse?.accessToken);
     if (successResponse) {
       try {
-        const response = await axios.post(`${Config.API_URL}/login`, {
+        const response = await axios.post(`${Config.API_URL}/admin/login`, {
           socialType: 'Naver',
           accessToken: successResponse.accessToken,
         });
@@ -197,7 +197,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         }),
       });
       const data = await resp.json();
-      const response = await axios.post(`${Config.API_URL}/login`, {
+      const response = await axios.post(`${Config.API_URL}/admin/login`, {
         socialType: 'Google',
         accessToken: data.access_token,
       });

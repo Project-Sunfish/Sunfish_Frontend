@@ -120,7 +120,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
   const SignUp = async () => {
     try {
       const response = await axios.post(
-        `${Config.API_URL}/signup`,
+        `${Config.API_URL}/admin/signup`,
         {
           name: name,
           birthType: calendar == 'solar' ? 'Solar' : 'Lunar',

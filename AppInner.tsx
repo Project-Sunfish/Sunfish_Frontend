@@ -101,7 +101,7 @@ function AppInner() {
         );
         return;
       }
-      const response = await axios.post(`${Config.API_URL}/reissue`, {
+      const response = await axios.post(`${Config.API_URL}/admin/reissue`, {
         refreshToken: refreshToken,
       });
       console.log('after', response.data.refreshToken);

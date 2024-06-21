@@ -43,7 +43,7 @@ const useAxiosInterceptor = () => {
             );
             return;
           }
-          const resp = await axios.post(`${Config.API_URL}/reissue`, {
+          const resp = await axios.post(`${Config.API_URL}/admin/reissue`, {
             refreshToken: refreshToken,
           });
           await dispatch(

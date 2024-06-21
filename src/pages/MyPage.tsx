@@ -125,7 +125,8 @@ export default function MyPage(props: MyPageProps) {
 
   const logout = async () => {
     try {
-      // const response = await axios.post(`${Config.API_URL}/auth/logout`);
+      const response = await axios.post(`${Config.API_URL}/admin/logout`);
+      console.log('logout', response.data);
       if (socialType.toLowerCase() == 'kakao') {
         KakaoLogin.logout();
       } else if (socialType.toLowerCase() == 'naver') {
