@@ -69,7 +69,7 @@ export default function Home(props: HomeProps) {
     setTimeout(() => {
       setIsLoading(false);
       dispatch(userSlice.actions.setTabBar('show'));
-    }, 2000);
+    }, 3000);
   }, []);
   const [modal, setModal] = useState('no');
   const [selectedCategory, setSelectedCategory] = useState<string[]>([]);
@@ -981,6 +981,7 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   popModalCategoryTxt: {
+    marginTop: 20,
     color: '#002B5D',
     fontSize: 15,
     fontWeight: '400',
