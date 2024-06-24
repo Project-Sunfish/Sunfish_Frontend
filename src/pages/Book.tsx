@@ -16,6 +16,7 @@ import {svgList} from '../assets/svgList';
 import axios from 'axios';
 import Config from 'react-native-config';
 import {BOGU_TYPE} from '../assets/info';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 
 type BookScreenNavigationProp = NativeStackNavigationProp<
   BookStackParamList,
@@ -67,7 +68,7 @@ export default function Book(props: BookProps) {
         data[response.data.collectedBogus[i].typeId] =
           response.data.collectedBogus[i];
       }
-      setOpenData(data);
+      // setOpenData(data);
       console.log(response.data.collectedBogus);
     } catch (error: any) {
       const errorResponse = error.response;
@@ -83,66 +84,87 @@ export default function Book(props: BookProps) {
           <SvgXml xml={svgList.tabbar.book} />
           <Text style={styles.headerText}>복어 도감</Text>
         </View>
-        <FlatList
-          data={openData}
-          ListFooterComponent={<View style={{height: 100}} />}
-          renderItem={({item, index}) => (
-            <View style={{maxHeight: 170, maxWidth: 170}}>
-              <Pressable
-                style={[
-                  styles.item,
-                  {
-                    width: itemSize,
-                    height: itemSize,
-                    maxHeight: 150,
-                    maxWidth: 150,
-                  },
-                  item.typeId != '-1' ? styles.itemKnown : styles.itemUnknown,
-                ]}
-                onPress={() => {
-                  if (item.typeId !== '-1')
-                    props.navigation.navigate('BookDetail', {
-                      id: item.typeId,
-                      liberated: item.liberatedFlag,
-                    });
-                }}>
-                {item.typeId !== '-1' &&
-                  (item.liberatedFlag ? (
-                    <SvgXml
-                      xml={svgList.bogus.liberated[item.typeId]}
-                      width={itemSize > 150 ? 130 : itemSize - 20}
-                      height={itemSize > 150 ? 130 : itemSize - 20}
-                      style={[
-                        {marginBottom: 10},
-                        item.typeId == 9 && {opacity: 0.5},
-                      ]}
-                    />
-                  ) : (
-                    <SvgXml
-                      xml={svgList.bogus[item.typeId]}
-                      width={itemSize > 150 ? 130 : itemSize - 20}
-                      height={itemSize > 150 ? 130 : itemSize - 20}
-                      style={[
-                        {marginBottom: 10},
-                        item.typeId == 9 && {opacity: 0.5},
-                      ]}
-                    />
-                  ))}
-                {item.typeId !== '-1' && (
-                  <View style={styles.itemKnownNameView}>
-                    <Text style={styles.itemKnownText}>{item.name}</Text>
-                    {item.newFlag && <Text style={styles.itemNew}>!!</Text>}
-                  </View>
-                )}
-                {item.typeId === '-1' && (
-                  <Text style={styles.itemUnknownText}>?</Text>
-                )}
-              </Pressable>
-            </View>
-          )}
-          keyExtractor={(item, index) => index.toString()}
-          numColumns={2}
-        />
+        {openData.length !== 8 ? (
+          <FlatList
+            data={openData}
+            ListFooterComponent={<View style={{height: 100}} />}
+            renderItem={({item, index}) => (
+              <View style={{maxHeight: 170, maxWidth: 170}}>
+                <Pressable
+                  style={[
+                    styles.item,
+                    {
+                      width: itemSize,
+                      height: itemSize,
+                      maxHeight: 150,
+                      maxWidth: 150,
+                    },
+                    item.typeId != '-1' ? styles.itemKnown : styles.itemUnknown,
+                  ]}
+                  onPress={() => {
+                    if (item.typeId !== '-1')
+                      props.navigation.navigate('BookDetail', {
+                        id: item.typeId,
+                        liberated: item.liberatedFlag,
+                      });
+                  }}>
+                  {item.typeId !== '-1' &&
+                    (item.liberatedFlag ? (
+                      <SvgXml
+                        xml={svgList.bogus.liberated[item.typeId]}
+                        width={itemSize > 150 ? 130 : itemSize - 20}
+                        height={itemSize > 150 ? 130 : itemSize - 20}
+                        style={[
+                          {marginBottom: 10},
+                          item.typeId == 9 && {opacity: 0.5},
+                        ]}
+                      />
+                    ) : (
+                      <SvgXml
+                        xml={svgList.bogus[item.typeId]}
+                        width={itemSize > 150 ? 130 : itemSize - 20}
+                        height={itemSize > 150 ? 130 : itemSize - 20}
+                        style={[
+                          {marginBottom: 10},
+                          item.typeId == 9 && {opacity: 0.5},
+                        ]}
+                      />
+                    ))}
+                  {item.typeId !== '-1' && (
+                    <View style={styles.itemKnownNameView}>
+                      <Text style={styles.itemKnownText}>{item.name}</Text>
+                      {item.newFlag && <Text style={styles.itemNew}>!!</Text>}
+                    </View>
+                  )}
+                  {item.typeId === '-1' && (
+                    <Text style={styles.itemUnknownText}>?</Text>
+                  )}
+                </Pressable>
+              </View>
+            )}
+            keyExtractor={(item, index) => index.toString()}
+            numColumns={2}
+          />
+        ) : (
+          <View style={{width: '100%'}}>
+            <SkeletonPlaceholder>
+              <View style={{width: '100%', alignItems: 'center'}}>
+                <View
+                  style={[
+                    styles.item,
+                    {
+                      width: itemSize,
+                      height: itemSize,
+                      // maxHeight: 150,
+                      // maxWidth: 150,
+                    },
+                  ]}
+                />
+              </View>
+            </SkeletonPlaceholder>
+            <View style={{height: 100}} />
+          </View>
+        )}
       </View>
     </ImageBackground>
   );

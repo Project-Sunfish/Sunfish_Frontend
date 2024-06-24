@@ -1169,6 +1169,8 @@ PODS:
     - React-Core
   - RNCClipboard (1.14.1):
     - React-Core
+  - RNCMaskedView (0.3.1):
+    - React-Core
   - RNGoogleSignin (12.2.1):
     - GoogleSignIn (~> 7.1)
     - React-Core
@@ -1270,6 +1272,7 @@ DEPENDENCIES:
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - RNBootSplash (from `../node_modules/react-native-bootsplash`)
   - "RNCClipboard (from `../node_modules/@react-native-clipboard/clipboard`)"
+  - "RNCMaskedView (from `../node_modules/@react-native-masked-view/masked-view`)"
   - "RNGoogleSignin (from `../node_modules/@react-native-google-signin/google-signin`)"
   - "RNNaverLogin (from `../node_modules/@react-native-seoul/naver-login`)"
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -1419,6 +1422,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-bootsplash"
   RNCClipboard:
     :path: "../node_modules/@react-native-clipboard/clipboard"
+  RNCMaskedView:
+    :path: "../node_modules/@react-native-masked-view/masked-view"
   RNGoogleSignin:
     :path: "../node_modules/@react-native-google-signin/google-signin"
   RNNaverLogin:
@@ -1510,6 +1515,7 @@ SPEC CHECKSUMS:
   ReactCommon: 2aa35648354bd4c4665b9a5084a7d37097b89c10
   RNBootSplash: e025d4ee98d942ee6c8b495a6fe66339a6b5f6dd
   RNCClipboard: 0a720adef5ec193aa0e3de24c3977222c7e52a37
+  RNCMaskedView: 090213d32d8b3bb83a4dcb7d12c18f0152591906
   RNGoogleSignin: 08dc4ba7eac2096c7fecfe109f0950fa4683c803
   RNNaverLogin: d4bad65d55062561d22bec8cb43191f86ba9e47f
   RNScreens: b6b64d956af3715adbfe84808694ae82d3fec74f
