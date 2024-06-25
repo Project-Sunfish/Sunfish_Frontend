@@ -18,6 +18,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {selectedCategory} from '../components/Character';
 import {idList, info} from '../assets/info';
+import {Loading_Android, Loading_IOS} from '../components/animations';
 
 type BookDetailScreenNavigationProp = NativeStackNavigationProp<
   BookStackParamList,
@@ -52,6 +53,7 @@ export default function BookDetail(props: BookDetailProps) {
     },
   ]);
   const [idx, setIdx] = useState(0);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     props.navigation.addListener('focus', () => {
@@ -71,6 +73,7 @@ export default function BookDetail(props: BookDetailProps) {
   }, []);
 
   useEffect(() => {
+    setLoading(true);
     getData();
     deleteNew();
   }, []);
@@ -82,6 +85,7 @@ export default function BookDetail(props: BookDetailProps) {
       );
       console.log(response.data);
       setData(response.data);
+      setLoading(false);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get evolved bogu info', errorResponse);
@@ -228,6 +232,21 @@ export default function BookDetail(props: BookDetailProps) {
           </View>
         </ScrollView>
       </View>
+      {loading && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            top: 0,
+            right: 0,
+            left: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Loading_Android style={{width: 400, height: 400}} />
+          <Loading_IOS style={{width: 200, height: 200}} />
+        </View>
+      )}
     </ImageBackground>
   );
 }
