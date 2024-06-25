@@ -470,10 +470,15 @@ export default function Home(props: HomeProps) {
         <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
         <View style={styles.cannotCreateContent}>
           <Text style={styles.cannotCreateContentTxt}>
-            생성 횟수를 무한으로 늘려보세요.
+            {/* 생성 횟수를 무한으로 늘려보세요. */}
+            복어들의 컨디션 관리를 위해
           </Text>
-          <Text style={styles.cannotCreateContentTxtLink}>
-            멤버십 구독하러 가기
+          <Text style={styles.cannotCreateContentTxt}>
+            <Text style={styles.cannotCreateContentTxtLink}>
+              {/* 멤버십 구독하러 가기 */}
+              "하루 3회"
+            </Text>
+            <Text>로 제한하고 있어요.</Text>
           </Text>
         </View>
         <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
@@ -697,7 +702,17 @@ export default function Home(props: HomeProps) {
                   source={
                     fileDirection[category[focusedBoguSelectedCategory]][
                       'var' + focusedBoguVariation
-                    ]['1']['left']
+                    ][
+                      focusedBoguStatus == 1 ||
+                      focusedBoguStatus == 2 ||
+                      focusedBoguStatus == 3
+                        ? 1
+                        : focusedBoguStatus == 4 ||
+                          focusedBoguStatus == 5 ||
+                          focusedBoguStatus == 6
+                        ? 2
+                        : 3
+                    ]['left']
                   }
                   style={[
                     {width: 160, height: 160, marginTop: 30},
