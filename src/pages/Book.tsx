@@ -17,6 +17,7 @@ import axios from 'axios';
 import Config from 'react-native-config';
 import {BOGU_TYPE} from '../assets/info';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {Loading_Android, Loading_IOS} from '../components/animations';
 
 type BookScreenNavigationProp = NativeStackNavigationProp<
   BookStackParamList,
@@ -45,9 +46,11 @@ export default function Book(props: BookProps) {
     {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
     {newFlag: false, typeId: '-1', name: '', liberatedFlag: false},
   ]);
+  const [loading, setLoading] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
+      setLoading(true);
       getData();
     }, []),
   );
@@ -69,6 +72,7 @@ export default function Book(props: BookProps) {
           response.data.collectedBogus[i];
       }
       setOpenData(data);
+      setLoading(false);
       console.log(response.data.collectedBogus);
     } catch (error: any) {
       const errorResponse = error.response;
@@ -180,6 +184,21 @@ export default function Book(props: BookProps) {
           </View>
         )}
       </View>
+      {openData.length !== 8 && loading && (
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            top: 0,
+            right: 0,
+            left: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Loading_Android style={{width: 400, height: 400}} />
+          {/* <Loading_IOS style={{width: 200, height: 200}} /> */}
+        </View>
+      )}
     </ImageBackground>
   );
 }
