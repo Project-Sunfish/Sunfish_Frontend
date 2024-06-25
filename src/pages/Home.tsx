@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -35,6 +36,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
 import {category, fileDirection} from '../assets/info';
 import {useSelector} from 'react-redux';
+import {act} from 'react-test-renderer';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -100,6 +102,8 @@ export default function Home(props: HomeProps) {
   const [focusedBoguCreatedAt, setFocusedBoguCreatedAt] = useState('');
   const [focusedBoguLevel, setFocusedBoguLevel] = useState(0);
 
+  const [activityIndicator, setActivityIndicator] = useState('');
+
   const ref = useRef<TextInput>(null);
   useEffect(() => {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
@@ -153,7 +157,7 @@ export default function Home(props: HomeProps) {
         setFocusedBoguStatus(0);
         setFocusedBoguCreatedAt('');
         setFocusedBoguLevel(0);
-        setAnimationType('no');
+        // setAnimationType('no');
         setFocusedBoguId('-1');
       }
     } catch (error: any) {
@@ -165,6 +169,7 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu/creation`);
       console.log('create', response.data);
+      setActivityIndicator('');
       updateBogu();
       getBasicInfo();
     } catch (error: any) {
@@ -367,6 +372,7 @@ export default function Home(props: HomeProps) {
         <Pressable
           onPress={() => {
             if (newBogus) {
+              setActivityIndicator('createDefaultBogu');
               if (tutorial === '1') {
                 setTutorial('2');
                 console.log('tutorial', tutorial);
@@ -386,9 +392,24 @@ export default function Home(props: HomeProps) {
             style={[
               styles.newBoguText,
               newBogus ? {color: '#6EA5FF'} : {color: '#FFFFFF'},
+              activityIndicator === 'createDefaultBogu' && {
+                color: 'transparent',
+              },
             ]}>
             생성하기
           </Text>
+          {activityIndicator === 'createDefaultBogu' && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="small" color="#6EA5FF" />
+            </View>
+          )}
           {tutorial === '1' && (
             <View style={{position: 'absolute', left: 40, bottom: -90}}>
               <Cursor />
@@ -478,7 +499,7 @@ export default function Home(props: HomeProps) {
               {/* 멤버십 구독하러 가기 */}
               "하루 3회"
             </Text>
-            <Text>로 제한하고 있어요.</Text>
+            로 제한하고 있어요.
           </Text>
         </View>
         <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
@@ -750,7 +771,27 @@ export default function Home(props: HomeProps) {
                 pop();
               }, 400);
             }}>
-            <Text style={styles.popModalBtnTxt}>터트리기</Text>
+            <Text
+              style={[
+                styles.popModalBtnTxt,
+                focusedBoguCreatedAt == '' && {color: 'transparent'},
+              ]}>
+              터트리기
+            </Text>
+            {focusedBoguCreatedAt === '' && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="small" color="#6EA5FF" />
+              </View>
+            )}
           </Pressable>
         </View>
       </MyPageModal>
@@ -879,7 +920,7 @@ const styles = StyleSheet.create({
     color: '#6EA5FF',
     fontSize: 11,
     fontWeight: '400',
-    textDecorationLine: 'underline',
+    // textDecorationLine: 'underline',
   },
   cannotCreateBtn: {
     backgroundColor: '#4F85C54D',

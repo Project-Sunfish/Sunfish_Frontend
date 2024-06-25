@@ -68,7 +68,7 @@ export default function Book(props: BookProps) {
         data[response.data.collectedBogus[i].typeId] =
           response.data.collectedBogus[i];
       }
-      // setOpenData(data);
+      setOpenData(data);
       console.log(response.data.collectedBogus);
     } catch (error: any) {
       const errorResponse = error.response;
@@ -146,23 +146,37 @@ export default function Book(props: BookProps) {
             numColumns={2}
           />
         ) : (
-          <View style={{width: '100%'}}>
-            <SkeletonPlaceholder>
-              <View style={{width: '100%', alignItems: 'center'}}>
-                <View
-                  style={[
-                    styles.item,
-                    {
+          <View
+            style={{
+              width: '100%',
+              flex: 1,
+              marginBottom: 100,
+            }}>
+            <SkeletonPlaceholder
+              borderRadius={14}
+              speed={800}
+              highlightColor="#FFFFFF"
+              backgroundColor="#B8B8B850">
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  flexWrap: 'wrap',
+                }}>
+                {[0, 1, 2, 3, 4, 5, 6, 7].map(index => (
+                  <View
+                    key={index.toString()}
+                    style={{
                       width: itemSize,
                       height: itemSize,
-                      // maxHeight: 150,
-                      // maxWidth: 150,
-                    },
-                  ]}
-                />
+                      maxWidth: 150,
+                      maxHeight: 150,
+                      margin: 8,
+                    }}
+                  />
+                ))}
               </View>
             </SkeletonPlaceholder>
-            <View style={{height: 100}} />
           </View>
         )}
       </View>
