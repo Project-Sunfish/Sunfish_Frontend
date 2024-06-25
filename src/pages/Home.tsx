@@ -120,6 +120,9 @@ export default function Home(props: HomeProps) {
         setTutorial('3');
       }, 2000);
     }
+    if (tutorialFlag) {
+      setTutorial('0');
+    }
   }, [tutorial]);
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
