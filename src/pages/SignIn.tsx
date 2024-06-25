@@ -20,6 +20,7 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import * as KakaoLogin from '@react-native-seoul/kakao-login';
 import NaverLogin, {NaverLoginResponse} from '@react-native-seoul/naver-login';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import appleAuth from '@invertase/react-native-apple-authentication';
 // import auth from '@react-native-firebase/auth';
 
 type SignInScreenProps = NativeStackScreenProps<RootStackParamList, 'SignIn'>;
@@ -168,6 +169,54 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         }
       } catch (error) {
         console.log(error);
+      }
+    }
+  };
+
+  const LoginWithApple = async () => {
+    console.log('애플 로그인');
+    const appleAuthRequestResponse = await appleAuth.performRequest({
+      requestedOperation: appleAuth.Operation.LOGIN,
+      requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+    });
+    console.log(appleAuthRequestResponse);
+    const {authorizationCode, user} = appleAuthRequestResponse;
+    const credentialState = await appleAuth.getCredentialStateForUser(user);
+    if (credentialState === appleAuth.State.REVOKED) {
+      console.log('revoked');
+      // quitWithApple();
+      return;
+    } else if (credentialState === appleAuth.State.AUTHORIZED) {
+      if (!authorizationCode) return;
+      console.log('auth', authorizationCode);
+      const response = await axios.post(`${Config.API_URL}/admin/login`, {
+        socialType: 'Apple',
+        authCode: authorizationCode,
+      });
+      console.log(response.data);
+      if (response.data.role === 'ROLE_GUEST') {
+        dispatch(
+          userSlice.actions.setPerson({
+            preAcc: response.data.accessToken,
+            preRef: response.data.refreshToken,
+          }),
+        );
+        setShowModal('show');
+      } else {
+        dispatch(
+          userSlice.actions.setToken({
+            accessToken: response.data.accessToken,
+          }),
+        );
+        dispatch(
+          userSlice.actions.setTutorialFlag({
+            tutorialFlag: response.data.tutorialFlag,
+          }),
+        );
+        await EncryptedStorage.setItem(
+          'refreshToken',
+          response.data.refreshToken,
+        );
       }
     }
   };
