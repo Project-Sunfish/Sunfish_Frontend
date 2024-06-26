@@ -2,6 +2,7 @@ import {
   Dimensions,
   FlatList,
   ImageBackground,
+  Platform,
   Pressable,
   StyleSheet,
   View,
@@ -195,8 +196,11 @@ export default function Book(props: BookProps) {
             justifyContent: 'center',
             alignItems: 'center',
           }}>
-          <Loading_Android style={{width: 400, height: 400}} />
-          {/* <Loading_IOS style={{width: 200, height: 200}} /> */}
+          {Platform.OS == 'android' ? (
+            <Loading_Android style={{width: 400, height: 400}} />
+          ) : (
+            <Loading_IOS style={{width: 150, height: 150}} />
+          )}
         </View>
       )}
     </ImageBackground>

@@ -104,15 +104,16 @@ function AppInner() {
       const response = await axios.post(`${Config.API_URL}/admin/reissue`, {
         refreshToken: refreshToken,
       });
-      console.log('after', response.data.refreshToken);
+      console.log('tuto', response.data.tutorialFlag);
+      dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
+      await EncryptedStorage.setItem(
+        'refreshToken',
+        response.data.refreshToken,
+      );
       dispatch(
         userSlice.actions.setToken({
           accessToken: response.data.accessToken,
         }),
-      );
-      await EncryptedStorage.setItem(
-        'refreshToken',
-        response.data.refreshToken,
       );
       console.log('Token 재발급(자동로그인)');
       console.log('accessToken', response.data.accessToken);
