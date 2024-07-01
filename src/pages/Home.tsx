@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -24,7 +25,7 @@ import MyPageModal from '../components/MyPageModal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {Cursor, Evolution} from '../components/animations';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
 import useAxiosInterceptor from '../hooks/useAxiosIntercepter';
 import DefaultCharacter from '../components/DefaultCharacter';
@@ -35,6 +36,7 @@ import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
 import {RootTabParamList} from '../../AppInner';
 import {category, fileDirection} from '../assets/info';
 import {useSelector} from 'react-redux';
+import {act} from 'react-test-renderer';
 type HomeNavigationProp = BottomTabNavigationProp<RootTabParamList, 'Home'>;
 type HomeProps = {
   navigation: HomeNavigationProp;
@@ -58,9 +60,9 @@ type evolvedBogu = {
 
 export default function Home(props: HomeProps) {
   const dispatch = useAppDispatch();
-  const tutorialFlag = useSelector(
-    (state: RootState) => state.user.tutorialFlag,
-  );
+  // const tutorialFlag = useSelector(
+  //   (state: RootState) => state.user.tutorialFlag,
+  // );
   useAxiosInterceptor();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -77,6 +79,7 @@ export default function Home(props: HomeProps) {
 
   const [cnt, setCnt] = useState(0);
   const [tutorial, setTutorial] = useState('0');
+  const [tutorialFlag, setTutorialFlag] = useState(false);
   const [animationType, setAnimationType] = useState('no'); // making: 생성 중 => both => pop: 선물상자 open, popping: 터트리기
   const [evolvedBoguId, setEvolvedBoguId] = useState('-1');
   const [evolvedBoguStatus, setEvolvedBoguStatus] = useState(0);
@@ -100,12 +103,17 @@ export default function Home(props: HomeProps) {
   const [focusedBoguCreatedAt, setFocusedBoguCreatedAt] = useState('');
   const [focusedBoguLevel, setFocusedBoguLevel] = useState(0);
 
+  const [activityIndicator, setActivityIndicator] = useState('');
+
   const ref = useRef<TextInput>(null);
   useEffect(() => {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
   });
   useEffect(() => {
-    if (!tutorialFlag && tutorial === '0') {
+    getTutorialFlag();
+  }, []);
+  useEffect(() => {
+    if (tutorialFlag && (tutorial === '0' || tutorial === '1')) {
       setTutorial('1');
       if (defaultBogu.length > 0) {
         setTutorial('3');
@@ -116,7 +124,10 @@ export default function Home(props: HomeProps) {
         setTutorial('3');
       }, 2000);
     }
-  }, [tutorial]);
+    if (!tutorialFlag) {
+      setTutorial('0');
+    }
+  }, [tutorialFlag, tutorial, defaultBogu]);
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
       updateBogu();
@@ -127,6 +138,18 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     if (focusedBoguId.includes('e')) getEvolvedBoguInfo();
   }, [focusedBoguId]);
+  const getTutorialFlag = async () => {
+    try {
+      const response = await axios.get(`${Config.API_URL}/api/user/tutorial`);
+      console.log('tutorial', response.data.tutorialFlag);
+      setTutorialFlag(response.data.tutorialFlag);
+      // dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
+      // console.log('tutorialFlag', tutorialFlag);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot get tutorial flag', errorResponse);
+    }
+  };
   const updateBogu = async () => {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
@@ -153,7 +176,7 @@ export default function Home(props: HomeProps) {
         setFocusedBoguStatus(0);
         setFocusedBoguCreatedAt('');
         setFocusedBoguLevel(0);
-        setAnimationType('no');
+        // setAnimationType('no');
         setFocusedBoguId('-1');
       }
     } catch (error: any) {
@@ -165,8 +188,8 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu/creation`);
       console.log('create', response.data);
+      setActivityIndicator('');
       updateBogu();
-      getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot create', errorResponse);
@@ -182,11 +205,20 @@ export default function Home(props: HomeProps) {
           problem: worry,
         },
       );
-      if (!tutorialFlag) {
-        const res = await axios.post(`${Config.API_URL}/api/user/tutorial`);
-        console.log('tutorial', res.data);
-        dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
+      if (tutorialFlag) {
+        try {
+          const res = await axios.post(`${Config.API_URL}/api/user/tutorial`);
+          console.log('tutorial', res.data);
+          // dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
+          setTutorialFlag(false);
+        } catch (error) {
+          const errorResponse = (
+            error as AxiosError<{message: string; code: number}>
+          ).response;
+          console.log('errorResponse', errorResponse?.data);
+        }
       }
+      setActivityIndicator('');
       setTutorial('0');
       setModal('no');
       setTimeout(() => {
@@ -203,7 +235,6 @@ export default function Home(props: HomeProps) {
       setWorry('');
       setTimeout(() => {
         updateBogu();
-        getBasicInfo();
       }, 500);
     } catch (error: any) {
       const errorResponse = error.response;
@@ -284,7 +315,6 @@ export default function Home(props: HomeProps) {
       );
       console.log('liberate', response.data);
       updateBogu();
-      getBasicInfo();
       setModal('no');
     } catch (error: any) {
       const errorResponse = error.response;
@@ -367,6 +397,7 @@ export default function Home(props: HomeProps) {
         <Pressable
           onPress={() => {
             if (newBogus) {
+              setActivityIndicator('createDefaultBogu');
               if (tutorial === '1') {
                 setTutorial('2');
                 console.log('tutorial', tutorial);
@@ -386,9 +417,26 @@ export default function Home(props: HomeProps) {
             style={[
               styles.newBoguText,
               newBogus ? {color: '#6EA5FF'} : {color: '#FFFFFF'},
+              activityIndicator === 'createDefaultBogu' && {
+                color: 'transparent',
+              },
             ]}>
             생성하기
           </Text>
+          {activityIndicator === 'createDefaultBogu' && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                top: 0,
+                bottom: 0,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              <ActivityIndicator size="small" color="#6EA5FF" />
+            </View>
+          )}
           {tutorial === '1' && (
             <View style={{position: 'absolute', left: 40, bottom: -90}}>
               <Cursor />
@@ -470,10 +518,15 @@ export default function Home(props: HomeProps) {
         <SvgXml xml={svgList.termModal.separator} style={{marginTop: 8}} />
         <View style={styles.cannotCreateContent}>
           <Text style={styles.cannotCreateContentTxt}>
-            생성 횟수를 무한으로 늘려보세요.
+            {/* 생성 횟수를 무한으로 늘려보세요. */}
+            복어들의 컨디션 관리를 위해
           </Text>
-          <Text style={styles.cannotCreateContentTxtLink}>
-            멤버십 구독하러 가기
+          <Text style={styles.cannotCreateContentTxt}>
+            <Text style={styles.cannotCreateContentTxtLink}>
+              {/* 멤버십 구독하러 가기 */}
+              "하루 3회"
+            </Text>
+            로 제한하고 있어요.
           </Text>
         </View>
         <SvgXml xml={svgList.termModal.separator} style={{marginBottom: 15}} />
@@ -650,6 +703,7 @@ export default function Home(props: HomeProps) {
           <Pressable
             disabled={worry.length < 1}
             onPress={() => {
+              setActivityIndicator('evolveBogu');
               evolveDefaultBogu();
             }}
             style={[
@@ -660,9 +714,26 @@ export default function Home(props: HomeProps) {
               style={[
                 styles.cannotCreateBtnTxt,
                 worry.trim().length >= 1 && {color: '#FFFFFF'},
+                activityIndicator === 'evolveBogu' && {
+                  color: 'transparent',
+                },
               ]}>
               진화
             </Text>
+            {activityIndicator === 'evolveBogu' && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="small" color="white" />
+              </View>
+            )}
           </Pressable>
         </View>
       </MyPageModal>
@@ -697,7 +768,17 @@ export default function Home(props: HomeProps) {
                   source={
                     fileDirection[category[focusedBoguSelectedCategory]][
                       'var' + focusedBoguVariation
-                    ]['1']['left']
+                    ][
+                      focusedBoguStatus == 1 ||
+                      focusedBoguStatus == 2 ||
+                      focusedBoguStatus == 3
+                        ? 1
+                        : focusedBoguStatus == 4 ||
+                          focusedBoguStatus == 5 ||
+                          focusedBoguStatus == 6
+                        ? 2
+                        : 3
+                    ]['left']
                   }
                   style={[
                     {width: 160, height: 160, marginTop: 30},
@@ -735,7 +816,27 @@ export default function Home(props: HomeProps) {
                 pop();
               }, 400);
             }}>
-            <Text style={styles.popModalBtnTxt}>터트리기</Text>
+            <Text
+              style={[
+                styles.popModalBtnTxt,
+                focusedBoguCreatedAt == '' && {color: 'transparent'},
+              ]}>
+              터트리기
+            </Text>
+            {focusedBoguCreatedAt === '' && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="small" color="#6EA5FF" />
+              </View>
+            )}
           </Pressable>
         </View>
       </MyPageModal>
@@ -746,7 +847,6 @@ export default function Home(props: HomeProps) {
         headerTxt="이 고민은 더 이상 당신의 고민이 아닌가요?"
         onBackButtonPress={() => {
           updateBogu();
-          getBasicInfo();
         }}>
         <View style={styles.popModalContent}>
           <Text style={[styles.popModalCreatedAt, {marginTop: 12}]}>
@@ -786,7 +886,6 @@ export default function Home(props: HomeProps) {
                 setFocusedBoguId('-1');
                 setModal('no');
                 updateBogu();
-                getBasicInfo();
               }}>
               <Text style={styles.popModalBtnTxt}>아니요</Text>
             </Pressable>
@@ -864,7 +963,7 @@ const styles = StyleSheet.create({
     color: '#6EA5FF',
     fontSize: 11,
     fontWeight: '400',
-    textDecorationLine: 'underline',
+    // textDecorationLine: 'underline',
   },
   cannotCreateBtn: {
     backgroundColor: '#4F85C54D',
@@ -898,6 +997,7 @@ const styles = StyleSheet.create({
     fontWeight: '400',
   },
   selectCategoryBtnView: {
+    position: 'relative',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'center',
