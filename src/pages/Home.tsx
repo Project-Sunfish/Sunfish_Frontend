@@ -60,9 +60,9 @@ type evolvedBogu = {
 
 export default function Home(props: HomeProps) {
   const dispatch = useAppDispatch();
-  const tutorialFlag = useSelector(
-    (state: RootState) => state.user.tutorialFlag,
-  );
+  // const tutorialFlag = useSelector(
+  //   (state: RootState) => state.user.tutorialFlag,
+  // );
   useAxiosInterceptor();
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
@@ -79,6 +79,7 @@ export default function Home(props: HomeProps) {
 
   const [cnt, setCnt] = useState(0);
   const [tutorial, setTutorial] = useState('0');
+  const [tutorialFlag, setTutorialFlag] = useState(false);
   const [animationType, setAnimationType] = useState('no'); // making: 생성 중 => both => pop: 선물상자 open, popping: 터트리기
   const [evolvedBoguId, setEvolvedBoguId] = useState('-1');
   const [evolvedBoguStatus, setEvolvedBoguStatus] = useState(0);
@@ -109,7 +110,10 @@ export default function Home(props: HomeProps) {
     ref.current?.setNativeProps({style: {fontFamily: 'KCCDodamdodam'}});
   });
   useEffect(() => {
-    if (!tutorialFlag && (tutorial === '0' || tutorial === '1')) {
+    getTutorialFlag();
+  }, []);
+  useEffect(() => {
+    if (tutorialFlag && (tutorial === '0' || tutorial === '1')) {
       setTutorial('1');
       if (defaultBogu.length > 0) {
         setTutorial('3');
@@ -120,14 +124,10 @@ export default function Home(props: HomeProps) {
         setTutorial('3');
       }, 2000);
     }
-    if (tutorialFlag) {
+    if (!tutorialFlag) {
       setTutorial('0');
     }
-    if (tutorialFlag === undefined) {
-      // get tutorialFlag again
-    }
-    console.log('tutorial', tutorial, tutorialFlag);
-  }, [tutorial, tutorialFlag, defaultBogu]);
+  }, [tutorialFlag, tutorial, defaultBogu]);
   useEffect(() => {
     const focusListener = props.navigation.addListener('focus', () => {
       updateBogu();
@@ -138,6 +138,18 @@ export default function Home(props: HomeProps) {
   useEffect(() => {
     if (focusedBoguId.includes('e')) getEvolvedBoguInfo();
   }, [focusedBoguId]);
+  const getTutorialFlag = async () => {
+    try {
+      const response = await axios.get(`${Config.API_URL}/api/user/tutorial`);
+      console.log('tutorial', response.data.tutorialFlag);
+      setTutorialFlag(response.data.tutorialFlag);
+      // dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
+      // console.log('tutorialFlag', tutorialFlag);
+    } catch (error: any) {
+      const errorResponse = error.response;
+      console.log('cannot get tutorial flag', errorResponse);
+    }
+  };
   const updateBogu = async () => {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
@@ -193,11 +205,12 @@ export default function Home(props: HomeProps) {
           problem: worry,
         },
       );
-      if (!tutorialFlag) {
+      if (tutorialFlag) {
         try {
           const res = await axios.post(`${Config.API_URL}/api/user/tutorial`);
           console.log('tutorial', res.data);
-          dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
+          // dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
+          setTutorialFlag(false);
         } catch (error) {
           const errorResponse = (
             error as AxiosError<{message: string; code: number}>

@@ -97,11 +97,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         dispatch(
           userSlice.actions.setToken({accessToken: response.data.accessToken}),
         );
-        dispatch(
-          userSlice.actions.setTutorialFlag({
-            tutorialFlag: response.data.tutorialFlag,
-          }),
-        );
+        // dispatch(
+        //   userSlice.actions.setTutorialFlag({
+        //     tutorialFlag: response.data.tutorialFlag,
+        //   }),
+        // );
         await EncryptedStorage.setItem(
           'refreshToken',
           response.data.refreshToken,
@@ -157,11 +157,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               accessToken: response.data.accessToken,
             }),
           );
-          dispatch(
-            userSlice.actions.setTutorialFlag({
-              tutorialFlag: response.data.tutorialFlag,
-            }),
-          );
+          // dispatch(
+          //   userSlice.actions.setTutorialFlag({
+          //     tutorialFlag: response.data.tutorialFlag,
+          //   }),
+          // );
           await EncryptedStorage.setItem(
             'refreshToken',
             response.data.refreshToken,
@@ -179,7 +179,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
       requestedOperation: appleAuth.Operation.LOGIN,
       requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
     });
-    console.log(appleAuthRequestResponse);
+    console.log('response', appleAuthRequestResponse);
     const {authorizationCode, user} = appleAuthRequestResponse;
     const credentialState = await appleAuth.getCredentialStateForUser(user);
     if (credentialState === appleAuth.State.REVOKED) {
@@ -191,7 +191,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
       console.log('auth', authorizationCode);
       const response = await axios.post(`${Config.API_URL}/admin/login`, {
         socialType: 'Apple',
-        authCode: authorizationCode,
+        accessToken: authorizationCode,
       });
       console.log(response.data);
       if (response.data.role === 'ROLE_GUEST') {
@@ -208,11 +208,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             accessToken: response.data.accessToken,
           }),
         );
-        dispatch(
-          userSlice.actions.setTutorialFlag({
-            tutorialFlag: response.data.tutorialFlag,
-          }),
-        );
+        // dispatch(
+        //   userSlice.actions.setTutorialFlag({
+        //     tutorialFlag: response.data.tutorialFlag,
+        //   }),
+        // );
         await EncryptedStorage.setItem(
           'refreshToken',
           response.data.refreshToken,
@@ -270,11 +270,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
             accessToken: response.data.accessToken,
           }),
         );
-        dispatch(
-          userSlice.actions.setTutorialFlag({
-            tutorialFlag: response.data.tutorialFlag,
-          }),
-        );
+        // dispatch(
+        //   userSlice.actions.setTutorialFlag({
+        //     tutorialFlag: response.data.tutorialFlag,
+        //   }),
+        // );
         await EncryptedStorage.setItem(
           'refreshToken',
           response.data.refreshToken,
@@ -333,7 +333,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
               </Pressable>
             </View>
             {Platform.OS === 'ios' && (
-              <Pressable>
+              <Pressable onPress={() => LoginWithApple()}>
                 <Text style={styles.appleLoginTxt}>애플 로그인</Text>
               </Pressable>
             )}

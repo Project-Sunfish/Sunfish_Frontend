@@ -94,6 +94,7 @@ function AppInner() {
       const refreshToken = await EncryptedStorage.getItem('refreshToken');
       console.log('before', refreshToken);
       if (!refreshToken) {
+        await EncryptedStorage.removeItem('refreshToken');
         dispatch(
           userSlice.actions.setToken({
             accessToken: '',
@@ -104,8 +105,8 @@ function AppInner() {
       const response = await axios.post(`${Config.API_URL}/admin/reissue`, {
         refreshToken: refreshToken,
       });
-      console.log('tuto', response.data.tutorialFlag);
-      dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
+      // console.log('tuto', response.data.tutorialFlag);
+      // dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
       await EncryptedStorage.setItem(
         'refreshToken',
         response.data.refreshToken,
