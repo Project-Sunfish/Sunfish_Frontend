@@ -19,34 +19,35 @@ type itemProps = {
 export default function FAQs() {
   const navigation = useNavigation();
   const faqs = [
-    [
-      {
-        Q: '푸쉬 알림이 오지 않아요.',
-        A: '푸쉬 알림이 오지 않았을 때에는 마이페이지에서 알림이 켜져있는지 확인해주세요. 또는 휴대폰 환경설정에 들어가셔서 알림 권한이 설정되어있는지 확인해주세요.',
-      },
-      {
-        Q: '알림을 끄고 싶어요.',
-        A: '마이페이지에서 알림을 끄시거나, 휴대폰 환경설정에 들어가셔서 알림 권한을 해제해주세요.',
-      },
-    ],
-    [
-      {
-        Q: '멤버십은 무엇인가요?',
-        A: '멤버십에 가입함으로써 복어의 하루 생성 횟수를 3회에서 10회로 늘릴 수 있어요. 또한 더욱 다양한 귀여운 스킨들을 만나볼 수 있습니다!',
-      },
-      {
-        Q: '멤버십에 가입하고 싶어요.',
-        A: '멤버십 정책을 열심히 준비하고 있습니다. 한 달 내로 업데이트할게요!',
-      },
-      {
-        Q: '구독권을 환불하고 싶어요.',
-        A: '구독권 환불 정책에 따라 일부 제약이 있을 수 있습니다.',
-      },
-    ],
+    // [
+    //   {
+    //     Q: '푸쉬 알림이 오지 않아요.',
+    //     A: '푸쉬 알림이 오지 않았을 때에는 마이페이지에서 알림이 켜져있는지 확인해주세요. 또는 휴대폰 환경설정에 들어가셔서 알림 권한이 설정되어있는지 확인해주세요.',
+    //   },
+    //   {
+    //     Q: '알림을 끄고 싶어요.',
+    //     A: '마이페이지에서 알림을 끄시거나, 휴대폰 환경설정에 들어가셔서 알림 권한을 해제해주세요.',
+    //   },
+    // ],
+    // [
+    //   {
+    //     Q: '멤버십은 무엇인가요?',
+    //     A: '멤버십에 가입함으로써 복어의 하루 생성 횟수를 3회에서 10회로 늘릴 수 있어요. 또한 더욱 다양한 귀여운 스킨들을 만나볼 수 있습니다!',
+    //   },
+    //   {
+    //     Q: '멤버십에 가입하고 싶어요.',
+    //     A: '멤버십 정책을 열심히 준비하고 있습니다. 한 달 내로 업데이트할게요!',
+    //   },
+    //   {
+    //     Q: '구독권을 환불하고 싶어요.',
+    //     A: '구독권 환불 정책에 따라 일부 제약이 있을 수 있습니다.',
+    //   },
+    // ],
     [
       {
         Q: '복어를 더 생성하려고 하면 ‘최대 횟수’에 \n도달했다고 떠요.',
-        A: '하루에 생성할 수 있는 복어의 횟수는 3회로 제한되어있습니다. 멤버십에 구독하시면 하루 10회로 늘릴 수 있어요! 이외에도 다양한 혜택이 있으니 마이페이지에 멤버십 버튼을 눌러 구경해보세요.',
+        A: '하루에 생성할 수 있는 복어의 횟수는 3회로 제한되어있습니다.',
+        //  멤버십에 구독하시면 하루 10회로 늘릴 수 있어요! 이외에도 다양한 혜택이 있으니 마이페이지에 멤버십 버튼을 눌러 구경해보세요.
       },
       {
         Q: '어제 터뜨린 복어가 오늘 들어와보니 다시 나타나 있어요. 왜 그런 거죠?',
@@ -75,7 +76,7 @@ export default function FAQs() {
             <Text style={styles.titleTxt}>자주 묻는 질문</Text>
           </View>
           <View style={styles.tabView}>
-            <Pressable
+            {/* <Pressable
               style={[
                 styles.tabBtn,
                 tab == 0 && {backgroundColor: '#6EA5FFE5'},
@@ -91,8 +92,8 @@ export default function FAQs() {
                 ]}>
                 푸쉬 알림
               </Text>
-            </Pressable>
-            <Pressable
+            </Pressable> */}
+            {/* <Pressable
               style={[
                 styles.tabBtn,
                 tab == 1 && {backgroundColor: '#6EA5FFE5'},
@@ -108,20 +109,20 @@ export default function FAQs() {
                 ]}>
                 멤버십
               </Text>
-            </Pressable>
+            </Pressable> */}
             <Pressable
               style={[
                 styles.tabBtn,
-                tab == 2 && {backgroundColor: '#6EA5FFE5'},
+                tab == 0 && {backgroundColor: '#6EA5FFE5'},
               ]}
               onPress={() => {
-                setTab(2);
-                setPush_toggle(Array(faqs[2].length).fill(false));
+                setTab(0);
+                setPush_toggle(Array(faqs[0].length).fill(false));
               }}>
               <Text
                 style={[
                   styles.tabBtnTxt,
-                  tab == 2 ? {color: '#FFFFFF'} : {color: '#002B5D80'},
+                  tab == 0 ? {color: '#FFFFFF'} : {color: '#002B5D80'},
                 ]}>
                 플레이
               </Text>

@@ -20,8 +20,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
-	<key>GIDClientID</key>
-	<string>106877521013-tuik60apr40h8ik74f8vmecvbrrqdadm.apps.googleusercontent.com</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -36,6 +34,8 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>GIDClientID</key>
+	<string>106877521013-tuik60apr40h8ik74f8vmecvbrrqdadm.apps.googleusercontent.com</string>
 	<key>KAKAO_APP_KEY</key>
 	<string>9560340684a1b762e111be9fb810c0d4</string>
 	<key>LSApplicationQueriesSchemes</key>
@@ -44,7 +44,7 @@
 		<string>storykompassauth</string>
 		<string>kakaolink</string>
 		<string>naversearchapp</string>
-    	<string>naversearchthirdlogin</string>
+		<string>naversearchthirdlogin</string>
 	</array>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>

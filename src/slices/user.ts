@@ -6,7 +6,7 @@ const initialState = {
   preRef: '',
   tabBar: 'show',
   isSmallScreen: false,
-  tutorialFlag: true,
+  // tutorialFlag: true,
 };
 
 const userSlice = createSlice({
@@ -27,9 +27,9 @@ const userSlice = createSlice({
     setScreenSize(state, action) {
       state.isSmallScreen = action.payload.isSmallScreen;
     },
-    setTutorialFlag(state, action) {
-      state.tutorialFlag = action.payload.tutorialFlag;
-    },
+    // setTutorialFlag(state, action) {
+    //   state.tutorialFlag = action.payload.tutorialFlag;
+    // },
   },
   extraReducers: builder => {},
 });

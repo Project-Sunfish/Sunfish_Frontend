@@ -197,7 +197,7 @@ export default function MyPage(props: MyPageProps) {
       largerScreenPaddingTop={0}
       largerScreenPaddingBottom={0}
       largerScreenMarginBottom={66}>
-      <Pressable
+      {/* <Pressable
         style={[
           {position: 'absolute', zIndex: 1},
           Dimensions.get('window').height < 670
@@ -212,7 +212,7 @@ export default function MyPage(props: MyPageProps) {
           width={27}
           height={27}
         />
-      </Pressable>
+      </Pressable> */}
       <View style={styles.profileView}>
         <View style={styles.profileImgView}>
           <SvgXml xml={svgList.mypage.profileImg} width={212} height={212} />
