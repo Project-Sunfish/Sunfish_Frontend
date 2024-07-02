@@ -119,10 +119,8 @@ export default function Home(props: HomeProps) {
         setTutorial('3');
       }
     }
-    if (tutorial === '2') {
-      setTimeout(() => {
-        setTutorial('3');
-      }, 2000);
+    if (tutorial === '2' && defaultBogu.length > 0) {
+      setTutorial('3');
     }
     if (tutorialFlag) {
       setTutorial('0');
@@ -132,7 +130,6 @@ export default function Home(props: HomeProps) {
     const focusListener = props.navigation.addListener('focus', () => {
       updateBogu();
     });
-    // setTutorial('0');
     return focusListener;
   }, []);
   useEffect(() => {
@@ -143,8 +140,6 @@ export default function Home(props: HomeProps) {
       const response = await axios.get(`${Config.API_URL}/api/user/tutorial`);
       console.log('get tutorial flag', response.data.tutorialFlag);
       setTutorialFlag(response.data.tutorialFlag);
-      // dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
-      // console.log('tutorialFlag', tutorialFlag);
     } catch (error: any) {
       const errorResponse = error.response;
       console.log('cannot get tutorial flag', errorResponse);
@@ -154,6 +149,13 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
       console.log('update', response.data);
+      setFocusedBoguId('-1');
+      setFocusedBoguCategory([]);
+      setFocusedBoguVariation(0);
+      setFocusedBoguSelectedCategory('');
+      setFocusedBoguStatus(0);
+      setFocusedBoguCreatedAt('');
+      setFocusedBoguLevel(0);
       getBasicInfo();
     } catch (error: any) {
       const errorResponse = error.response;

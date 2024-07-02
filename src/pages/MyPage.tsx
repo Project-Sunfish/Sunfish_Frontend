@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   Dimensions,
   Keyboard,
+  Linking,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -131,6 +132,7 @@ export default function MyPage(props: MyPageProps) {
   const logout = async () => {
     try {
       const response = await axios.post(`${Config.API_URL}/admin/logout`);
+      props.navigation.navigate('Home');
       console.log('logout', response.data);
       if (socialType.toLowerCase() == 'kakao') {
         KakaoLogin.logout();
@@ -150,6 +152,7 @@ export default function MyPage(props: MyPageProps) {
     setActivityIndicator('quit');
     try {
       const response = await axios.delete(`${Config.API_URL}/api/user`);
+      props.navigation.navigate('Home');
       console.log('delete', response.data);
       if (socialType.toLowerCase() == 'kakao') {
         KakaoLogin.unlink();
@@ -283,11 +286,15 @@ export default function MyPage(props: MyPageProps) {
             end={{x: 1, y: 0}}
             colors={['#6EA5FFE5', '#5390F4E5']}
             style={styles.menuButton}>
-            <View style={styles.menuButtonContent}>
+            <Pressable
+              style={styles.menuButtonContent}
+              onPress={() =>
+                Linking.openURL('http://rapid-coriander-7d3.notion.site')
+              }>
               <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
                 업데이트 노트
               </Text>
-            </View>
+            </Pressable>
             <View style={styles.menuButtonArrow}>
               <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
                 {'>'}
@@ -301,11 +308,17 @@ export default function MyPage(props: MyPageProps) {
             end={{x: 1, y: 0}}
             colors={['#FFFFFFE5', '#F3F3F3E5']}
             style={styles.menuButton}>
-            <View style={styles.menuButtonContent}>
+            <Pressable
+              style={styles.menuButtonContent}
+              onPress={() => {
+                Linking.openURL(
+                  'https://rapid-coriander-7d3.notion.site/95814cef5a1949dabf6f925525a6d683?v=30b302aa7f8a4aea84bcda2ab712662a&pvs=4',
+                );
+              }}>
               <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
                 복어펑 이야기
               </Text>
-            </View>
+            </Pressable>
             <View style={styles.menuButtonArrow}>
               <Text style={[styles.menuButtonTxt, {color: '#6EA5FF'}]}>
                 {'>'}

@@ -1,21 +1,32 @@
-import {ImageBackground, Pressable, StyleSheet, View} from 'react-native';
+import {
+  ImageBackground,
+  Platform,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Text from '../components/Text';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
 import {useNavigation} from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import {useState} from 'react';
+import ToastScreen from '../components/ToastScren';
 
 export default function Contact() {
   const navigation = useNavigation();
-  const email = 'email.com';
+  const email = 'contact_blofish@naver.com';
 
   const copyToClipboard = () => {
     Clipboard.setString(email);
+    setShowToast(true);
   };
+
+  const [showToast, setShowToast] = useState(false);
   return (
     <ImageBackground
       source={require('../assets/pictures/Base.png')}
-      style={{flex: 1}}>
+      style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.entire}>
         <Pressable style={styles.backBtn} onPress={() => navigation.goBack()}>
           <Text style={styles.backBtnTxt}>{'<'}</Text>
@@ -46,6 +57,14 @@ export default function Contact() {
           </View>
         </View>
       </View>
+      {showToast && Platform.OS == 'ios' && (
+        <ToastScreen
+          message={'복사되었습니다.'}
+          height={20}
+          marginBottom={110}
+          onClose={() => setShowToast(false)}
+        />
+      )}
     </ImageBackground>
   );
 }
@@ -53,6 +72,7 @@ export default function Contact() {
 const styles = StyleSheet.create({
   entire: {
     flex: 1,
+    width: '100%',
     backgroundColor: '#E5F2FFCC',
     paddingBottom: 66,
     paddingHorizontal: 33,

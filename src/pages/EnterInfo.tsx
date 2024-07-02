@@ -10,6 +10,7 @@ import {
   Text as RNText,
   useWindowDimensions,
   PixelRatio,
+  ActivityIndicator,
 } from 'react-native';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -77,6 +78,9 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
 
   const nameRef = useRef<TextInput>(null);
   const birthRef = useRef<TextInput>(null);
+
+  const [activityIndicator, setActivityIndicator] = useState(false);
+
   useEffect(() => {
     if (isSmallScreen) {
       nameRef.current?.setNativeProps({
@@ -118,6 +122,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
     );
   };
   const SignUp = async () => {
+    setActivityIndicator(true);
     try {
       const response = await axios.post(
         `${Config.API_URL}/admin/signup`,
@@ -136,11 +141,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
           },
         },
       );
-      // dispatch(
-      //   userSlice.actions.setTutorialFlag({
-      //     tutorialFlag: response.data.tutorialFlag,
-      //   }),
-      // );
+      setActivityIndicator(false);
       dispatch(
         userSlice.actions.setToken({accessToken: response.data.accessToken}),
       );
@@ -357,7 +358,27 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                 disabled={
                   !(name.trim() && isValidDate(birth) && sex && calendar)
                 }>
-                <Text style={styles.checkBtnTxt}>확인</Text>
+                <Text
+                  style={[
+                    styles.checkBtnTxt,
+                    activityIndicator && {color: 'transparent'},
+                  ]}>
+                  확인
+                </Text>
+                {activityIndicator && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}>
+                    <ActivityIndicator size="small" color="#002B5DCC" />
+                  </View>
+                )}
               </Pressable>
             </View>
           </View>
@@ -489,6 +510,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   checkBtn: {
+    position: 'relative',
     paddingVertical: 10,
     paddingHorizontal: 75,
     borderRadius: 20,

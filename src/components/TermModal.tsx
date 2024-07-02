@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Pressable} from 'react-native';
+import {View, StyleSheet, Pressable, Linking} from 'react-native';
 import Modal from 'react-native-modal';
 import {SvgXml} from 'react-native-svg';
 import {svgList} from '../assets/svgList';
@@ -62,7 +62,12 @@ export default function TermModal(props: TermModalProps) {
                 </View>
                 <Pressable
                   style={styles.eachTermBtn}
-                  onPress={e => e.stopPropagation()}>
+                  onPress={e => {
+                    e.stopPropagation();
+                    Linking.openURL(
+                      'https://rapid-coriander-7d3.notion.site/8aa2de6e82e64de8addcbaeee7643cd5?pvs=4',
+                    );
+                  }}>
                   <Text style={styles.eachTermBtnTxt}>보기</Text>
                 </Pressable>
               </Pressable>
@@ -86,7 +91,12 @@ export default function TermModal(props: TermModalProps) {
                 </View>
                 <Pressable
                   style={styles.eachTermBtn}
-                  onPress={e => e.stopPropagation()}>
+                  onPress={e => {
+                    e.stopPropagation();
+                    Linking.openURL(
+                      'https://rapid-coriander-7d3.notion.site/d96f27ced4a24dd8bf3a10a8a3ae1772?pvs=4',
+                    );
+                  }}>
                   <Text style={styles.eachTermBtnTxt}>보기</Text>
                 </Pressable>
               </Pressable>

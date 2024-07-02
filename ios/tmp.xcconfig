@@ -1,4 +1,4 @@
-API_URL=http:/$()/3.35.26.255:8081
+API_URL=https:/$()/rhealabs.co.kr
 NAVER_CLIENT_ID=1K3Vi1pVXA7NXwDnoKjy
 NAVER_CLIENT_SECRET=YDr6is0J2m
 GOOGLE_CLIENT_ID=106877521013-ek6flg1qlsarmcfoc15rrpt30tss0g8b.apps.googleusercontent.com
