@@ -113,7 +113,7 @@ export default function Home(props: HomeProps) {
     getTutorialFlag();
   }, []);
   useEffect(() => {
-    if (tutorialFlag && (tutorial === '0' || tutorial === '1')) {
+    if (!tutorialFlag && (tutorial === '0' || tutorial === '1')) {
       setTutorial('1');
       if (defaultBogu.length > 0) {
         setTutorial('3');
@@ -124,7 +124,7 @@ export default function Home(props: HomeProps) {
         setTutorial('3');
       }, 2000);
     }
-    if (!tutorialFlag) {
+    if (tutorialFlag) {
       setTutorial('0');
     }
   }, [tutorialFlag, tutorial, defaultBogu]);
@@ -141,7 +141,7 @@ export default function Home(props: HomeProps) {
   const getTutorialFlag = async () => {
     try {
       const response = await axios.get(`${Config.API_URL}/api/user/tutorial`);
-      console.log('tutorial', response.data.tutorialFlag);
+      console.log('get tutorial flag', response.data.tutorialFlag);
       setTutorialFlag(response.data.tutorialFlag);
       // dispatch(userSlice.actions.setTutorialFlag(response.data.tutorialFlag));
       // console.log('tutorialFlag', tutorialFlag);
@@ -205,12 +205,12 @@ export default function Home(props: HomeProps) {
           problem: worry,
         },
       );
-      if (tutorialFlag) {
+      if (!tutorialFlag) {
         try {
           const res = await axios.post(`${Config.API_URL}/api/user/tutorial`);
           console.log('tutorial', res.data);
           // dispatch(userSlice.actions.setTutorialFlag({tutorialFlag: true}));
-          setTutorialFlag(false);
+          setTutorialFlag(true);
         } catch (error) {
           const errorResponse = (
             error as AxiosError<{message: string; code: number}>

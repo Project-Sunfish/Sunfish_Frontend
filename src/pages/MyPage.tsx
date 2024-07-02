@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Keyboard,
   Pressable,
@@ -56,6 +57,8 @@ export default function MyPage(props: MyPageProps) {
   const nameRef = useRef<TextInput>(null);
   const birthRef = useRef<TextInput>(null);
 
+  const [activityIndicator, setActivityIndicator] = useState('');
+
   useEffect(() => {
     nameRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
     birthRef.current?.setNativeProps({style: {fontFamily: 'DNFBitBitv2'}});
@@ -90,6 +93,7 @@ export default function MyPage(props: MyPageProps) {
   };
 
   const updateData = async () => {
+    setActivityIndicator('edit');
     if (
       name == nameVal &&
       birth == birthVal &&
@@ -113,6 +117,7 @@ export default function MyPage(props: MyPageProps) {
         gender: sexVal,
       });
       console.log('update', response.data);
+      setActivityIndicator('');
       setShowModal('no');
       getData();
     } catch (error) {
@@ -142,6 +147,7 @@ export default function MyPage(props: MyPageProps) {
   };
 
   const quit = async () => {
+    setActivityIndicator('quit');
     try {
       const response = await axios.delete(`${Config.API_URL}/api/user`);
       console.log('delete', response.data);
@@ -153,6 +159,7 @@ export default function MyPage(props: MyPageProps) {
         GoogleSignin.revokeAccess();
       }
       EncryptedStorage.removeItem('refreshToken');
+      setActivityIndicator('');
       dispatch(userSlice.actions.setToken({accessToken: ''}));
     } catch (error) {
       const errorResponse = (
@@ -342,7 +349,29 @@ export default function MyPage(props: MyPageProps) {
           <Pressable
             style={[styles.modalBtn, {width: 96}]}
             onPress={() => quit()}>
-            <Text style={styles.modalBtnTxt}>탈퇴하기</Text>
+            <Text
+              style={[
+                styles.modalBtnTxt,
+                activityIndicator === 'quit' && {
+                  color: 'transparent',
+                },
+              ]}>
+              탈퇴하기
+            </Text>
+            {activityIndicator === 'quit' && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="small" color="white" />
+              </View>
+            )}
           </Pressable>
         </View>
       </MyPageModal>
@@ -545,7 +574,27 @@ export default function MyPage(props: MyPageProps) {
                 ? {backgroundColor: '#6EA5FFE5'}
                 : {},
             ]}>
-            <Text style={styles.modalBtnTxt}>확인</Text>
+            <Text
+              style={[
+                styles.modalBtnTxt,
+                activityIndicator == 'edit' && {color: 'transparent'},
+              ]}>
+              확인
+            </Text>
+            {activityIndicator == 'edit' && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <ActivityIndicator size="small" color="white" />
+              </View>
+            )}
           </Pressable>
         </View>
       </MyPageModal>
