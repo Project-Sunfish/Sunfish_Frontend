@@ -1,0 +1,639 @@
+const STATUS1_SIZE = 88;
+const LEVEL1_STOP_TIME = 3000;
+const LEVEL1_SPEED = 80;
+export const BOGU_TYPE = 22;
+
+export const category = {
+  학업: 'study',
+  직장: 'work',
+  가족: 'family',
+  친구: 'friend',
+  연인: 'love',
+  건강: 'health',
+  사회문제: 'social',
+  이유없음: 'noReason',
+  기타: 'etc',
+};
+
+export const info = {
+  status: {
+    size: {
+      1: STATUS1_SIZE,
+      2: STATUS1_SIZE + 34 * 1,
+      3: STATUS1_SIZE + 34 * 2,
+      4: STATUS1_SIZE + 34 * 3,
+      5: STATUS1_SIZE + 34 * 4,
+      6: STATUS1_SIZE + 34 * 5,
+      7: STATUS1_SIZE + 34 * 6,
+      8: STATUS1_SIZE + 34 * 7,
+      9: STATUS1_SIZE + 34 * 8,
+    },
+    touchSize: {
+      1: 65,
+      2: 90,
+      3: 115,
+      4: 145,
+      5: 165,
+      6: 190,
+      7: 220,
+      8: 240,
+      9: 260,
+    },
+  },
+  level: {
+    stopTime: {
+      1: LEVEL1_STOP_TIME,
+      2: 0.9 * LEVEL1_STOP_TIME,
+      3: 0.8 * LEVEL1_STOP_TIME,
+      4: 0.6 * LEVEL1_STOP_TIME,
+      5: 0.5 * LEVEL1_STOP_TIME,
+      6: 0.1 * LEVEL1_STOP_TIME,
+    },
+    speed: {
+      1: LEVEL1_SPEED,
+      2: 1.2 * LEVEL1_SPEED,
+      3: 1.4 * LEVEL1_SPEED,
+      4: 1.7 * LEVEL1_SPEED,
+      5: 2 * LEVEL1_SPEED,
+      6: 2.5 * LEVEL1_SPEED,
+    },
+    vibrationTime: {},
+  },
+
+  category: {
+    study: {
+      0: {
+        name: '등교 복어',
+        playText: '멋을 위해 지느러미 관절을 포기한 관절통 멋쟁이 복어.',
+      },
+      1: {
+        name: '열공 복어',
+        playText:
+          '연필을 아가미 위에 얹으면 공부를 하지 않아도 된다는 사실을 깨달은 잔머리 복어.',
+      },
+    },
+    work: {
+      0: {
+        name: '한복어 과장',
+        playText:
+          '벌써 네 번째 결재를 받으러 가는 복어. 내용은 순서만 바꾸었다는 건 복어 팀장님껜 비밀.',
+      },
+      1: {
+        name: '강복어 대리',
+        playText:
+          '갑각류 도시락이 든 서류 가방을 들고 출근하는 피곤한 복어. 성실하다!',
+      },
+      2: {
+        name: '김복어 사원',
+        playText:
+          '출근 후 처음 햇빛을 보는 복어… 오후만 되면 줄지어 수면으로 나와 광합성을 하는 모습을 볼 수 있다.',
+      },
+    },
+    family: {
+      0: {
+        name: '엄마 복어',
+        playText:
+          '엄마 복어의 공기 주머니엔, 공기와 맹독 대신 가족에 대한 사랑과 생활력으로 가득 차 있다.',
+      },
+      1: {
+        name: '아들 복어',
+        playText: '요새 운동을 다닌다고 자꾸 지느러미 근육을 만져보라고 한다.',
+      },
+      2: {
+        name: '딸 복어',
+        playText:
+          '폰 보는 것을 많이 좋아하는 딸 복어. 주로 챌린지 영상이나 해파리 먹방 같은 걸 본다.',
+      },
+      3: {
+        name: '아빠 복어',
+        playText:
+          '쉼 없이 바쁘게 일하는 책임감 있는 복어. 원동력은 지갑에 있는 가족 사진.',
+      },
+    },
+    friend: {
+      0: {
+        name: '아싸 복어',
+        playText: '뭐…! 존재감이 없어서 좋은 점도 있어!!\n\n…나랑 친구할래…?',
+      },
+      1: {
+        name: '마스크 복어',
+        playText:
+          '이 복어는 감기에 걸린…건 아니고 눈에 띄지 않기 위해 마스크를 썼다고 한다. 화장할 시간이 없었다거나?(…)',
+      },
+      2: {
+        name: '혼밥 복어',
+        playText:
+          '같이 먹을 친구와 시간이 안 맞을 때도 있지만, 혼자가 편할 때도 있다는 복어. ',
+      },
+      // 4:{
+      //     name:'마스크 복어',
+      //     playText:''
+      // },
+    },
+    love: {
+      0: {
+        name: '나홀로 복어',
+        playText:
+          '바다 속이지만 옆이 시린 그의 마음 속은 항상 사시사철 가을이다…',
+      },
+      1: {
+        name: '커플 복어',
+        playText:
+          '마음 속에 다른 복어를 담은 복어.  그랬더니 하트가 자동으로 나온다고 주장한다(…)',
+      },
+    },
+    health: {
+      0: {
+        name: '수액 복어',
+        playText:
+          '독기를 올려보겠다고 상한 꽃게를 먹었다가 입원했다. 덕분에 숨은 지병을 찾았다니 다행일지도.\n…얼른 낫자.',
+      },
+      1: {
+        name: '부상 복어',
+        playText:
+          '보글보글 물방울이 올라오는 분화구에서 놀다가 암초에 부딪혔다. 전치 4주.',
+      },
+      2: {
+        name: '다침 복어',
+        playText:
+          '화난 줄도 모르고 빵빵해진 친구 복어 가시에 긁혔다.  금방 나을거야!',
+      },
+    },
+    social: {
+      0: {
+        name: '걱정 복어',
+        playText:
+          '세상에 관심이 많은 복어. 최근엔 대서양에 이어 인도양 신문도 구독했다. 요새 바다가 따듯해져서 고민이야.',
+      },
+    },
+    noReason: {
+      0: {
+        name: '고뇌 복어',
+        playText: '아무렇지 않아 보이게 하는 것이 누군가에겐 큰 일이에요.',
+      },
+      1: {
+        name: '사색 복어',
+        playText: '한번 시간을 갖고 스스로의 감정을 돌아보는 것은 어떨까요?',
+      },
+    },
+    etc: {
+      0: {
+        name: '화난 복어',
+        playText:
+          '잔뜩 화나 무서워 보이지만 사실 아무에게나 함부로 쏟아내지는 않는 착한 복어다.',
+      },
+      1: {
+        name: '눈물 복어',
+        playText: '얼마나 슬펐으면 바다에 눈물이 보이겠어요…',
+      },
+      2: {
+        name: '질색 복어',
+        playText:
+          '이상은 높은데 현실을 자각해버린 복어. 본인이 개복치만큼 커질 줄 알았다고.(…)',
+      },
+    },
+  },
+};
+
+export const idList = {
+  '-1': {name: '', playText: ''},
+  0: info.category.study[0],
+  1: info.category.study[1],
+  2: info.category.work[0],
+  3: info.category.work[1],
+  4: info.category.work[2],
+  5: info.category.family[0],
+  6: info.category.family[1],
+  7: info.category.family[2],
+  8: info.category.family[3],
+  9: info.category.friend[0],
+  10: info.category.friend[1],
+  11: info.category.friend[2],
+  12: info.category.love[0],
+  13: info.category.love[1],
+  14: info.category.health[0],
+  15: info.category.health[1],
+  16: info.category.health[2],
+  17: info.category.social[0],
+  18: info.category.noReason[0],
+  19: info.category.noReason[1],
+  20: info.category.etc[0],
+  21: info.category.etc[1],
+  22: info.category.etc[2],
+};
+
+export const fileDirection = {
+  default: {
+    right: require('./gifs/default_right.gif'),
+    left: require('./gifs/default_left.gif'),
+  },
+  study: {
+    var0: {
+      1: {
+        pop: require('./gifs/study/var0/1_pop.gif'),
+        left: require('./gifs/study/var0/1_left.gif'),
+        right: require('./gifs/study/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/study/var0/2_pop.gif'),
+        left: require('./gifs/study/var0/2_left.gif'),
+        right: require('./gifs/study/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/study/var0/3_pop.gif'),
+        left: require('./gifs/study/var0/3_left.gif'),
+        right: require('./gifs/study/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/study/var1/1_pop.gif'),
+        left: require('./gifs/study/var1/1_left.gif'),
+        right: require('./gifs/study/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/study/var1/2_pop.gif'),
+        left: require('./gifs/study/var1/2_left.gif'),
+        right: require('./gifs/study/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/study/var1/3_pop.gif'),
+        left: require('./gifs/study/var1/3_left.gif'),
+        right: require('./gifs/study/var1/3_right.gif'),
+      },
+    },
+  },
+  work: {
+    var0: {
+      1: {
+        pop: require('./gifs/work/var0/1_pop.gif'),
+        left: require('./gifs/work/var0/1_left.gif'),
+        right: require('./gifs/work/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/work/var0/2_pop.gif'),
+        left: require('./gifs/work/var0/2_left.gif'),
+        right: require('./gifs/work/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/work/var0/3_pop.gif'),
+        left: require('./gifs/work/var0/3_left.gif'),
+        right: require('./gifs/work/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/work/var1/1_pop.gif'),
+        left: require('./gifs/work/var1/1_left.gif'),
+        right: require('./gifs/work/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/work/var1/2_pop.gif'),
+        left: require('./gifs/work/var1/2_left.gif'),
+        right: require('./gifs/work/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/work/var1/3_pop.gif'),
+        left: require('./gifs/work/var1/3_left.gif'),
+        right: require('./gifs/work/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/work/var2/1_pop.gif'),
+        left: require('./gifs/work/var2/1_left.gif'),
+        right: require('./gifs/work/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/work/var2/2_pop.gif'),
+        left: require('./gifs/work/var2/2_left.gif'),
+        right: require('./gifs/work/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/work/var2/3_pop.gif'),
+        left: require('./gifs/work/var2/3_left.gif'),
+        right: require('./gifs/work/var2/3_right.gif'),
+      },
+    },
+  },
+  family: {
+    var0: {
+      1: {
+        pop: require('./gifs/family/var0/1_pop.gif'),
+        left: require('./gifs/family/var0/1_left.gif'),
+        right: require('./gifs/family/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/family/var0/2_pop.gif'),
+        left: require('./gifs/family/var0/2_left.gif'),
+        right: require('./gifs/family/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/family/var0/3_pop.gif'),
+        left: require('./gifs/family/var0/3_left.gif'),
+        right: require('./gifs/family/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/family/var1/1_pop.gif'),
+        left: require('./gifs/family/var1/1_left.gif'),
+        right: require('./gifs/family/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/family/var1/2_pop.gif'),
+        left: require('./gifs/family/var1/2_left.gif'),
+        right: require('./gifs/family/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/family/var1/3_pop.gif'),
+        left: require('./gifs/family/var1/3_left.gif'),
+        right: require('./gifs/family/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/family/var2/1_pop.gif'),
+        left: require('./gifs/family/var2/1_left.gif'),
+        right: require('./gifs/family/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/family/var2/2_pop.gif'),
+        left: require('./gifs/family/var2/2_left.gif'),
+        right: require('./gifs/family/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/family/var2/3_pop.gif'),
+        left: require('./gifs/family/var2/3_left.gif'),
+        right: require('./gifs/family/var2/3_right.gif'),
+      },
+    },
+    var3: {
+      1: {
+        pop: require('./gifs/family/var3/1_pop.gif'),
+        left: require('./gifs/family/var3/1_left.gif'),
+        right: require('./gifs/family/var3/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/family/var3/2_pop.gif'),
+        left: require('./gifs/family/var3/2_left.gif'),
+        right: require('./gifs/family/var3/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/family/var3/3_pop.gif'),
+        left: require('./gifs/family/var3/3_left.gif'),
+        right: require('./gifs/family/var3/3_right.gif'),
+      },
+    },
+  },
+  friend: {
+    var0: {
+      1: {
+        pop: require('./gifs/friend/var0/1_pop.gif'),
+        left: require('./gifs/friend/var0/1_left.gif'),
+        right: require('./gifs/friend/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/friend/var0/2_pop.gif'),
+        left: require('./gifs/friend/var0/2_left.gif'),
+        right: require('./gifs/friend/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/friend/var0/3_pop.gif'),
+        left: require('./gifs/friend/var0/3_left.gif'),
+        right: require('./gifs/friend/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/friend/var1/1_pop.gif'),
+        left: require('./gifs/friend/var1/1_left.gif'),
+        right: require('./gifs/friend/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/friend/var1/2_pop.gif'),
+        left: require('./gifs/friend/var1/2_left.gif'),
+        right: require('./gifs/friend/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/friend/var1/3_pop.gif'),
+        left: require('./gifs/friend/var1/3_left.gif'),
+        right: require('./gifs/friend/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/friend/var2/1_pop.gif'),
+        left: require('./gifs/friend/var2/1_left.gif'),
+        right: require('./gifs/friend/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/friend/var2/2_pop.gif'),
+        left: require('./gifs/friend/var2/2_left.gif'),
+        right: require('./gifs/friend/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/friend/var2/3_pop.gif'),
+        left: require('./gifs/friend/var2/3_left.gif'),
+        right: require('./gifs/friend/var2/3_right.gif'),
+      },
+    },
+  },
+  love: {
+    var0: {
+      1: {
+        pop: require('./gifs/love/var0/1_pop.gif'),
+        left: require('./gifs/love/var0/1_left.gif'),
+        right: require('./gifs/love/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/love/var0/2_pop.gif'),
+        left: require('./gifs/love/var0/2_left.gif'),
+        right: require('./gifs/love/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/love/var0/3_pop.gif'),
+        left: require('./gifs/love/var0/3_left.gif'),
+        right: require('./gifs/love/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/love/var1/1_pop.gif'),
+        left: require('./gifs/love/var1/1_left.gif'),
+        right: require('./gifs/love/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/love/var1/2_pop.gif'),
+        left: require('./gifs/love/var1/2_left.gif'),
+        right: require('./gifs/love/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/love/var1/3_pop.gif'),
+        left: require('./gifs/love/var1/3_left.gif'),
+        right: require('./gifs/love/var1/3_right.gif'),
+      },
+    },
+  },
+  health: {
+    var0: {
+      1: {
+        pop: require('./gifs/health/var0/1_pop.gif'),
+        left: require('./gifs/health/var0/1_left.gif'),
+        right: require('./gifs/health/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/health/var0/2_pop.gif'),
+        left: require('./gifs/health/var0/2_left.gif'),
+        right: require('./gifs/health/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/health/var0/3_pop.gif'),
+        left: require('./gifs/health/var0/3_left.gif'),
+        right: require('./gifs/health/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/health/var1/1_pop.gif'),
+        left: require('./gifs/health/var1/1_left.gif'),
+        right: require('./gifs/health/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/health/var1/2_pop.gif'),
+        left: require('./gifs/health/var1/2_left.gif'),
+        right: require('./gifs/health/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/health/var1/3_pop.gif'),
+        left: require('./gifs/health/var1/3_left.gif'),
+        right: require('./gifs/health/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/health/var2/1_pop.gif'),
+        left: require('./gifs/health/var2/1_left.gif'),
+        right: require('./gifs/health/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/health/var2/2_pop.gif'),
+        left: require('./gifs/health/var2/2_left.gif'),
+        right: require('./gifs/health/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/health/var2/3_pop.gif'),
+        left: require('./gifs/health/var2/3_left.gif'),
+        right: require('./gifs/health/var2/3_right.gif'),
+      },
+    },
+  },
+  social: {
+    var0: {
+      1: {
+        pop: require('./gifs/social/var0/1_pop.gif'),
+        left: require('./gifs/social/var0/1_left.gif'),
+        right: require('./gifs/social/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/social/var0/2_pop.gif'),
+        left: require('./gifs/social/var0/2_left.gif'),
+        right: require('./gifs/social/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/social/var0/3_pop.gif'),
+        left: require('./gifs/social/var0/3_left.gif'),
+        right: require('./gifs/social/var0/3_right.gif'),
+      },
+    },
+  },
+  noReason: {
+    var0: {
+      1: {
+        pop: require('./gifs/noReason/var0/1_pop.gif'),
+        left: require('./gifs/noReason/var0/1_left.gif'),
+        right: require('./gifs/noReason/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/noReason/var0/2_pop.gif'),
+        left: require('./gifs/noReason/var0/2_left.gif'),
+        right: require('./gifs/noReason/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/noReason/var0/3_pop.gif'),
+        left: require('./gifs/noReason/var0/3_left.gif'),
+        right: require('./gifs/noReason/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/noReason/var1/1_pop.gif'),
+        left: require('./gifs/noReason/var1/1_left.gif'),
+        right: require('./gifs/noReason/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/noReason/var1/2_pop.gif'),
+        left: require('./gifs/noReason/var1/2_left.gif'),
+        right: require('./gifs/noReason/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/noReason/var1/3_pop.gif'),
+        left: require('./gifs/noReason/var1/3_left.gif'),
+        right: require('./gifs/noReason/var1/3_right.gif'),
+      },
+    },
+  },
+  etc: {
+    var0: {
+      1: {
+        pop: require('./gifs/etc/var0/1_pop.gif'),
+        left: require('./gifs/etc/var0/1_left.gif'),
+        right: require('./gifs/etc/var0/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/etc/var0/2_pop.gif'),
+        left: require('./gifs/etc/var0/2_left.gif'),
+        right: require('./gifs/etc/var0/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/etc/var0/3_pop.gif'),
+        left: require('./gifs/etc/var0/3_left.gif'),
+        right: require('./gifs/etc/var0/3_right.gif'),
+      },
+    },
+    var1: {
+      1: {
+        pop: require('./gifs/etc/var1/1_pop.gif'),
+        left: require('./gifs/etc/var1/1_left.gif'),
+        right: require('./gifs/etc/var1/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/etc/var1/2_pop.gif'),
+        left: require('./gifs/etc/var1/2_left.gif'),
+        right: require('./gifs/etc/var1/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/etc/var1/3_pop.gif'),
+        left: require('./gifs/etc/var1/3_left.gif'),
+        right: require('./gifs/etc/var1/3_right.gif'),
+      },
+    },
+    var2: {
+      1: {
+        pop: require('./gifs/etc/var2/1_pop.gif'),
+        left: require('./gifs/etc/var2/1_left.gif'),
+        right: require('./gifs/etc/var2/1_right.gif'),
+      },
+      2: {
+        pop: require('./gifs/etc/var2/2_pop.gif'),
+        left: require('./gifs/etc/var2/2_left.gif'),
+        right: require('./gifs/etc/var2/2_right.gif'),
+      },
+      3: {
+        pop: require('./gifs/etc/var2/3_pop.gif'),
+        left: require('./gifs/etc/var2/3_left.gif'),
+        right: require('./gifs/etc/var2/3_right.gif'),
+      },
+    },
+  },
+};

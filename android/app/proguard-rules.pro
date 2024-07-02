@@ -8,3 +8,13 @@
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
 # Add any project specific keep options here:
+
+
+-keep class com.kakao.** { *; }
+-keepattributes Signature
+-keepclassmembers class * {
+  public static <fields>;
+  public *;
+}
+-keep class com.google.android.gms.** { *; }
+-dontwarn com.google.android.gms.**

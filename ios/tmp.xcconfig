@@ -1,0 +1,7 @@
+API_URL=https:/$()/rhealabs.co.kr
+NAVER_CLIENT_ID=1K3Vi1pVXA7NXwDnoKjy
+NAVER_CLIENT_SECRET=YDr6is0J2m
+GOOGLE_CLIENT_ID=106877521013-ek6flg1qlsarmcfoc15rrpt30tss0g8b.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+GOOGLE_IOS_CLIENT_ID=106877521013-tuik60apr40h8ik74f8vmecvbrrqdadm.apps.googleusercontent.com
+GOOGLE_IOS_REVERSED_CLIENT_ID=com.googleusercontent.apps.106877521013-tuik60apr40h8ik74f8vmecvbrrqdadm
