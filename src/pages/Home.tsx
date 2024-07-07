@@ -149,7 +149,6 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.post(`${Config.API_URL}/api/bogu`);
       console.log('update', response.data);
-      setFocusedBoguId('-1');
       setFocusedBoguCategory([]);
       setFocusedBoguVariation(0);
       setFocusedBoguSelectedCategory('');
@@ -166,8 +165,10 @@ export default function Home(props: HomeProps) {
     try {
       const response = await axios.get(`${Config.API_URL}/api/bogu`);
       setNewBogus(response.data.todayQuota >= 1);
+      setFocusedBoguId('-1');
       setDefaultBogu(response.data.defaultBogus);
       setEvolvedBogu(response.data.evolvedBogus);
+
       console.log(response.data);
       if (response.data) {
         setFocusedBoguName('');
@@ -245,11 +246,9 @@ export default function Home(props: HomeProps) {
   };
   const getEvolvedBoguInfo = async () => {
     try {
-      const response = await axios.get(
-        `${Config.API_URL}/api/bogu/${focusedBoguId
-          .split('-')[0]
-          .replace('e', '')}`,
-      );
+      const response = await axios.post(`${Config.API_URL}/api/bogu/id`, {
+        id: focusedBoguId.split('-')[0].replace('e', ''),
+      });
       console.log('getEvolvedInfo', response.data);
       // setFocusedBoguId(response.data.id);
       setFocusedBoguCreatedAt(response.data.createdAt);

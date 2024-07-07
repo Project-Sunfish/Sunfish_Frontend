@@ -58,7 +58,7 @@ export default function Book(props: BookProps) {
 
   const getData = async () => {
     try {
-      const response = await axios.get(`${Config.API_URL}/api/collection`);
+      const response = await axios.post(`${Config.API_URL}/api/collection`);
       let data: itemProps[] = [];
       for (let i = 0; i < BOGU_TYPE; i++) {
         data.push({

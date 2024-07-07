@@ -123,9 +123,7 @@ function AppInner() {
         error as AxiosError<{message: string; code: number}>
       ).response;
       console.log('errorResponse', errorResponse?.data);
-      if (errorResponse?.data.code == 7) {
-        EncryptedStorage.removeItem('refreshToken');
-      }
+      EncryptedStorage.removeItem('refreshToken');
     }
   };
   useEffect(() => {

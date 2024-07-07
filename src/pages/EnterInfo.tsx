@@ -388,12 +388,12 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
             <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
               {/* <Text style={styles.helperButtonText}>앱스토어</Text>
               <Text style={styles.helperButtonText}>플레이스토어</Text> */}
-              <SvgXml xml={svgList.socialLoginLogo.playStore} opacity={0.5} />
+              {/* <SvgXml xml={svgList.socialLoginLogo.playStore} opacity={0.5} /> */}
               <View style={{height: 4}}></View>
-              <SvgXml xml={svgList.socialLoginLogo.appStore} opacity={0.5} />
+              {/* <SvgXml xml={svgList.socialLoginLogo.appStore} opacity={0.5} /> */}
             </Pressable>
             <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
-              <SvgXml xml={svgList.socialLoginLogo.usTransparent} />
+              {/* <SvgXml xml={svgList.socialLoginLogo.usTransparent} /> */}
             </Pressable>
           </View>
         )}

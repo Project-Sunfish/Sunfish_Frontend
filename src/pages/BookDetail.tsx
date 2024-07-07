@@ -81,9 +81,9 @@ export default function BookDetail(props: BookDetailProps) {
 
   const getData = async () => {
     try {
-      const response = await axios.get(
-        `${Config.API_URL}/api/collection/${id}`,
-      );
+      const response = await axios.post(`${Config.API_URL}/api/collection/id`, {
+        id: id,
+      });
       console.log(response.data);
       setData(response.data);
       setLoading(false);
