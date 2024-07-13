@@ -8,7 +8,7 @@ import {
 
 export default function ImageBackGroundSrollViewRegardingHeight(props: {
   children: React.ReactNode;
-  critertiaWindowHeight: number;
+  criteriaWindowHeight: number;
   smallerScreenPaddingTop: number;
   smallerScreenPaddingBottom: number;
   smallerScreenMarginBottom: number;
@@ -21,7 +21,7 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
     <ImageBackground
       source={require('../assets/pictures/Base.png')}
       style={{flex: 1}}>
-      {windowHeight <= props.critertiaWindowHeight ? (
+      {windowHeight <= props.criteriaWindowHeight ? (
         <View
           style={[
             styles.entire,

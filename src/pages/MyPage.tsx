@@ -200,7 +200,7 @@ export default function MyPage(props: MyPageProps) {
   };
   return (
     <ImageBackgroundSrollViewRegardingHeight
-      critertiaWindowHeight={670}
+      criteriaWindowHeight={650}
       smallerScreenPaddingTop={20}
       smallerScreenPaddingBottom={0}
       smallerScreenMarginBottom={120}

@@ -81,8 +81,8 @@ android {
         applicationId "com.sunfish"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 24070131
-        versionName "1.0.2"
+        versionCode 2407132
+        versionName "1.0.3"
         resValue "string", "build_config_package", "com.sunfish"
     }
     signingConfigs {
