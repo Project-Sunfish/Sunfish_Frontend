@@ -4,6 +4,8 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>Localized resources can be mixed</key>
+	<string>YES</string>
 	<key>CFBundleDisplayName</key>
 	<string>복어펑</string>
 	<key>CFBundleExecutable</key>
@@ -29,7 +31,7 @@
 			<array>
 				<string>kakao9560340684a1b762e111be9fb810c0d4</string>
 				<string>com.googleusercontent.apps.106877521013-tuik60apr40h8ik74f8vmecvbrrqdadm</string>
-				<string>naverlogin</string>
+				<string>naverlogin.sunfish</string>
 			</array>
 		</dict>
 	</array>

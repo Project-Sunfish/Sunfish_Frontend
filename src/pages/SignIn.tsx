@@ -126,7 +126,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
         ? Config.NAVER_CLIENT_SECRET
         : '',
       appName: '복어펑',
-      serviceUrlSchemeIOS: 'naverlogin',
+      serviceUrlSchemeIOS: 'naverlogin.sunfish',
     };
     NaverLogin.initialize(Platform.OS === 'android' ? initANDROID : initIOS);
     console.log('네이버 로그인');

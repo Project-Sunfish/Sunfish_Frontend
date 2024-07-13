@@ -13,7 +13,7 @@
     return [RNKakaoLogins handleOpenUrl:url];
   }
 
-  if ([url.scheme isEqualToString:@"naverlogin"]) {
+  if ([url.scheme isEqualToString:@"naverlogin.sunfish"]) {
       return [[NaverThirdPartyLoginConnection getSharedInstance] application:app openURL:url options:options];
     }
 
