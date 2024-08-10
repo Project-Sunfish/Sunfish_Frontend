@@ -49,12 +49,14 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
               paddingBottom: props.largerScreenPaddingBottom,
             },
           ]}>
-          {props.children}
-          <View
-            style={{
-              height: props.largerScreenMarginBottom,
-            }}
-          />
+          <ScrollView>
+            {props.children}
+            <View
+              style={{
+                height: props.largerScreenMarginBottom,
+              }}
+            />
+          </ScrollView>
         </View>
       )}
     </ImageBackground>

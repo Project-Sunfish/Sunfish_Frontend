@@ -301,7 +301,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                   LoginWithKakao();
                 }}>
                 <View style={styles.loginButton}>
-                  <SvgXml xml={svgList.socialLoginLogo.kakao} />
+                  <SvgXml
+                    xml={svgList.socialLoginLogo.kakao}
+                    width={Platform.OS == 'ios' ? 32 : 44}
+                    height={Platform.OS == 'ios' ? 30 : 40}
+                  />
                 </View>
                 <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>카카오톡</Text>
@@ -313,7 +317,11 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                   LoginWithGoogle();
                 }}>
                 <View style={styles.loginButton}>
-                  <SvgXml xml={svgList.socialLoginLogo.google} />
+                  <SvgXml
+                    xml={svgList.socialLoginLogo.google}
+                    width={Platform.OS == 'ios' ? 30 : 40}
+                    height={Platform.OS == 'ios' ? 30 : 41}
+                  />
                 </View>
                 <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>구글</Text>
@@ -325,24 +333,46 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                   LoginWithNaver();
                 }}>
                 <View style={styles.loginButton}>
-                  <SvgXml xml={svgList.socialLoginLogo.naver} />
+                  <SvgXml
+                    xml={svgList.socialLoginLogo.naver}
+                    width={Platform.OS == 'ios' ? 24 : 32}
+                    height={Platform.OS == 'ios' ? 22 : 30}
+                  />
                 </View>
                 <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>네이버</Text>
                 </View>
               </Pressable>
+              {Platform.OS === 'ios' && (
+                <Pressable
+                  style={styles.eachLoginButton}
+                  onPress={() => {
+                    LoginWithApple();
+                  }}>
+                  <View style={styles.loginButton}>
+                    <SvgXml xml={svgList.socialLoginLogo.apple} />
+                    <View style={{height: 3}} />
+                  </View>
+                  <View style={styles.loginButtonTxtView}>
+                    <Text style={styles.loginButtonTxt}>애플</Text>
+                  </View>
+                </Pressable>
+              )}
             </View>
-            {Platform.OS === 'ios' && (
+            {/* {Platform.OS === 'ios' && (
               <Pressable onPress={() => LoginWithApple()}>
                 <Text style={styles.appleLoginTxt}>애플 로그인</Text>
               </Pressable>
-            )}
+            )} */}
           </View>
           <View style={styles.helperButtonView}>
-            <Pressable style={[styles.helperButton, {paddingBottom: 30}]}>
-              <SvgXml xml={svgList.socialLoginLogo.playStore} />
-              <View style={{height: 4}}></View>
-              <SvgXml xml={svgList.socialLoginLogo.appStore} />
+            <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
+              {/* <View style={{height: 20}} /> */}
+              {Platform.OS == 'android' ? (
+                <SvgXml xml={svgList.socialLoginLogo.playStore} />
+              ) : (
+                <SvgXml xml={svgList.socialLoginLogo.appStore} />
+              )}
             </Pressable>
             <Pressable style={[styles.helperButton, {paddingTop: 10}]}>
               <SvgXml xml={svgList.socialLoginLogo.us} />
@@ -391,8 +421,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   loginButton: {
-    width: 80,
-    height: 80,
+    width: Platform.OS == 'ios' ? 60 : 80,
+    height: Platform.OS == 'ios' ? 60 : 80,
     borderRadius: 40,
     backgroundColor: 'rgba(255, 255, 255, 0.50)',
     justifyContent: 'center',

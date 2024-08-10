@@ -127,12 +127,16 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
       const response = await axios.post(
         `${Config.API_URL}/admin/signup`,
         {
-          name: name,
-          birthType: calendar == 'solar' ? 'Solar' : 'Lunar',
-          birth: `${birth.slice(0, 4)}-${birth.slice(4, 6)}-${birth.slice(
-            6,
-            8,
-          )}`,
+          name: name == '' ? null : name,
+          birthType:
+            calendar == '' ? null : calendar == 'solar' ? 'Solar' : 'Lunar',
+          birth:
+            birth == ''
+              ? null
+              : `${birth.slice(0, 4)}-${birth.slice(4, 6)}-${birth.slice(
+                  6,
+                  8,
+                )}`,
           gender: sex,
         },
         {
@@ -193,7 +197,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
             <View style={[styles.eachQuestion, {marginTop: 0}]}>
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
-                <Text style={styles.questionText}>당신의 이름은?</Text>
+                <Text style={styles.questionText}>당신의 닉네임은?</Text>
                 {name.trim() ? (
                   <SvgXml xml={svgList.enterInfo.check} />
                 ) : (
@@ -208,7 +212,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                       ? {backgroundColor: 'rgba(255, 255, 255, 0.50)'}
                       : {backgroundColor: 'rgba(255, 255, 255, 0.30)'},
                   ]}
-                  placeholder="이름"
+                  placeholder="닉네임"
                   placeholderTextColor="rgba(255, 255, 255, 0.70)"
                   value={name}
                   onChangeText={txt => setName(txt.trim())}
@@ -220,12 +224,14 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
             <View style={styles.eachQuestion}>
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
-                <Text style={styles.questionText}>당신의 생년월일은?</Text>
-                {isValidDate(birth) && calendar ? (
+                <Text style={styles.questionText}>
+                  당신의 생년월일은? (선택)
+                </Text>
+                {/* {isValidDate(birth) && calendar ? (
                   <SvgXml xml={svgList.enterInfo.check} />
                 ) : (
                   <SvgXml xml={svgList.enterInfo.checkTransparent} />
-                )}
+                )} */}
               </View>
               <View style={styles.answerContent}>
                 <TextInput
@@ -286,12 +292,12 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
             <View style={styles.eachQuestion}>
               <View style={styles.questionContent}>
                 <SvgXml xml={svgList.enterInfo.fishHead} />
-                <Text style={styles.questionText}>당신의 성별은?</Text>
-                {sex ? (
+                <Text style={styles.questionText}>당신의 성별은? (선택)</Text>
+                {/* {sex ? (
                   <SvgXml xml={svgList.enterInfo.check} />
                 ) : (
                   <SvgXml xml={svgList.enterInfo.checkTransparent} />
-                )}
+                )} */}
               </View>
               <View style={styles.answerContent}>
                 <Pressable
@@ -347,7 +353,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
               <Pressable
                 style={[
                   styles.checkBtn,
-                  name.trim() && isValidDate(birth) && sex && calendar
+                  name.trim() && (isValidDate(birth) || !birth.trim())
                     ? {backgroundColor: 'rgba(255, 255, 255, 0.90)'}
                     : {backgroundColor: 'rgba(255, 255, 255, 0.50)'},
                 ]}
@@ -356,7 +362,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
                   // dispatch(userSlice.actions.setToken({accessToken: '1234'}));
                 }}
                 disabled={
-                  !(name.trim() && isValidDate(birth) && sex && calendar)
+                  !name.trim() && (isValidDate(birth) || !birth.trim())
                 }>
                 <Text
                   style={[

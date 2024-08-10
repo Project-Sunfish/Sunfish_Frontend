@@ -28,7 +28,6 @@ import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 import axios, {AxiosError} from 'axios';
 import Config from 'react-native-config';
-import {get} from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 
 type MyPageScreenNavigationProp = NativeStackNavigationProp<
   MyPageStackParamList,
@@ -204,8 +203,8 @@ export default function MyPage(props: MyPageProps) {
       smallerScreenPaddingTop={20}
       smallerScreenPaddingBottom={0}
       smallerScreenMarginBottom={120}
-      largerScreenPaddingTop={0}
-      largerScreenPaddingBottom={0}
+      largerScreenPaddingTop={30}
+      largerScreenPaddingBottom={80}
       largerScreenMarginBottom={66}>
       {/* <Pressable
         style={[
