@@ -289,7 +289,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   return (
     <View style={styles.entire}>
       <ImageBackground
-        source={require('../assets/pictures/SignIn.png')}
+        source={require('../assets/pictures/SignIn.webp')}
         style={{flex: 1}}>
         <View style={styles.top}></View>
         <View style={styles.bottom}>
@@ -307,9 +307,9 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                     height={Platform.OS == 'ios' ? 30 : 40}
                   />
                 </View>
-                <View style={styles.loginButtonTxtView}>
+                {/* <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>카카오톡</Text>
-                </View>
+                </View> */}
               </Pressable>
               <Pressable
                 style={styles.eachLoginButton}
@@ -323,9 +323,9 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                     height={Platform.OS == 'ios' ? 30 : 41}
                   />
                 </View>
-                <View style={styles.loginButtonTxtView}>
+                {/* <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>구글</Text>
-                </View>
+                </View> */}
               </Pressable>
               <Pressable
                 style={styles.eachLoginButton}
@@ -339,9 +339,9 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                     height={Platform.OS == 'ios' ? 22 : 30}
                   />
                 </View>
-                <View style={styles.loginButtonTxtView}>
+                {/* <View style={styles.loginButtonTxtView}>
                   <Text style={styles.loginButtonTxt}>네이버</Text>
-                </View>
+                </View> */}
               </Pressable>
               {Platform.OS === 'ios' && (
                 <Pressable
@@ -353,9 +353,9 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
                     <SvgXml xml={svgList.socialLoginLogo.apple} />
                     <View style={{height: 3}} />
                   </View>
-                  <View style={styles.loginButtonTxtView}>
+                  {/* <View style={styles.loginButtonTxtView}>
                     <Text style={styles.loginButtonTxt}>애플</Text>
-                  </View>
+                  </View> */}
                 </Pressable>
               )}
             </View>

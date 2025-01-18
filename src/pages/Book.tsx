@@ -82,7 +82,7 @@ export default function Book(props: BookProps) {
   };
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Base.webp')}
       style={{flex: 1}}>
       <View style={styles.entire}>
         <View style={styles.header}>

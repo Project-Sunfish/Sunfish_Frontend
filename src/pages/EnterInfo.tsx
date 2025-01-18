@@ -179,7 +179,7 @@ export default function EnterInfo({navigation, route}: EnterInfoScreenProps) {
   // };
   return (
     <ImageBackground
-      source={require('../assets/pictures/EnterInfo.png')}
+      source={require('../assets/pictures/EnterInfo.webp')}
       style={{flex: 1}}>
       <View style={styles.entire}>
         <KeyboardAwareScrollView

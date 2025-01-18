@@ -339,7 +339,7 @@ export default function Home(props: HomeProps) {
     </View>
   ) : (
     <ImageBackground
-      source={require('../assets/pictures/Game.png')}
+      source={require('../assets/pictures/Game.webp')}
       style={{flex: 1}}>
       <StatusBar hidden={true} />
       <View style={styles.entire}>

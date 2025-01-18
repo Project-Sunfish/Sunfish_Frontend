@@ -19,7 +19,7 @@ export default function ImageBackGroundSrollViewRegardingHeight(props: {
   const windowHeight = Dimensions.get('window').height;
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Base.webp')}
       style={{flex: 1}}>
       {windowHeight <= props.criteriaWindowHeight ? (
         <View
