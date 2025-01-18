@@ -81,8 +81,8 @@ android {
         applicationId "com.sunfish.bogu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2408171
-        versionName "1.0.5"
+        versionCode 2501191
+        versionName "1.1.1"
         resValue "string", "build_config_package", "com.sunfish.bogu"
     }
     signingConfigs {
