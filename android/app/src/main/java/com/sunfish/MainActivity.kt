@@ -1,4 +1,4 @@
-package com.sunfish
+package com.sunfish.bogu
 
 import android.os.Bundle
 import com.facebook.react.ReactActivity

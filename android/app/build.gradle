@@ -76,14 +76,14 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.sunfish"
+    namespace "com.sunfish.bogu"
     defaultConfig {
-        applicationId "com.sunfish"
+        applicationId "com.sunfish.bogu"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 2408171
         versionName "1.0.5"
-        resValue "string", "build_config_package", "com.sunfish"
+        resValue "string", "build_config_package", "com.sunfish.bogu"
     }
     signingConfigs {
         debug {

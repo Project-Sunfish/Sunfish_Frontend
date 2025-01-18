@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.sunfish">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.sunfish.bogu">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE"/>
