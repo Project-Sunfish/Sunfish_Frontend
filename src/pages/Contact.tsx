@@ -25,7 +25,7 @@ export default function Contact() {
   const [showToast, setShowToast] = useState(false);
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Base.webp')}
       style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
       <View style={styles.entire}>
         <Pressable style={styles.backBtn} onPress={() => navigation.goBack()}>

@@ -65,7 +65,7 @@ export default function FAQs() {
   const [tab, setTab] = useState(0);
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Base.webp')}
       style={{flex: 1}}>
       <View style={styles.entire}>
         <Pressable style={styles.backBtn} onPress={() => navigation.goBack()}>

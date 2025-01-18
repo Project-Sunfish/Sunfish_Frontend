@@ -289,7 +289,7 @@ export default function SignIn({navigation, route}: SignInScreenProps) {
   return (
     <View style={styles.entire}>
       <ImageBackground
-        source={require('../assets/pictures/SignIn.png')}
+        source={require('../assets/pictures/SignIn.webp')}
         style={{flex: 1}}>
         <View style={styles.top}></View>
         <View style={styles.bottom}>
