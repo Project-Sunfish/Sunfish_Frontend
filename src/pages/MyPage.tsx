@@ -325,6 +325,26 @@ export default function MyPage(props: MyPageProps) {
             </View>
           </LinearGradient>
         </Pressable>
+        <Pressable style={styles.menuButtonBG}>
+          <LinearGradient
+            start={{x: 0, y: 0}}
+            end={{x: 1, y: 0}}
+            colors={['#6EA5FFE5', '#5390F4E5']}
+            style={styles.menuButton}>
+            <Pressable
+              style={styles.menuButtonContent}
+              onPress={() => props.navigation.navigate('DashBoard')}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                대시보드
+              </Text>
+            </Pressable>
+            <View style={styles.menuButtonArrow}>
+              <Text style={[styles.menuButtonTxt, {color: '#FFFFFF'}]}>
+                {'>'}
+              </Text>
+            </View>
+          </LinearGradient>
+        </Pressable>
       </View>
       <View style={styles.footerBtnView}>
         <Pressable

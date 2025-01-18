@@ -5,11 +5,13 @@ import {
 import MyPage from '../pages/MyPage';
 import Contact from '../pages/Contact';
 import FAQs from '../pages/FAQs';
+import DashBoard from '../pages/DashBoard';
 
 export type MyPageStackParamList = {
   MyPage: undefined;
   Contact: undefined;
   FAQs: undefined;
+  DashBoard: undefined;
 };
 
 export type MyPageStackNavigationProp =
@@ -33,6 +35,11 @@ export default function MyPageNav() {
       <Stack.Screen
         name="FAQs"
         component={FAQs}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DashBoard"
+        component={DashBoard}
         options={{headerShown: false}}
       />
     </Stack.Navigator>
