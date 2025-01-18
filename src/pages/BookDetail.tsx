@@ -1,5 +1,6 @@
 import {
   ImageBackground,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -111,7 +112,7 @@ export default function BookDetail(props: BookDetailProps) {
   };
   return (
     <ImageBackground
-      source={require('../assets/pictures/Base.png')}
+      source={require('../assets/pictures/Base.webp')}
       style={{flex: 1}}>
       <View style={styles.entire}>
         <View style={styles.header}>
@@ -123,6 +124,22 @@ export default function BookDetail(props: BookDetailProps) {
           <Text style={styles.headerTxt}>
             {formateDate(data[idx].createdAt)}
           </Text>
+          <Pressable
+            style={{
+              position: 'absolute',
+              right: 18,
+              top: 0,
+              bottom: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+            onPress={() =>
+              Linking.openURL(
+                'https://play.unity.com/en/games/7920a276-2978-4f9d-8bdb-95a0eaef3224/duckdown-game',
+              )
+            }>
+            <SvgXml xml={svgList.game} width={30} height={30} />
+          </Pressable>
         </View>
         <ScrollView style={styles.body}>
           <View style={styles.boguContent}>
